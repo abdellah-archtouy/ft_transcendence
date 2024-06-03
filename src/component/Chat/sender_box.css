@@ -1,0 +1,22 @@
+.sender{
+    color: #FFFFFF80;
+    position: relative;
+    display: flex;
+    justify-content: end;
+}
+.reciver{
+    color: #FFFFFF80;
+    position: relative;
+}
+
+.msg_box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #222222;
+    width: fit-content;
+    padding: 16px 20px;
+    box-sizing: border-box;
+    height: 43px;
+    border-radius: 10px;
+}

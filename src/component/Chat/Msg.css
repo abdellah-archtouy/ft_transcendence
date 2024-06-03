@@ -1,0 +1,117 @@
+
+.Msg {
+    position: relative;
+    display: grid;
+    grid-template-rows: 86px 90% 60px;
+    margin-bottom: 20px;
+    background-color: transparent;
+    font-family: 'URW Geometric';
+    margin-right: 34px;
+    font-weight: bold;
+}
+
+.chat_top_bar .icon_name h3{
+    color: #B0B0B0;
+    font-weight: 700;
+    /* text-align: center; */
+    font-size: 20px;
+    /* line-height: 75%; */
+    padding: 0;
+    margin-top: 6px;
+}
+
+
+.chat_top_bar .icon_name img{
+    height: 60px;
+    width: auto;
+    border: 3px solid #636262;
+    background-size: cover;
+    border-radius: 80px;
+    padding: 0;
+    margin: 0;
+}
+
+.chat_top_bar .icon_name{
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.chat_top_bar .set{
+    position: absolute;
+    right: 20px;
+    cursor: pointer;
+}
+
+
+
+
+.chat_top_bar{
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    background-color: #222222;
+    box-sizing: border-box;
+    padding: 13px 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px black;
+    height: 86px;
+}
+
+
+
+.message_bar .search-input{
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    outline: none;
+    color: #B0B0B0;
+}
+.message_bar .search-container{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 95%;
+    background-color: #1B1B1B;
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+.message_bar{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    background-color: #222222;
+    gap: 14px;
+    box-sizing: border-box;
+    padding: 10px 16px;
+    height: 60px;
+    z-index: 2;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px black;
+    /* display: none; */
+}
+
+.conversation::-webkit-scrollbar{
+    display: none;
+}
+
+.Msg .conversation{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    top: 60px;
+    width: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    gap: 10px;
+    padding-bottom: 20px;
+}

@@ -1,0 +1,200 @@
+.Rcontainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 5%;
+}
+
+.Rcontainer * {
+
+}
+
+.Rfirst {
+    width: 84%;
+    height: 100px;
+    /* background-color: grey; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.userinfo {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.enemyinfo {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    width: 100px;
+    background-color: rgb(34, 34, 34, 0.8);
+    border-radius: 20px;
+    border: solid #565656 1px;
+    box-shadow: 0px 0px 10px 5px rgb(189, 189, 189, 0.25);
+    z-index: 1;
+}
+
+.image img{
+    width: 60px;
+    height: auto;
+    border-radius: 50%;
+    border: #636262 3px solid;
+    box-shadow: 0px 0px 20px 10px rgb(189, 189, 189, 0.25);
+}
+
+.infos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    h1 {
+        font-size: 36px;
+        line-height: 25px;
+        height: 25px;
+        color: #D9D9D9;
+    }
+    p {
+        font-size: 24px;
+        line-height: 24px;
+        color: rgb(217, 217, 217, 0.75);
+    }
+}
+
+.Rsecond {
+    position: relative;
+}
+
+.paddleRight {
+    height: 100px;
+    width: 20px;
+    background-color: #D9D9D9;
+    border-radius: 4px;
+    top: calc(50% - 50px);
+    right: 10px;
+    position: absolute;
+    box-shadow: 0px 0px 10px 1px rgb(255, 255, 255, 0.25);
+}
+
+.paddleLeft {
+    height: 100px;
+    width: 20px;
+    background-color: #D9D9D9;
+    border-radius: 4px;
+    position: absolute;
+    top: calc(50% - 50px);
+    left: 10px;
+    box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.25);
+}
+
+.ball {
+    height: 20px;
+    width: 20px;
+    background-color: #D9D9D9;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 50%;
+    box-shadow: 0px 0px 10px 1px rgb(255, 255, 255, 0.25);
+}
+
+#Rcanvas {
+    background-color: rgb(34, 34, 34, 0.8);
+    border: solid #565656 2px;
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    box-shadow: 0px 0px 100px 5px #565656, 0px 0px 20px 4px rgb(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    padding: 10px;
+    left: 0;
+    top: 0;
+}
+
+.pause{
+    height: 60px;
+    width: 60px;
+    border: #707070 solid 2px;
+    background-color: transparent;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s;
+}
+
+.pause:hover {
+    box-shadow: 0px 0px 10px 5px #707070;
+    scale: 1.1;
+}
+
+.pauseIcons {
+    height: 30px;
+    width: auto;
+}
+
+.buttons{
+    display: flex;
+    gap: 20px;
+    transition: all 2s;
+}
+
+.pauseDisplay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    font-size: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all 0.4s;
+    animation: pause 0.4s ease-in;
+    backdrop-filter: blur(10px);
+    background-color: #222222ac;
+    border: solid #525252;
+}
+
+@keyframes pause {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+.pauseDisplay p {
+    /* box-shadow: 0px 0px 5px 10px #B2B2B2; */
+    text-shadow: 0px 0px 10px #B2B2B2;
+    animation: textanimation 4s ease-in infinite;
+}
+
+.retry:hover {
+    transition: all 2s ease-out;
+    animation: rotateanimation 2s ease-in;
+    transform: rotate(180deg);
+}
+
+@keyframes rotateanimation {
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(180deg);
+    }
+}
+
+.otherIcons:hover .pauseIcons {
+    transition: all 2s ease-out;
+    animation: vibrate 1s ease-in;
+}

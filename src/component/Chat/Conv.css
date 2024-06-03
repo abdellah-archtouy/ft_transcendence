@@ -1,0 +1,31 @@
+.conv{
+    position: relative;
+    height: 80px;
+    width: 90%;
+    margin: 10px;
+    margin-left: 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    background-color: #222222;
+    font-family: 'URW Geometric';
+}
+
+.conv h3{
+    margin: 10px;
+    color: #B0B0B0;
+    /* width: 50%; */
+    font-weight: 700;
+    line-height: 17px;
+}
+.delete{
+    position: absolute;
+    right: 25px;
+}
+.conv img{
+    border-radius: 80px;
+    border: 3px solid #636262;
+    background-size: cover;
+    margin: 10px;
+    height: 60px;
+}
