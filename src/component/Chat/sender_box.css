@@ -11,12 +11,15 @@
 
 .msg_box{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #222222;
-    width: fit-content;
-    padding: 16px 20px;
+    padding: 10px 15px;
+    height: fit-content;
     box-sizing: border-box;
-    height: 43px;
+    justify-content: center;
+    width: fit-content;
+    align-items: center;
+    text-align: start;
+    background-color: #222222;
+    max-width: 50%;
+    border-style: hidden;
     border-radius: 10px;
 }
