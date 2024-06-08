@@ -6,7 +6,7 @@ import Room from './room'
 const Bot = () => {
   const [user, setUser] = useState(() => {
     const d = [
-        [{ uid: 0, name: "Bot", goals: 0, avatar: "/botProfile.svg" },
+        [{ uid: 0, name: "Bot", goals: 5, avatar: "/botProfile.svg" },
         { uid: 1, name: "GUTS", goals: 0, avatar: "/guts.png" }],
         { playMode: "bot"}
     ];

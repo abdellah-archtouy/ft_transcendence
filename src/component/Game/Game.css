@@ -40,23 +40,35 @@
 
 .Tournament.fade-in{
     animation: fade-in 0.8s ease-in-out;
+    pointer-events: none;
 }
 
 .friend.fade-in{
     animation: fade-in 1.4s ease-in-out;
+    pointer-events: none;
 }
 
 .bot.fade-in{
     animation: fade-in 2s ease-in-out;
+    pointer-events: none;
 }
 
-@keyframes fade-in {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+.Tournament.fade-out{
+    animation: fade-out 2s ease-in-out;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.friend.fade-out{
+    animation: fade-out 1.4s ease-in-out;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.bot.fade-out{
+    animation: fade-out 0.8s ease-in-out;
+    pointer-events: none;
+    opacity: 0;
 }
 
 @keyframes talal {
