@@ -22,6 +22,7 @@
     align-items: center;
     justify-content: center;
     position: sticky;
+    overflow: hidden;
 }
 
 
@@ -58,7 +59,7 @@ li a:hover{
 .nav .items {
     visibility: visible;
     bottom: 50;
-    background-color: rgb(0, 0, 0, 0.8);
+    background-color: rgb(0, 0, 0);
     z-index: -1;
     border-radius: 30px 30px 0 0;
     height: 72px;
@@ -104,13 +105,13 @@ li a:hover{
 .nav .items::before {
     right: -50px;
     border-radius: 0 0 0 36px;
-    box-shadow: -7px 7px 0 7px rgb(0, 0, 0, 0.8);
+    box-shadow: -7px 7px 0 7px rgb(0, 0, 0);
 }
 
 .nav .items::after {
     left: -50px;
     border-radius: 0 0 36px 0px;
-    box-shadow: 7px 7px 0 7px rgb(0, 0, 0, 0.8);
+    box-shadow: 7px 7px 0 7px rgb(0, 0, 0);
 }
 
 .nav a {
@@ -140,12 +141,17 @@ li a:hover{
     border-radius: 12px;
     background-color: transparent;
     border: solid 2px #565656;
+    outline: none;
     cursor: pointer;
 }
 
 .navbutton img {
     height: 23px;
     width: auto;
+}
+
+.navbutton:hover {
+    filter: drop-shadow( 0px 0px 5px #ffffffb7);
 }
 
 .logo {

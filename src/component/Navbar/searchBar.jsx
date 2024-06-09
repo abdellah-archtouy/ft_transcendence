@@ -51,6 +51,18 @@ const SearchBar = ({ onStateChange }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fadeout, setFadeout] = useState(false);
 
+  function FadingOut() {
+    setFadeout(true);
+    setTimeout(() => {
+      onStateChange(false);
+    }, 400);
+    document.removeEventListener("keydown", keypress);
+  }
+
+  function keypress(e) {
+    if (e.key === "Escape") FadingOut();
+  }
+
   useEffect(() => {
     let filteredData = null;
     if (users && isNaN(searchTerm)) {
@@ -61,16 +73,15 @@ const SearchBar = ({ onStateChange }) => {
     setUserList(filteredData);
   }, [searchTerm, users]);
 
+  useEffect(() => {
+    document.addEventListener("keyup", keypress);
+  });
+
   return (
     <>
       <div
         className={`SearchBar ${fadeout ? "fadeout" : ""}`}
-        onClick={() => {
-          setFadeout(true);
-          setTimeout(() => {
-            onStateChange(false);
-          }, 400);
-        }}
+        onClick={FadingOut}
       ></div>
       <div className={`searchContent ${fadeout ? "fadeout" : ""}`}>
         <div className="search">

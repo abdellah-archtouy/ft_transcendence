@@ -1,15 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Icon from "./Icon";
 import logo from "../../icons/logo.svg";
 import jarass from "../../icons/jarass.svg";
 import searchicon from "../../icons/search.svg";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./navbar.css";
 import SearchBar from "./searchBar";
 
 const Navbar = () => {
   const [activeElement, setActiveElement] = useState(null);
   const [search, setSearch] = useState(false);
+  const location = useLocation();
 
   const array = [
     { index: 0, path: "/", activeElement: "Home" },
@@ -33,8 +34,9 @@ const Navbar = () => {
     coloredDiv.style.transition = `transform 0.3s ease-in-out`;
   };
 
-  function finIndex(element) {
-    if (element.path === window.location.pathname) return element;
+  function findIndex(element) {
+    if (element.path === window.location.pathname)
+      return element;
     return undefined;
   }
 
@@ -46,52 +48,73 @@ const Navbar = () => {
 
   function handleState(state) {
     setSearch(state);
-  };
+  }
 
-  useEffect(() => {
-    let Index = array.find(finIndex);
-    if (Index === undefined) Index = array.find(findElement);
-    setActiveElement(Index.activeElement);
-    const navItems = document.querySelectorAll(".nav ul li");
-    const itemOffsetLeft = navItems[Index.index].offsetLeft;
-    const coloredDiv = document.querySelector(".items");
-    coloredDiv.style.transform = `translateX(${
-      itemOffsetLeft - coloredDiv.offsetLeft
-    }px)`;
-    coloredDiv.style.transition = `transform 0.3s ease-in-out`;
-  }, [window.location.pathname]);
+  
+  useEffect(
+    () => {
+      window.pathname = location.pathname;
+      let Index = array.find(findIndex);
+      if (Index === undefined) Index = array.find(findElement);
+      setActiveElement(Index.activeElement);
+      const coloredDiv = document.querySelector(".items");
+      const navItems = document.querySelectorAll(".nav ul li");
+      const itemOffsetLeft = navItems[Index.index].offsetLeft;
+      coloredDiv.style.transform = `translateX(${
+        itemOffsetLeft - coloredDiv.offsetLeft
+      }px)`;
+      coloredDiv.style.transition = `transform 0.3s ease-in-out`;
+    },
+    [location.pathname]
+  );
 
   return (
     <>
       <div className="navigation">
-        <Link to="/" onClick={() => {
-          setSearch(false);
-          handleClick("Home", 0)}}>
+        <Link
+          to="/"
+          onClick={() => {
+            setSearch(false);
+            handleClick("Home", 0);
+          }}
+        >
           <img src={logo} className="logo" alt="logo" />
         </Link>
         <div className="nav">
           <ul>
             <div className="items"></div>
             <li className={activeElement === "Home" ? "active" : ""}>
-              <Link to="/" onClick={() => {
-                setSearch(false);
-                handleClick("Home", 0)}}>
+              <Link
+                to="/"
+                onClick={() => {
+                  setSearch(false);
+                  handleClick("Home", 0);
+                }}
+              >
                 <Icon.Home />
                 <span>Home</span>
               </Link>
             </li>
             <li className={activeElement === "Game" ? "active" : ""}>
-              <Link to="/game" onClick={() => {
-                setSearch(false);
-                handleClick("Game", 1)}}>
+              <Link
+                to="/game"
+                onClick={() => {
+                  setSearch(false);
+                  handleClick("Game", 1);
+                }}
+              >
                 <Icon.Game />
                 <span>Game</span>
               </Link>
             </li>
             <li className={activeElement === "Chat" ? "active" : ""}>
-              <Link to="/chat" onClick={() => {
-                setSearch(false);
-                handleClick("Chat", 2)}}>
+              <Link
+                to="/chat"
+                onClick={() => {
+                  setSearch(false);
+                  handleClick("Chat", 2);
+                }}
+              >
                 <Icon.Chat />
                 <span>Chat</span>
               </Link>
@@ -101,24 +124,33 @@ const Navbar = () => {
                 to="/leaderboard"
                 onClick={() => {
                   setSearch(false);
-                  handleClick("Leaderboard", 3)}}
+                  handleClick("Leaderboard", 3);
+                }}
               >
                 <Icon.Leaderboard />
                 <span>Leaderboard</span>
               </Link>
             </li>
             <li className={activeElement === "Setting" ? "active" : ""}>
-              <Link to="/setting" onClick={() => {
-                setSearch(false);
-                handleClick("Setting", 4)}}>
+              <Link
+                to="/setting"
+                onClick={() => {
+                  setSearch(false);
+                  handleClick("Setting", 4);
+                }}
+              >
                 <Icon.Setting />
                 <span>Setting</span>
               </Link>
             </li>
             <li className={activeElement === "Profile" ? "active" : ""}>
-              <Link to="/profile" onClick={() => {
-                setSearch(false);
-                handleClick("Profile", 5)}}>
+              <Link
+                to="/profile"
+                onClick={() => {
+                  setSearch(false);
+                  handleClick("Profile", 5);
+                }}
+              >
                 <Icon.Profile />
                 <span>Profile</span>
               </Link>
@@ -139,7 +171,7 @@ const Navbar = () => {
           </button>
         </div>
       </div>
-      {search && <SearchBar onStateChange={handleState}/>}
+      {search && <SearchBar onStateChange={handleState} />}
     </>
   );
 };
