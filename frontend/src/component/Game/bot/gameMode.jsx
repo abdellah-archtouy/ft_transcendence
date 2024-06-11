@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Bot from "./bot";
 import LoadingPage from "./../../loadingPage/loadingPage";
@@ -18,6 +18,30 @@ const GameMode = () => {
   function updateState() {
     setClicked(!clicked);
   }
+
+  async function testFetch() {
+    try {
+      console.log('Attempting to fetch data from /ping...');
+      const response = await fetch("http://localhost:8000/ping", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8'
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Data received:', data);
+      } else {
+        console.error('Fetch error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  useEffect(() => {
+    testFetch()
+  }, []);
 
   if(!ballSpeed) return <LoadingPage />;
   return (
@@ -40,7 +64,6 @@ const GameMode = () => {
       }}>
         <div>Hard</div>
       </button>
-      {console.log(ballSpeed)}
       {clicked && <Bot data={ballSpeed}/>}
     </>
   );

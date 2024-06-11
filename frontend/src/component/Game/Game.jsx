@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TournamentVector from "../../icons/Vector1.svg";
 import BotVector from "../../icons/Vector2.svg";
 import FriendVector from "../../icons/Vector.svg";
+import LoadingPage from "../loadingPage/loadingPage"
 import { useEffect, useState } from "react";
 
 const Game = () => {
@@ -22,9 +23,14 @@ const Game = () => {
   const unhoverPlay = () => {
     audio.pause();
   };
-
+  
+  const handleClick = (event, route) => {
+    event.preventDefault();
+    setTarget(route);
+    setFadeout(true);
+  }; 
+  
   useEffect(() => {
-    setFade(true);
     const timeout = setTimeout(() => {
       setFade(false);
     }, 2.2 * 1000);
@@ -40,12 +46,6 @@ const Game = () => {
       return () => clearTimeout(timeout);
     }
   }, [fadeout, target, history]);
-
-  const handleClick = (event, route) => {
-    event.preventDefault();
-    setTarget(route);
-    setFadeout(true);
-  };
 
   return (
     <div className="game">

@@ -7,12 +7,10 @@ services:
     env_file:
       - .env
     volumes:
-      - db:/var/lib/postgresql/data
+      - /Users/tmiftah/Desktop/database:/var/lib/postgresql/data
     networks:
       - my-network
     restart: always
-volumes:
-  db:
 networks:
   my-network:
     driver: bridge

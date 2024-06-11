@@ -1,7 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-
-
+from django.http import HttpResponseNotAllowed, JsonResponse
+from .models import User
 
 def ping(request):
-    return HttpResponse("ping pong")
+    if request.method == "GET":
+        data = list(User.objects.values())
+        return JsonResponse(data, safe=False)
+    else:
+        return HttpResponseNotAllowed(['GET'], "Method not allowed")
