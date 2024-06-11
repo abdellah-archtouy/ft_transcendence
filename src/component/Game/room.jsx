@@ -39,6 +39,7 @@ let ball = {
   velocityX: -2,
   velocityY: 2,
   speed: 5,
+  botSerious: 0.1
 };
 
 function resetAll() {
@@ -49,19 +50,19 @@ function resetAll() {
   playerV = 0;
   ballheight = 20;
   ballwidth = 20;
-
+  
   player1.x = 0;
   player1.y = boardHeight / 2 - 50;
   player1.height = PlayerH;
   player1.width = PlayerW;
   player1.velocityY = playerV;
-
+  
   player2.x = boardWidth - PlayerW;
   player2.y = boardHeight / 2 - 50;
   player2.height = PlayerH;
   player2.width = PlayerW;
   player2.velocityY = playerV;
-
+  
   ball.x = boardWidth / 2;
   ball.y = boardHeight / 2;
   ball.height = ballheight;
@@ -69,6 +70,7 @@ function resetAll() {
   ball.velocityX = -2;
   ball.velocityY = 2;
   ball.speed = 5;
+  ball.botSerious = 0.1;
 }
 
 const Room = ({ data }) => {
@@ -98,7 +100,7 @@ const Room = ({ data }) => {
   function movePlayer(e) {
     if (e.code === "KeyW") player1.velocityY = -5;
     if (e.code === "KeyS") player1.velocityY = 5;
-    if (data[1].playMode != "bot") {
+    if (data[1].playMode !== "bot") {
       if (e.code === "ArrowUp") player2.velocityY = -5;
       if (e.code === "ArrowDown") player2.velocityY = 5;
     }
@@ -107,7 +109,8 @@ const Room = ({ data }) => {
   function stopPlayer(e) {
     if (e.code === "KeyW") player1.velocityY = 0;
     if (e.code === "KeyS") player1.velocityY = 0;
-    if (data[1].playMode != "bot") {
+    if (data[1].playMode !== "bot")
+    {
       if (e.code === "ArrowUp") player2.velocityY = 0;
       if (e.code === "ArrowDown") player2.velocityY = 0;
     }
@@ -143,11 +146,19 @@ const Room = ({ data }) => {
     }
   }
 
+  function pickMode() {
+    if (data[1].playMode === "bot")
+    {
+      ball.speed = data[1].ballSpeed;
+      ball.botSerious = data[1].botSerious;
+    }
+  }
+
   function updateValues() {
     if (ball.x + ball.width < 0 || ball.x > boardWidth) {
       if (ball.x + ball.width < 0) {
         user[0].goals = user[0].goals + 1;
-        if (user[0].goals == 6) {
+        if (user[0].goals === 6) {
           setWinner(user[0]);
           setPause(true);
         }
@@ -160,7 +171,7 @@ const Room = ({ data }) => {
       }
       if (ball.x > boardWidth) {
         user[1].goals = user[1].goals + 1;
-        if (user[1].goals == 6) {
+        if (user[1].goals === 6) {
           setWinner(user[1]);
           setPause(true);
         }
@@ -179,7 +190,7 @@ const Room = ({ data }) => {
   }
 
   function update() {
-    if (pause == false) animationRef.current = requestAnimationFrame(update);
+    if (pause === false) animationRef.current = requestAnimationFrame(update);
     else cancelAnimationFrame(animationRef.current);
     Context.clearRect(0, 0, boardWidth, boardHeight);
     Context.fillStyle = "#DFDFDF";
@@ -210,9 +221,8 @@ const Room = ({ data }) => {
     if (newPosition > 0 && newPosition < boardHeight - player1.height)
       player1.y += player1.velocityY;
 
-    if (data[1].playMode == "bot")
-      newPosition =
-        player2.y + (ball.y - (player2.y + player2.height / 2)) * 0.1;
+    if (data[1].playMode === "bot")
+      newPosition = player2.y + (ball.y - (player2.y + player2.height / 2)) * ball.botSerious;
     else newPosition = player2.y + player2.velocityY;
     if (newPosition > 0 && newPosition < boardHeight - player2.height)
       player2.y = newPosition;
@@ -231,6 +241,7 @@ const Room = ({ data }) => {
   const gameRender = () => {
     if (canvas) {
       Board = document.getElementById("Rcanvas");
+      pickMode();
       Board.height = boardHeight;
       Board.width = boardWidth;
       Context = Board.getContext("2d"); // used to draw on board
@@ -359,7 +370,6 @@ const Room = ({ data }) => {
                 resetAll();
                 user[0].goals = 0;
                 user[1].goals = 0;
-                console.log(data[1].playMode);
                 setGoals((goals) => {
                   goals++;
                   return goals;
