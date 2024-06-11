@@ -14,6 +14,9 @@ class User(models.Model):
     rank = models.IntegerField(default=0)
     stat = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.username
+
 
 class conversation(models.Model):
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user1')

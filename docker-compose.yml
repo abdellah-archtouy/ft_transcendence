@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+volumes:
+  db:
+networks:
+  my-network:
+    driver: bridge
