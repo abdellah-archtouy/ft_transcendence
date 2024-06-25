@@ -39,18 +39,18 @@ When you create a new django project, it sets up the fundamental settings and co
 
 #### components of Django project:
 - manage.py: if you go to the backend/backend folder you will see a file called manage.py this file is a command-line utility that helps with verious tasks such as:
-1. running the server:
-```bash
-cd backend
-./manage.py runserver
-```
-2. migrating databases:
-```bash
-cd backend
-./manage.py migrate
-```
-3. creating new apps:
-```bash
-cd backend
-./manage.py startapp name-of-your-app
-```
+   1. running the server:
+   ```bash
+   cd backend
+   ./manage.py runserver
+   ```
+   2. migrating databases:
+   ```bash
+   cd backend
+   ./manage.py migrate
+   ```
+   3. creating new apps:
+   ```bash
+   cd backend
+   ./manage.py startapp name-of-your-app
+   ```
