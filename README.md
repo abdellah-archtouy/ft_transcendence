@@ -59,7 +59,7 @@ When you create a new django project, it sets up the fundamental settings and co
 - wsgi.py and asgi.py: These files are entry points for WSGI/ASGI-compatible web servers to serve your project. WSGI stands for Web Server Gateway Interface, and ASGI stands for Asynchronous Server Gateway Interface.
 - init.py: An empty file that indicates the directory is a Python package. This is necessary for Python to recognize it as such.
 
-## Django Apps
+### Django Apps
 A Django project can contain multiple apps. An app in Django is a web application .that does something specific, like a game, a live chat, or users. Apps are reusable; you can easily plug them into new projects. --> pingpong folder is our app we may change it in the future.
 #### components of Django App:
 - models.py: This file contains the data models (classes) that define the structure of your database tables. Each model maps to a single table in the database for example:
@@ -103,3 +103,20 @@ A Django project can contain multiple apps. An app in Django is a web applicatio
 - templates/: This directory contains HTML templates used to render the views. Templates define the structure of the HTML pages your app will display.
 
 - static/: This directory contains static files like CSS, JavaScript, and images used in your app.
+
+## connecting django with postgres
+
+to estalish a connection between our django project and postgresql, i modified `DATABASE` setting in setting.py file
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ft_trans',
+        'USER': 'talal',
+        'PASSWORD': '200244',
+        'HOST': 'localhost',
+        'PORT': '5432', 
+    }
+}
+# here is the confi of postgres, you can find it in .env file
+``` 
