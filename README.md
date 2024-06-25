@@ -54,3 +54,52 @@ When you create a new django project, it sets up the fundamental settings and co
    cd backend
    ./manage.py startapp name-of-your-app
    ```
+- settings.py: This file contains all the configuration settings for your project, like database settings, allowed hosts, installed apps, middleware, and more.
+- urls.py: This file defines the URL patterns for your project. It maps URLs to views (functions or classes that handle the requests).
+- wsgi.py and asgi.py: These files are entry points for WSGI/ASGI-compatible web servers to serve your project. WSGI stands for Web Server Gateway Interface, and ASGI stands for Asynchronous Server Gateway Interface.
+- init.py: An empty file that indicates the directory is a Python package. This is necessary for Python to recognize it as such.
+
+## Django Apps
+A Django project can contain multiple apps. An app in Django is a web application .that does something specific, like a game, a live chat, or users. Apps are reusable; you can easily plug them into new projects. --> pingpong folder is our app we may change it in the future.
+#### components of Django App:
+- models.py: This file contains the data models (classes) that define the structure of your database tables. Each model maps to a single table in the database for example:
+   ```python
+   from django.db import models
+
+    # Create your models here.
+    class User(models.Model):
+    username = models.CharField(max_length=50, null=False)
+    email = models.EmailField(null=False)
+    password = models.CharField(max_length=50, null=False)
+    avatar = models.ImageField(upload_to='avatars/')
+    cover = models.ImageField(upload_to='covers/')
+    bio = models.TextField(max_length=200)
+    win = models.IntegerField(default=0)
+    lose = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
+    rank = models.IntegerField(default=0)
+    stat = models.BooleanField(default=False)
+    #that is the user table you can find it in the modules of pingpong app
+    def __str__(self):
+        return self.username
+   ```
+- views.py: This file contains the view functions or classes that handle HTTP requests and return HTTP responses. Views are the main logic behind your app's behavior.
+- urls.py: This file defines URL patterns specific to the app. It maps URLs to views within the app.
+- admin.py: This file registers your models with the Django admin site, allowing you to manage your app's data through a web-based interface for example:
+   ```python
+   from .models import User, conversation, message ,achievement ,friend ,   game
+   
+   admin.site.register(User)
+   admin.site.register(conversation)
+   admin.site.register(message)
+   admin.site.register(achievement)
+   admin.site.register(friend)
+   admin.site.register(game)
+   ```
+- apps.py: This file contains the app configuration class. It is used to configure some of the attributes of the app.
+
+- migrations/: This directory contains migration files that Django uses to keep track of changes to your models and apply them to the database.
+
+- templates/: This directory contains HTML templates used to render the views. Templates define the structure of the HTML pages your app will display.
+
+- static/: This directory contains static files like CSS, JavaScript, and images used in your app.
