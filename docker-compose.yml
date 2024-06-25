@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   postgres:
     image: postgres:latest
@@ -7,10 +9,14 @@ services:
     env_file:
       - .env
     volumes:
-      - /Users/tmiftah/Desktop/database:/var/lib/postgresql/data
+      - postgres-vol:/var/lib/postgresql/data
     networks:
       - my-network
     restart: always
+
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  postgres-vol:
