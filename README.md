@@ -106,7 +106,8 @@ A Django project can contain multiple apps. An app in Django is a web applicatio
 
 ## connecting django with postgres
 
-to estalish a connection between our django project and postgresql, i modified `DATABASE` setting in setting.py file
+To establish a connection between our Django project and PostgreSQL, I modified the DATABASES setting in the settings.py file.
+
 ```python
 DATABASES = {
     'default': {
@@ -118,5 +119,5 @@ DATABASES = {
         'PORT': '5432', 
     }
 }
-# here is the confi of postgres, you can find it in .env file
+# here is the conf of postgres, you can find it in .env file
 ``` 
