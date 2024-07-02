@@ -1,0 +1,217 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    line-height: calc(1em + .5em);
+}
+
+
+img,
+svg {
+    user-select: none;
+}
+
+.home-div {
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 3em;
+}
+
+.home-dive-welcome {
+    margin-top: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    background-image: url('./welcome_background.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right;
+    border-radius: 30px;
+    box-shadow: rgba(244, 244, 244, 0.35) 0px 0px 10px 5px;
+    position: relative;
+    max-width: 50vw;
+    height: 40vh;
+    width: 50vw;
+    flex-shrink: 0;
+}
+
+.home-dive-welcome h2 {
+    font-size: 6em;
+    margin-bottom: -0.2em;
+    margin-left: 2rem;
+}
+
+.home-dive-welcome p {
+    margin-bottom: auto;
+    font-size: 2em;
+    margin-left: 2rem;
+}
+
+
+.home-dive-welcome-btn {
+    appearance: none;
+    margin-left: 2rem;
+    margin-bottom: 1.5rem;
+    background-color: #000000;
+    border: 1px solid white;
+    border-radius: 26px;
+    color: rgb(178, 178, 178);
+    cursor: pointer;
+    display: inline-block;
+    font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: normal;
+    min-height: 60px;
+    min-width: 0;
+    outline: none;
+    padding: 16px 24px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 20%;
+    height: auto;
+    will-change: transform;
+}
+
+.home-dive-welcome-btn:disabled {
+    pointer-events: none;
+}
+
+.home-dive-welcome-btn:hover {
+    box-shadow: rgba(255, 255, 255, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+}
+
+.home-dive-welcome-btn:active {
+    box-shadow: none;
+    transform: translateY(0);
+}
+
+.stats {
+    display: flex;
+    gap: 1.2em;
+    flex-direction: row;
+    height: 40vh;
+    width: 50vw;
+}
+
+.last-matches {
+    width: 40%;
+    height: 100%;
+    background: rgba(34, 34, 34, 0.46);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4.7px);
+    -webkit-backdrop-filter: blur(4.7px);
+    border: 1px solid rgba(34, 34, 34, 0.3);
+    border-radius: 30px;
+}
+
+.matches-container {
+    height: 80%;
+    overflow-y: auto;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.matches-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.matches-list-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 2em;
+    border-radius: 9px;
+    background-color: #222222;
+}
+
+.matches-list-item-score {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    font-size: 1.7em;
+}
+
+.matches-list-item-user img {
+    width: 4.3rem;
+    height: 4.3rem;
+    border-radius: 50%;
+    border: 2px solid #636262;
+}
+
+.match-item {
+    background-color: #f5f5f5;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.match-item:last-child {
+    margin-bottom: 0;
+}
+
+.last-matches-header h2 {
+    font-size: 2em;
+}
+
+
+.last-matches-header {
+    margin: 1.5em;
+    margin-bottom: 0.5em;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.last-matches-stats {
+    height: 90%;
+    overflow-y: auto;
+}
+
+.last-matches-stats {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: #B0B0B0 transparent;
+}
+
+.last-matches-stats::-webkit-scrollbar {
+    width: 12px;
+}
+
+.last-matches-stats::-webkit-scrollbar-track {
+    background: rgba(34, 34, 34, 0.46);
+    border-radius: 30px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4.7px);
+    -webkit-backdrop-filter: blur(4.7px);
+    border: 1px solid rgba(34, 34, 34, 0.3);
+}
+
+.last-matches-stats::-webkit-scrollbar-thumb {
+    background-color: #B0B0B0;
+    border-radius: 16px;
+    border: 3px solid transparent;
+}
+
+.last-matches-header div a {
+    color: rgba(255, 255, 255, 0.4);
+}
