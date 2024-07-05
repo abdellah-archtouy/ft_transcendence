@@ -1,4 +1,4 @@
-import {Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import './App.css';
 import './index.css';
 import Navbar from "./component/Navbar/Navbar"
@@ -17,19 +17,19 @@ import Home from "./component/Home/Home"
 function App() {
   return (
     <div className="App">
-        <Navbar />
+      <Navbar />
       <div className="main">
         <Routes>
-          <Route exact path="/" element={<Home />}/>
-          <Route exact path="/game" element={<Game />}/>
-          <Route exact path="/game/bot" element={<GameMode />}/>
-          <Route exact path="/game/tournament" element={<Tournament />}/>
-          <Route exact path="/game/friend" element={<Friend />}/>
-          <Route exact path="/chat" element={<Chat />}/>
-          <Route exact path="/leaderboard" element={<Leaderboard />}/>
-          <Route exact path="/setting" element={<Setting />}/>
-          <Route exact path="/profile" element={<Profile />}/>
-          <Route exact path="/user/:userId" element={<OthersProfile />}/>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/game" element={<Game />} />
+          <Route exact path="/game/bot" element={<GameMode />} />
+          <Route exact path="/game/tournament" element={<Tournament />} />
+          <Route exact path="/game/friend" element={<Friend />} />
+          <Route exact path="/chat" element={<Chat />} />
+          <Route exact path="/leaderboard" element={<Leaderboard />} />
+          <Route exact path="/setting" element={<Setting />} />
+          <Route exact path="/profile" element={<Profile />} />
+          <Route exact path="/user/:userId" element={<OthersProfile />} />
         </Routes>
       </div>
     </div>

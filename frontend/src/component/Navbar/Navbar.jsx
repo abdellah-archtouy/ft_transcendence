@@ -28,9 +28,8 @@ const Navbar = () => {
     const navItems = document.querySelectorAll(".nav ul li");
     const itemOffsetLeft = navItems[index].offsetLeft;
     const coloredDiv = document.querySelector(".items");
-    coloredDiv.style.transform = `translateX(${
-      itemOffsetLeft - coloredDiv.offsetLeft
-    }px)`;
+    coloredDiv.style.transform = `translateX(${itemOffsetLeft - coloredDiv.offsetLeft
+      }px)`;
     coloredDiv.style.transition = `transform 0.3s ease-in-out`;
   };
 
@@ -50,7 +49,7 @@ const Navbar = () => {
     setSearch(state);
   }
 
-  
+
   useEffect(
     () => {
       window.pathname = location.pathname;
@@ -60,9 +59,8 @@ const Navbar = () => {
       const coloredDiv = document.querySelector(".items");
       const navItems = document.querySelectorAll(".nav ul li");
       const itemOffsetLeft = navItems[Index.index].offsetLeft;
-      coloredDiv.style.transform = `translateX(${
-        itemOffsetLeft - coloredDiv.offsetLeft
-      }px)`;
+      coloredDiv.style.transform = `translateX(${itemOffsetLeft - coloredDiv.offsetLeft
+        }px)`;
       coloredDiv.style.transition = `transform 0.3s ease-in-out`;
     },
     [location.pathname]
