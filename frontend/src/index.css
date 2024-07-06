@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -11,10 +11,14 @@
   }
 }
 
+body {
+  background-color: black;
+}
+
 .App {
   height: 100vh;
   width: 100%;
-  background: url("./icons/Group.svg") center bottom / contain no-repeat fixed ,url("./icons/bg1.svg");
+  background: url("./icons/Group.svg") center bottom / contain no-repeat fixed, url("./icons/bg1.svg");
   background-color: black;
   display: flex;
   align-items: center;
@@ -33,44 +37,77 @@
 }
 
 @keyframes vibrate {
-  0% { transform: rotate(0deg);}
-  10% { transform: rotate(-5deg); }
-  20% { transform: rotate(5deg); }
-  30% { transform: rotate(0deg); }
-  40% { transform: rotate(5deg); }
-  50% { transform: rotate(-5deg); }
-  60% { transform: rotate(0deg); }
-  70% { transform: rotate(-5deg); }
-  80% { transform: rotate(5deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  10% {
+    transform: rotate(-5deg);
+  }
+
+  20% {
+    transform: rotate(5deg);
+  }
+
+  30% {
+    transform: rotate(0deg);
+  }
+
+  40% {
+    transform: rotate(5deg);
+  }
+
+  50% {
+    transform: rotate(-5deg);
+  }
+
+  60% {
+    transform: rotate(0deg);
+  }
+
+  70% {
+    transform: rotate(-5deg);
+  }
+
+  80% {
+    transform: rotate(5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes textanimation {
-  0%{
-      text-shadow: 0px 0px 0px #B2B2B2;
+  0% {
+    text-shadow: 0px 0px 0px #B2B2B2;
   }
-  50%{
-      text-shadow: 0px 0px 10px #B2B2B2;
+
+  50% {
+    text-shadow: 0px 0px 10px #B2B2B2;
   }
-  100%{
-      text-shadow: 0px 0px 0px #B2B2B2;
+
+  100% {
+    text-shadow: 0px 0px 0px #B2B2B2;
   }
 }
 
 @keyframes fade-in {
   0% {
-      opacity: 0;
+    opacity: 0;
   }
+
   100% {
-      opacity: 1;
+    opacity: 1;
   }
 }
 
 @keyframes fade-out {
   0% {
-      opacity: 1;
+    opacity: 1;
   }
+
   100% {
-      opacity: 0;
+    opacity: 0;
   }
 }
