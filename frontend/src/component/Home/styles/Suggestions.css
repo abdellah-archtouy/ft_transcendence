@@ -1,6 +1,6 @@
 .suggestions {
     max-width: 50vw;
-    height: 40vh;
+    height: 35vh;
     width: 50vw;
     /* From https://css.glass */
     background: rgba(34, 34, 34, 0.46);
@@ -14,42 +14,47 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 5px 5px;
 }
 
-.suggestions h3 {
-    text-align: left;
-    font-size: 2em;
-    margin: 0.7em;
-
-}
-
 .card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
-    gap: 1em;
+    justify-content: space-between;
     margin-left: 8%;
-    width: 85%;
-    height: 80%;
     border-radius: 25px;
     background-color: #222222;
+    width: 100%;
+    height: 100%;
 }
 
 .card img {
-    margin-top: 20px;
-    width: 100px;
-    height: 100px;
+    margin-top: 10%;
+    width: 60%;
+    height: auto;
     border-radius: 50%;
     border: 3px solid #636262;
 }
 
-.card-btn{
+.card-btn {
     font-weight: 700;
+    background-color: rgba(217, 217, 217, 0.5);
+    color: black;
+    height: 80%;
+    width: 100%;
+    border: 0;
+    border-radius: 6px;
+    margin-bottom: 10%;
+    cursor: pointer;
 }
 
-.card h4  {
-    font-size: 0.8rem;
+.card-btn:hover {
+    background-color: black;
+    color: inherit;
+    box-shadow: rgba(170, 170, 170, 0.35) 0px 0px 3px 3px;
 }
 
+.card h4 {
+    font-size: 100%;
+}
 
 .second-element {
     width: 100%;
@@ -65,22 +70,73 @@
 }
 
 .container {
-    margin: 2rem;
+    width: 70%;
+    height: 15%;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
 }
 
-.online-offline {
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    background-color: chartreuse;
-    border-radius: 50%;
+.container-marquee {
+    height: 100%;
+    width: 90%;
+    margin-right: 0;
+    font-size: 1.5em;
+    font-weight: 900;
+}
+
+.header_element {
+    height: 20%;
+    width: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1.5em;
+    margin-left: 1em;
+    margin-bottom: 0;
 }
 
 .slide-elements {
     width: 100%;
-    height: 75%;
+    height: 80%;
 }
 
 .card-container-name {
     font-size: 1.2em;
+}
+
+.slick-slider {
+    height: 95%;
+    width: auto;
+}
+
+.slick-list {
+    height: 100%;
+    width: auto;
+}
+
+
+.slick-track {
+    height: 100%;
+    width: auto;
+}
+
+.card-container {
+    height: 100%;
+    width: auto;
+}
+
+.slick-slide div:first-child {
+    height: 100%;
+    width: 95%;
+}
+
+.container-btn {
+    width: 50%;
+    height: auto;
+    margin-bottom: 7%;
+    scale: 1.2;
+
 }
