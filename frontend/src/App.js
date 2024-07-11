@@ -2,10 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Navbar from "./component/Navbar/Navbar";
-import Game from "./component/Game/Game";
-import GameMode from "./component/Game/bot/gameMode";
-import Tournament from "./component/Game/tournament";
-import Friend from "./component/Game/friend";
+import GameRouting from "./component/Game/gameRouting"
 import Profile from "./component/Profile/Profile";
 import OthersProfile from "./component/Profile/othersProfile";
 import Setting from "./component/Setting/Setting";
@@ -27,10 +24,7 @@ function App() {
           <div className="main">
             <Routes>
               <Route exact path="/" element={<Home />} />
-              <Route exact path="/game" element={<Game />} />
-              <Route exact path="/game/bot" element={<GameMode />} />
-              <Route exact path="/game/tournament" element={<Tournament />} />
-              <Route exact path="/game/friend" element={<Friend />} />
+              <Route exact path="/game/*" element={<GameRouting />} />
               <Route exact path="/chat" element={<Chat />} />
               <Route exact path="/leaderboard" element={<Leaderboard />} />
               <Route exact path="/setting" element={<Setting />} />
