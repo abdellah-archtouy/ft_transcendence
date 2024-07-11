@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path , include
 from backend.views import hello , root
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hi/', hello),
     path('ping/', include('pingpong.urls')),
+    path('api/', include('api.urls')),
     path('', root),
-    # path('pingpong/', include('pingpong.urls')),
 ]
