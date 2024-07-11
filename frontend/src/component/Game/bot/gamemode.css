@@ -1,0 +1,73 @@
+.botmode {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    justify-content: center;
+    /* align-items: center; */
+}
+
+.mode-container {
+    display: flex;
+    width: 69.5%;
+    height: 44%;
+    gap: 146px;
+    justify-content: center;
+    align-items: center;
+}
+
+.botmode-button {
+    width: 227px;
+    height: 410px;
+    border-radius: 10px;
+    background-color: transparent;
+    transition: all 0.4s;
+    font-size: 36px;
+    font-family: 'URW Geometric';
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.botmode-button p {
+    position: absolute;
+    bottom: 26px;
+    right: 0;
+    left: 0;
+}
+
+h1 {
+    font-size: 48px;
+    color: rgb(255, 255, 255, 0.6);
+    text-shadow: 0 0px 60px #ffffff60,
+                 0 0px 35px #ffffff60,
+                 0 0px 20px #ffffff60,
+                 0 0px 10px #ffffff60,
+                 0 0px 2.971px #ffffff60;
+}
+
+.botmode-button:hover{
+    transform: scale(1.2);
+}
+
+.easy {
+    border: solid rgb(164, 210, 244, 0.5) 1px;
+    box-shadow: 0px 0px 60px 0px #415A6D;
+    color: #A4D2F4;
+    text-shadow: 0 0 4px #0075ce
+}
+
+.medium{
+    border: solid rgb(211, 204, 162, 0.5) 1px;
+    box-shadow: 0px 0px 60px 0px #544800;
+    color: #D3CCA2;
+    text-shadow: 0 0 4px #b69b00
+}
+
+.Hard{
+    border: solid #D36D6880 1px;
+    box-shadow: 0px 0px 60px 0px #62110E;
+    color: #D36D68;
+    text-shadow: 0 0 4px #9F0700
+}

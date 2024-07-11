@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import "./gamemode.css";
 const GameMode = () => {
-
   const navigate = useNavigate();
 
   function updatevalues(speed, errorRate) {
@@ -18,30 +17,38 @@ const GameMode = () => {
 
   return (
     <>
-      <button
-        className="easy"
-        onClick={() => {
-          updatevalues(5, 0.1);
-        }}
-      >
-        <div>Easy</div>
-      </button>
-      <button
-        className="medium"
-        onClick={() => {
-          updatevalues(7, 0.3);
-        }}
-      >
-        <div>Medium</div>
-      </button>
-      <button
-        className="Hard"
-        onClick={() => {
-          updatevalues(9, 0.5);
-        }}
-      >
-        <div>Hard</div>
-      </button>
+      <h1>Game Mode</h1>
+      <div className="botmode">
+        <div className="mode-container">
+          <button
+            className="botmode-button easy"
+            onClick={() => {
+              updatevalues(5, 0.1);
+            }}
+            style={{ backgroundImage: 'url("/easy.png")' }}
+            >
+            <p>Easy</p>
+          </button>
+          <button
+            className="botmode-button medium"
+            onClick={() => {
+              updatevalues(7, 0.3);
+            }}
+            style={{ backgroundImage: 'url("/medium.png")' }}
+            >
+            <p>Medium</p>
+          </button>
+          <button
+            className="botmode-button Hard"
+            onClick={() => {
+              updatevalues(9, 0.5);
+            }}
+            style={{ backgroundImage: 'url("/hard.png")' }}
+          >
+            <p>Hard</p>
+          </button>
+        </div>
+      </div>
     </>
   );
 };

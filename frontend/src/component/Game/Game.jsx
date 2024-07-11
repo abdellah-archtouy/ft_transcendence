@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import TournamentVector from "../../icons/Vector1.svg";
 import BotVector from "../../icons/Vector2.svg";
 import FriendVector from "../../icons/Vector.svg";
-import LoadingPage from "../loadingPage/loadingPage"
 import { useEffect, useState } from "react";
 
 const Game = () => {

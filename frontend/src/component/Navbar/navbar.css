@@ -136,13 +136,16 @@ li a:hover{
 }
 
 .navbutton {
-    height: 45px;
-    width: 45px;
+    height: 46px;
+    width: 46px;
     border-radius: 12px;
     background-color: transparent;
     border: solid 2px #565656;
     outline: none;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .navbutton img {
