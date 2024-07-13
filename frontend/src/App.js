@@ -17,7 +17,7 @@ function App() {
   const [auth, setAuth] = useState(true);
   const bgImage = auth && {background: `url(${bg2}) center bottom / contain no-repeat fixed, url(${bg1})`};
   return (
-    <div className="App" style={{...bgImage}}>
+    <div className="App" style={{...bgImage}}> {/* style={{...bgImage}} */}
       {auth ? (
         <>
           <Navbar />

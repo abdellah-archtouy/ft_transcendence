@@ -276,17 +276,15 @@ const Room = ({ data }) => {
   }, [canvas]);
   
   function handlePause() {
-    if (!winner)
       setPause((value) => {
         const newVal = !value;
         ima = (newVal ? "/play.svg" : "/pause.svg");
         return (newVal);
       });
-    console.log(ima);
   }
 
   function pauseGame(e) {
-    if (e.key === " ") {
+    if (e.key === " " && !winner) {
       handlePause()
     }
   }

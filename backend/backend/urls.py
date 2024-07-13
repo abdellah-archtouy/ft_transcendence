@@ -21,7 +21,7 @@ from backend.views import hello , root
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hi/', hello),
-    path('ping/', include('pingpong.urls')),
+    # path('ping/', include('pingpong.urls')),
     path('', root),
     # path('pingpong/', include('pingpong.urls')),
 ]

@@ -16,7 +16,7 @@
     height: 72px;
     width: 640px;
     border-radius: 36px;
-    background-color: #222222;
+    background-color: rgb(119, 119, 119, 0.3);
     list-style: none;
     display: flex;
     align-items: center;

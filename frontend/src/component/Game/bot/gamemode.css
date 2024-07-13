@@ -37,37 +37,53 @@
     left: 0;
 }
 
-h1 {
+#game-mode-header {
     font-size: 48px;
     color: rgb(255, 255, 255, 0.6);
-    text-shadow: 0 0px 60px #ffffff60,
-                 0 0px 35px #ffffff60,
-                 0 0px 20px #ffffff60,
-                 0 0px 10px #ffffff60,
-                 0 0px 2.971px #ffffff60;
+    line-height: 0.9;
+    margin-top: 50px;
+    margin-bottom: 40px;
+    text-shadow : 0px 0px 14.86px #ffffff80,
+                 0px 0px 29.71px #ffffff80,
+                 0px 0px 104px #ffffff80,
+                 0px 0px 208px #ffffff80,
+                 0px 0px 356.56px #ffffff80;
+    animation: fade-in 2.9s ease-in;
 }
 
 .botmode-button:hover{
-    transform: scale(1.2);
+    transform: scale(1.08);
 }
 
 .easy {
     border: solid rgb(164, 210, 244, 0.5) 1px;
-    box-shadow: 0px 0px 60px 0px #415A6D;
     color: #A4D2F4;
-    text-shadow: 0 0 4px #0075ce
+    text-shadow: 0 0 4px #0075ce;
+    animation: fade-in .8s ease-in;
 }
 
 .medium{
     border: solid rgb(211, 204, 162, 0.5) 1px;
-    box-shadow: 0px 0px 60px 0px #544800;
     color: #D3CCA2;
-    text-shadow: 0 0 4px #b69b00
+    text-shadow: 0 0 4px #b69b00;
+    animation: fade-in 1.4s ease-in;
 }
 
 .Hard{
     border: solid #D36D6880 1px;
-    box-shadow: 0px 0px 60px 0px #62110E;
     color: #D36D68;
-    text-shadow: 0 0 4px #9F0700
+    text-shadow: 0 0 4px #9F0700;
+    animation: fade-in 2s ease-in;
+}
+
+.easy:hover {
+    box-shadow: 0px 0px 60px 0px #415A6D;
+}
+
+.medium:hover {
+    box-shadow: 0px 0px 60px 0px #544800;
+}
+
+.Hard:hover {
+    box-shadow: 0px 0px 60px 0px #62110E;
 }

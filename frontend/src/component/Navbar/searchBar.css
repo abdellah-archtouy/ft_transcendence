@@ -12,15 +12,16 @@
 }
 
 .SearchBar.fadeout {
-    animation: fade-out ease-in-out 0.4s;
+    animation: fade-out ease-in-out 0.5s;
 }
 
 .searchContent.fadeout {
-    animation: fade-out ease-in-out 0.4s;
+    animation: fade-out ease-in-out 0.5s;
 }
 
 .searchContent {
     width: 42%;
+    max-width: 600px;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -35,27 +36,28 @@
 .search {
     background-color: #565656;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 8px;
     position: relative;
 }
 
 .input {
     width: 100%;
     height: 60px;
-    border-radius: 10px;
+    border-radius: 16px;
     stroke: none;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 0px 50px 0 20px;
     font-size: 16px;
     background-color: rgb(34, 34, 34, 0.8);
     border: none;
-    color: rgb(255, 255, 255, 0.5);
+    color: rgb(255, 255, 255, 0.4);
 }
+
 input:focus { 
     font-weight: 400;
     outline: none;
@@ -75,7 +77,7 @@ input:focus {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    border-radius: 10px;
+    border-radius: 16px;
     gap: 5px;
     height: 200px;
     overflow: scroll;
@@ -102,15 +104,6 @@ input:focus {
     margin: auto;
 }
 
-@keyframes opacity {
-    0% {
-        opacity: 0;
-    };
-    100% {
-        opacity: 1;
-    };
-}
-
 .userInfos {
     display: flex;
     flex-direction: row;
@@ -119,7 +112,7 @@ input:focus {
     height: 30px;
     gap: 15px;
     border-radius: 5px;
-    animation: opacity 0.4s ease-in-out;
+    animation: fade-in 0.4s ease-in-out;
     img {
         height: 20px;
         width: auto;
@@ -145,4 +138,15 @@ input:focus {
     line-height: 20px;
     height: 17px;
     display: inline-block;
+}
+
+.nav_search_submit {
+    background: none;
+    border: none;
+    position: absolute;
+    right: 30px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    cursor: pointer;
 }

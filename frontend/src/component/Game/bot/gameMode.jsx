@@ -17,7 +17,7 @@ const GameMode = () => {
 
   return (
     <>
-      <h1>Game Mode</h1>
+      <h1 id="game-mode-header">Game Mode</h1>
       <div className="botmode">
         <div className="mode-container">
           <button
