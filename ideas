@@ -1,0 +1,29 @@
+// run this python3 -m pip show Pillow
+// pip install psycopg2-binaryer
+// python3 backend/manage.py migrate
+/*
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "your_database_name",
+            "USER": "your_database_user",
+            "PASSWORD": "your_database_password",
+            "HOST": "your_database_host",
+            "PORT": "your_database_port",
+            "OPTIONS": {
+                "sslmode": "require",             # Enforce SSL connections
+                "connect_timeout": 10,            # Set connection timeout to 10 seconds
+                "client_encoding": "UTF8",        # Set client encoding to UTF-8
+            },
+        },
+    }
+ */
+
+    /*
+    def ping(request):
+    if request.method == "GET":
+        data = list(User.objects.values())
+        return JsonResponse(data, safe=False)
+    else:
+        return HttpResponseNotAllowed(['GET'], "Method not allowed")
+    */

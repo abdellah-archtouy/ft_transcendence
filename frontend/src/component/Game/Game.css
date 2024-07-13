@@ -1,31 +1,33 @@
-.container{
+.game_container{
     margin-top: 100px;
     display: flex;
     flex-direction: column;
     width: 62.5%;
     height: 56.5%;
-    gap: 20px;
+    gap: 4%;
     transition:  0.8s ease-in-out;
+    max-width: 1300px;
 }
 
-.container a, .container img
+.game_container a, .game_container img
 {
     border-radius: 30px;
 }
 
-.container h1{
+.game_container h1{
     width: fit-content;
     height: fit-content;
     font-size: 40px;
     color: rgba(196, 196, 196, 0.5);
-    padding: 30px;
+    padding: 30px 0 0 30px;
+    line-height: 1;
     top: 0%;
     left: 0%;
     position: absolute;
     z-index: 1;
 }
 
-.Tournament{
+.game_Tournament{
     width: 100%;
     height: 100%;
     background-color: #565656cc;
@@ -38,34 +40,34 @@
     transition: all 0.4s;
 }
 
-.Tournament.fade-in{
+.game_Tournament.fade-in{
     animation: fade-in 0.8s ease-in-out;
     pointer-events: none;
 }
 
-.friend.fade-in{
+.game_friend.fade-in{
     animation: fade-in 1.4s ease-in-out;
     pointer-events: none;
 }
 
-.bot.fade-in{
+.game_bot.fade-in{
     animation: fade-in 2s ease-in-out;
     pointer-events: none;
 }
 
-.Tournament.fade-out{
+.game_Tournament.fade-out{
     animation: fade-out 2s ease-in-out;
     pointer-events: none;
     opacity: 0;
 }
 
-.friend.fade-out{
+.game_friend.fade-out{
     animation: fade-out 1.4s ease-in-out;
     pointer-events: none;
     opacity: 0;
 }
 
-.bot.fade-out{
+.game_bot.fade-out{
     animation: fade-out 0.8s ease-in-out;
     pointer-events: none;
     opacity: 0;
@@ -83,7 +85,7 @@
     }
 }
 
-.Tournament:hover , .friend:hover, .bot:hover
+.game_Tournament:hover , .game_friend:hover, .game_bot:hover
 {
     z-index: 1;
     animation: talal 0.4s ease-in-out;
@@ -91,19 +93,24 @@
     filter: drop-shadow(0px 0 0 white);
 }
 
-.Tournament img{
+.game_Tournament img{
     width: auto;
     height: 100%;
 }
 
-.second {
+.game_first {
+    height: 48%;
+}
+
+.game_second {
+    height: 48%;
     display: flex;
     flex-direction: row;
     width: 100%;
     gap: 20px;
 }
 
-.friend {
+.game_friend {
     backdrop-filter: blur(20px);
     width: 59.5%;
     background-color: #565656cc;
@@ -117,13 +124,13 @@
     cursor: pointer;
 }
 
-.friend img{
+.game_friend img{
     border-radius: 30px;
     width: auto;
     height: 100%;
 }
 
-.bot {
+.game_bot {
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25);
     width: 39.3%;
     backdrop-filter: blur(20px);
@@ -136,7 +143,7 @@
     cursor: pointer;
 }
 
-.bot img{
+.game_bot img{
     width: auto;
     height: 100%;
 }

@@ -93,6 +93,7 @@ const SearchBar = ({ onStateChange }) => {
               setSearchTerm(input.target.value);
             }}
           />
+          <button className="nav_search_submit"><img src="/search.svg" alt="" /></button>
         </div>
         <div className="search">
           <div className="users">

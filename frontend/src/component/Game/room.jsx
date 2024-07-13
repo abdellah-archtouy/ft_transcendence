@@ -4,7 +4,6 @@ import "./room.css";
 import WinnerDisplay from "./winnerDisplay";
 
 let ima = "/pause.svg";
-
 let Board;
 let boardWidth = 1000;
 let boardHeight = 550;
@@ -39,39 +38,7 @@ let ball = {
   velocityX: -2,
   velocityY: 2,
   speed: 5,
-  botSerious: 0.1
 };
-
-function resetAll() {
-  boardWidth = 1000;
-  boardHeight = 550;
-  PlayerH = 100;
-  PlayerW = 20;
-  playerV = 0;
-  ballheight = 20;
-  ballwidth = 20;
-  
-  player1.x = 0;
-  player1.y = boardHeight / 2 - 50;
-  player1.height = PlayerH;
-  player1.width = PlayerW;
-  player1.velocityY = playerV;
-  
-  player2.x = boardWidth - PlayerW;
-  player2.y = boardHeight / 2 - 50;
-  player2.height = PlayerH;
-  player2.width = PlayerW;
-  player2.velocityY = playerV;
-  
-  ball.x = boardWidth / 2;
-  ball.y = boardHeight / 2;
-  ball.height = ballheight;
-  ball.width = ballwidth;
-  ball.velocityX = -2;
-  ball.velocityY = 2;
-  ball.speed = 5;
-  ball.botSerious = 0.1;
-}
 
 const Room = ({ data }) => {
   const [user, setUser] = useState(data[0]);
@@ -80,6 +47,37 @@ const Room = ({ data }) => {
   const [pause, setPause] = useState(false);
   const [winner, setWinner] = useState(null);
   const animationRef = useRef(null);
+
+  function resetAll() {
+    boardWidth = 1000;
+    boardHeight = 550;
+    PlayerH = 100;
+    PlayerW = 20;
+    playerV = 0;
+    ballheight = 20;
+    ballwidth = 20;
+
+    player1.x = 0;
+    player1.y = boardHeight / 2 - 50;
+    player1.height = PlayerH;
+    player1.width = PlayerW;
+    player1.velocityY = playerV;
+
+    player2.x = boardWidth - PlayerW;
+    player2.y = boardHeight / 2 - 50;
+    player2.height = PlayerH;
+    player2.width = PlayerW;
+    player2.velocityY = playerV;
+
+    ball.x = boardWidth / 2;
+    ball.y = boardHeight / 2;
+    ball.height = ballheight;
+    ball.width = ballwidth;
+    ball.velocityX = -2;
+    ball.velocityY = 2;
+    if (isNaN(data)) ball.speed = data[1].ballSpeed;
+    else ball.speed = 5;
+  }
 
   const drawRoundedRect = (ctx, x, y, width, height, radius, opacity) => {
     ctx.beginPath();
@@ -109,8 +107,7 @@ const Room = ({ data }) => {
   function stopPlayer(e) {
     if (e.code === "KeyW") player1.velocityY = 0;
     if (e.code === "KeyS") player1.velocityY = 0;
-    if (data[1].playMode !== "bot")
-    {
+    if (data[1].playMode !== "bot") {
       if (e.code === "ArrowUp") player2.velocityY = 0;
       if (e.code === "ArrowDown") player2.velocityY = 0;
     }
@@ -147,43 +144,33 @@ const Room = ({ data }) => {
   }
 
   function pickMode() {
-    if (data[1].playMode === "bot")
-    {
-      ball.speed = data[1].ballSpeed;
-      ball.botSerious = data[1].botSerious;
-    }
+    if (data[1].playMode === "bot") ball.speed = data[1].ballSpeed;
   }
 
   function updateValues() {
     if (ball.x + ball.width < 0 || ball.x > boardWidth) {
+      let x = 1;
       if (ball.x + ball.width < 0) {
         user[0].goals = user[0].goals + 1;
-        if (user[0].goals === 6) {
-          setWinner(user[0]);
-          setPause(true);
-        }
-        setGoals((value) => {
-          value++;
-          return value;
-        });
-        ball.velocityX = ball.speed * Math.cos(((3 * Math.PI) / 4) * 0.4) * 1;
-        ball.velocityY = ball.speed * Math.sin(((3 * Math.PI) / 4) * 0.4) * 1;
+        x = 1;
       }
       if (ball.x > boardWidth) {
         user[1].goals = user[1].goals + 1;
-        if (user[1].goals === 6) {
-          setWinner(user[1]);
-          setPause(true);
-        }
-        setGoals((value) => {
-          value++;
-          return value;
-        });
-        ball.velocityX = ball.speed * Math.cos(((3 * Math.PI) / 4) * -0.4) * -1;
-        ball.velocityY = ball.speed * Math.sin(((3 * Math.PI) / 4) * -0.4) * -1;
+        x = -1;
       }
-      // ball.velocityX = 0;
-      // ball.velocityY = 0;
+      ball.velocityX =
+        ball.speed * Math.cos(((3 * Math.PI) / 4) * (0.4 * x)) * (1 * x);
+      ball.velocityY =
+        ball.speed * Math.sin(((3 * Math.PI) / 4) * (0.4 * x)) * (1 * x);
+      let theWinner = user.find((user) => user.goals === 6);
+      if (theWinner) {
+        setWinner(theWinner);
+        handlePause();
+      }
+      setGoals((value) => {
+        value++;
+        return value;
+      });
       ball.x = boardWidth / 2;
       ball.y = boardHeight / 2;
     }
@@ -222,7 +209,9 @@ const Room = ({ data }) => {
       player1.y += player1.velocityY;
 
     if (data[1].playMode === "bot")
-      newPosition = player2.y + (ball.y - (player2.y + player2.height / 2)) * ball.botSerious;
+      newPosition =
+        player2.y +
+        (ball.y - (player2.y + player2.height / 2)) * data[1].errorRate;
     else newPosition = player2.y + player2.velocityY;
     if (newPosition > 0 && newPosition < boardHeight - player2.height)
       player2.y = newPosition;
@@ -240,8 +229,8 @@ const Room = ({ data }) => {
 
   const gameRender = () => {
     if (canvas) {
-      Board = document.getElementById("Rcanvas");
       pickMode();
+      Board = document.getElementById("Rcanvas");
       Board.height = boardHeight;
       Board.width = boardWidth;
       Context = Board.getContext("2d"); // used to draw on board
@@ -270,19 +259,36 @@ const Room = ({ data }) => {
       drawRoundedRect(Context, ball.x, ball.y, ball.width, ball.height, 10, 1);
       window.addEventListener("keydown", movePlayer);
       window.addEventListener("keyup", stopPlayer);
+      window.addEventListener("keydown", pauseGame);
       animationRef.current = requestAnimationFrame(update);
     }
   };
-  
+
   useEffect(() => {
     gameRender();
+    resetAll();
     return () => {
       cancelAnimationFrame(animationRef.current);
       window.removeEventListener("keydown", movePlayer);
       window.removeEventListener("keyup", stopPlayer);
+      window.removeEventListener("keydown", pauseGame);
     };
   }, [canvas]);
   
+  function handlePause() {
+      setPause((value) => {
+        const newVal = !value;
+        ima = (newVal ? "/play.svg" : "/pause.svg");
+        return (newVal);
+      });
+  }
+
+  function pauseGame(e) {
+    if (e.key === " " && !winner) {
+      handlePause()
+    }
+  }
+
   useEffect(() => {
     if (!pause) {
       window.addEventListener("keydown", movePlayer);
@@ -290,11 +296,15 @@ const Room = ({ data }) => {
       animationRef.current = requestAnimationFrame(update);
     } else {
       window.removeEventListener("keydown", movePlayer);
+      window.removeEventListener("keydown", pauseGame);
       window.removeEventListener("keyup", stopPlayer);
       cancelAnimationFrame(animationRef.current);
     }
     return () => {
       cancelAnimationFrame(animationRef.current);
+      window.removeEventListener("keydown", movePlayer);
+      window.removeEventListener("keydown", pauseGame);
+      window.removeEventListener("keyup", stopPlayer);
     };
   }, [pause, winner]);
 
@@ -307,9 +317,9 @@ const Room = ({ data }) => {
 
   if (!user) return <LoadingPage />;
   return (
-    <div className="Rcontainer">
+    <div className="RoomContainer">
       <>
-        <div className="Rfirst">
+        <div className="RoomFirst">
           <div className="userinfo">
             <div className="image">
               <img src={user[1].avatar} className="avatar" alt="" />
@@ -329,7 +339,7 @@ const Room = ({ data }) => {
             </div>
           </div>
         </div>
-        <div className="Rsecond">
+        <div className="RoomSecond">
           {winner && (
             <div className="winnerdiplay">
               <div className="win" style={{ position: "relative" }}>
@@ -337,11 +347,13 @@ const Room = ({ data }) => {
               </div>
             </div>
           )}
+
           {pause && !winner && (
             <div className="pauseDisplay">
               <p>Pause</p>
             </div>
           )}
+
           <canvas
             id="Rcanvas"
             ref={(c) => {
@@ -350,22 +362,22 @@ const Room = ({ data }) => {
           />
         </div>
         <div className="buttons">
-          <button
-            className="pause otherIcons"
-            onClick={() => {
-              setPause((prev) => !prev);
-              if (pause) ima = "/pause.svg";
-              else ima = "/play.svg";
-            }}
-          >
-            <img src={ima} alt="" className="pauseIcons" />
-          </button>
+          {!winner && (
+            <button
+              className="pause otherIcons"
+              onClick={() => {
+                handlePause();
+              }}
+            >
+              <img src={ima} alt="" className="pauseIcons" />
+            </button>
+          )}
           {pause && (
             <button
               className="pause"
               title="pause"
               onClick={() => {
-                setPause((prev) => !prev);
+                handlePause();
                 setWinner("");
                 resetAll();
                 user[0].goals = 0;
@@ -374,7 +386,6 @@ const Room = ({ data }) => {
                   goals++;
                   return goals;
                 });
-                ima = "/pause.svg";
               }}
             >
               <img src="/retry.svg" alt="" className="pauseIcons retry" />

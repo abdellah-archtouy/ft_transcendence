@@ -11,7 +11,6 @@ const Conv_bar = () => {
   const [value, setValue] = useState("");
     function handleChange(e) {
         setValue(e.target.value);
-        console.log(value);
     }
     const [users, setUsers] = useState([
       {

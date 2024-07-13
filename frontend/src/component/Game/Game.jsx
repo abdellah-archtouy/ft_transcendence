@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import TournamentVector from "../../icons/Vector1.svg";
 import BotVector from "../../icons/Vector2.svg";
 import FriendVector from "../../icons/Vector.svg";
-import LoadingPage from "../loadingPage/loadingPage"
 import { useEffect, useState } from "react";
 
 const Game = () => {
@@ -49,11 +48,10 @@ const Game = () => {
 
   return (
     <div className="game">
-      <div className="container">
-        <div className="first">
+      <div className="game_container">
+        <div className="game_first">
             <Link
-            className={`Tournament ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
-            to={"/game/tournament"}
+            className={`game_Tournament ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
             onMouseEnter={hoverPlay}
             onMouseLeave={unhoverPlay}
             onClick={(event) => handleClick(event, '/game/tournament')}
@@ -62,20 +60,18 @@ const Game = () => {
             <img src={TournamentVector} alt="" />
             </Link>
         </div>
-        <div className="second">
+        <div className="game_second">
           <Link
-            className={`bot ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
-            to={"/game/bot"}
+            className={`game_bot ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
             onMouseEnter={hoverPlay}
             onMouseLeave={unhoverPlay}
-            onClick={(event) => handleClick(event, '/game/bot')}
+            onClick={(event) => handleClick(event, '/game/gamemode')}
             >
             <h1>Bot</h1>
             <img src={BotVector} alt="" />
           </Link>
           <Link
-            className={`friend ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
-            to={"/game/friend"}
+            className={`game_friend ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
             onMouseEnter={hoverPlay}
             onMouseLeave={unhoverPlay}
             onClick={(event) => handleClick(event, '/game/friend')}
