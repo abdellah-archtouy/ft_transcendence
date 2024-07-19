@@ -13,6 +13,7 @@ function App() {
     profilePicture: 'https://randomuser.me/api/portraits/men/1.jpg',
     online: 1
     }
+    
   return (
     <div className="App">
       {/* <Topbar/> */}
