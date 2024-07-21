@@ -5,7 +5,7 @@ const Sender_box = ({name, data}) => {
   return (
     <div className={name}>
         <div className='msg_box'>
-        <span>{data.text}</span>
+        <span>{data.message}</span>
       </div>
     </div>
   )

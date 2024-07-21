@@ -23,6 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('hi/', hello),
     # path('ping/', include('pingpong.urls')),
-    # path('api/', include('api.urls')),
+    path('api/', include('api.urls')),
     path('', root),
 ]

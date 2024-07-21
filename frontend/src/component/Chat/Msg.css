@@ -62,21 +62,46 @@
 
 
 .message_bar .search-input{
-    width: 100%;
+    width: 95.5%;
+    resize: none;
+    height: 40px;
     background-color: transparent;
     border: none;
     padding: 10px;
     outline: none;
     color: #B0B0B0;
-}
-.message_bar .search-container{
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    width: 95%;
     background-color: #1B1B1B;
     border-radius: 10px;
     padding-left: 10px;
+}
+
+.message_bar .search-container textarea:focus,
+.message_bar .search-container textarea:active{
+      width: 100%;
+      outline: none; 
+      border-color: #66afe9; 
+      box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+}
+
+.message_bar .search-container button{
+    display: flex;
+    position: absolute;
+    color: #222222;
+    background-color: #222222;
+    all: unset;
+    box-sizing: border-box;
+    justify-content: center;
+    padding-top: 5px ;
+    align-items: center;
+}
+.message_bar .search-container{
+    position: relative;
+    display: flex;
+    animation: none;
+    gap: 14px;
+    /* justify-content: start; */
+    align-items: center;
+    width: 100%;
 }
 
 .message_bar{

@@ -5,8 +5,8 @@ class User(models.Model):
     username = models.CharField(max_length=50, null=False)
     email = models.EmailField(null=False)
     password = models.CharField(max_length=50, null=False)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    cover = models.ImageField(upload_to='covers/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default.png')
+    cover = models.ImageField(upload_to='covers/', null=True, blank=True, default='covers/default.jpeg')
     bio = models.TextField(blank=True)  # Removed max_length, added blank=True
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)

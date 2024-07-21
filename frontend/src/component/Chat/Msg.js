@@ -1,26 +1,113 @@
-import React, { useEffect ,useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import './Msg.css';
 import Set from './icons/set'
 import Imoji from './icons/imoji';
-import Play_inv from './icons/play_inv'
+import PlayInv from './icons/play_inv'
 import Sent from './icons/sent'
-import Add1 from './icons/add1'
-import conversationData from './conversation.json';
-import Sender_box from './sender_box';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+import SenderBox from './sender_box';
+import axios from 'axios';
 
-const Chat = ({data}) => {
-    const [messages, setMessages] = useState([]);
+
+const Chat = ({data1}) => {
+    // const [messages, setMessages] = useState([]);
     
+    const [message, setMessage] = useState('');
+    const [data, setData] = useState([]);  
+    const [loading, setLoading] = useState(true);  
+    const [error, setError] = useState(null);  
+    const fetchData = async () => {  
+      try {  
+          const response = await axios.get('http://localhost:8000/api/msg/1/');  
+          setData(response.data);  
+      } catch (error) {  
+          setError(error);
+      } finally {  
+          setLoading(false);  
+      }  
+    };  
+
     useEffect(() => {
-        setMessages(conversationData.messages);
-      }, []);
+        fetchData();// Empty dependency array means this runs once when the component mounts  
+
+    }, [])
+
+    const conversationId = 1
     
+    const [ws, setWs] = useState(null);
+    useEffect(() => {
+        const socket = new WebSocket(`ws://localhost:8000/ws/api/msg/${conversationId}/`);
+    
+        socket.onopen = () => {
+          console.log('WebSocket connection established');
+        };
+    
+        socket.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          setData(prevMessages => [...prevMessages, data.message]);
+          console.log('data:', data)
+        };
+    
+        socket.onclose = () => {
+          console.log('WebSocket connection closed');
+        };
+    
+        setWs(socket);
+    
+        return () => {
+          socket.close();
+        };
+      }, []);
+
+    if (loading) return <div>Loading...</div>;  
+    if (error) return <div>Error: {error.message}</div>;  
+
+
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     const data1 = {
+    //         conversation: 1,
+    //         user: 1,
+    //         message: message,
+    //         time: new Date().toISOString(),
+    //     }
+    //     axios.post('http://localhost:8000/api/post/msg/', data1, {
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     })
+    //     .then(response => {
+    //     console.log(response.data);
+    //     setMessage('');
+    //     })
+    //     .catch(error => {
+    //     if (error.response) {
+    //         console.error('Error response data:', error.response.data);
+    //         console.error('Error response status:', error.response.status);
+    //         console.error('Error response headers:', error.response.headers);
+    //     } else if (error.request) {
+    //         console.error('Error request:', error.request);
+    //     } else {
+    //         console.error('Error message:', error.message);
+    //     }
+    //     });
+
+    //   };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (ws) {
+            ws.send(JSON.stringify({ message }));
+            setMessage('');
+        }
+    };
+
   return (
     <div className='Msg'>
         <div className='chat_top_bar'>
             <div className='icon_name'>
-                <img src={data.profilePicture}></img>
-                <h3>{data.username}</h3>
+                <img src={data[0].conversation_info.uid2_info.avatar} alt='avatar'></img>
+                <h3>{data[0].conversation_info.uid2_info.username}</h3>
             </div>
             <div className='set'>
                 <Set></Set>
@@ -28,14 +115,14 @@ const Chat = ({data}) => {
         </div>
         <div className='conversation'>
             
-            {messages.length === 0 ? (
+            {data.length === 0 ? (
             <div className='empty'>
                 <p >Add a person <br/>
                 and start a conversation</p>
             </div>
             ) : (
-            messages.map(user => (
-                <Sender_box name={user.senderId === 1 ? ('sender') : ('reciver')} data={user}/>
+            data.map(user => (
+                <SenderBox name={user.user === 1 ? ('sender') : ('reciver')} data={user}/>
             ))
             )}
             
@@ -43,11 +130,21 @@ const Chat = ({data}) => {
         <div className='message_bar'>
             {/* <Add1/> */}
             <Imoji/>
-            <Play_inv/>
-            <div class="search-container">
+            <PlayInv/>
+            {/* <div class="search-container">
                 <input type="text"  placeholder="Enter your message" name="search" class="search-input"></input>
             </div>
-            <Sent/>
+            <Sent/> */}
+            <form onSubmit={handleSubmit} class="search-container">
+                <textarea class="search-input"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Enter your message"
+                    required
+            />
+            {/* <Sent className="button" type="submit"/> */}
+            <button type="submit"><Sent></Sent></button>
+            </form>
         </div>
     </div>
   )

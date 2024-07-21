@@ -1,10 +1,10 @@
-import React, { useEffect ,useState } from 'react';
+// import React, { useEffect ,useState } from 'react';
 import './Chat.css';
-import Conv_bar from './Conv_bar';
+import ConvBar from './Conv_bar';
 import Msg from './Msg';
 
 const Chat = () => {
-  const [className, setClassName] = useState();
+  // const [className, setClassName] = useState();
   const user = {
     id: 1,
     username: 'BELE',
@@ -14,7 +14,7 @@ const Chat = () => {
   return (
     <div>
       <div className='chat_container'>
-        <Conv_bar/>
+        <ConvBar/>
         <Msg data={user}/>
       </div>
     </div>

@@ -1,3 +1,7 @@
-up: docker-compose up -d
+DOCKER_COMPOSE = ./docker-compose.yml
 
-down: docker-compose down
+up:
+	docker-compose -f ${DOCKER_COMPOSE} up -d
+
+down:
+	docker-compose -f ${DOCKER_COMPOSE} down --volumes
