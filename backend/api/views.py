@@ -19,9 +19,10 @@ class ConvView(APIView):
         conv_instances = Conversation.objects.filter(uid1=id) | Conversation.objects.filter(uid2=id)  
         
         # Check if any instances were found  
+        conv_instances = conv_instances.order_by('-last_message_time')  # Order by last message
         if not conv_instances.exists():  
             return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)  
-        serializer = ConvSerializer(conv_instances, many=True)  # Add many=True here  
+        serializer = ConvSerializer(conv_instances, many=True)
         return Response(serializer.data)  # Return the serialized data as Response  
 
 class MsgView(APIView):  

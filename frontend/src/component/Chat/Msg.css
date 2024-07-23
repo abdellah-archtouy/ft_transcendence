@@ -77,10 +77,12 @@
 
 .message_bar .search-container textarea:focus,
 .message_bar .search-container textarea:active{
-      width: 100%;
-      outline: none; 
-      border-color: #66afe9; 
-      box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+      width: 95.5%;
+      outline: none;
+      animation: none !important;  /* Remove any animations */
+      transition: none;
+      /* border-color: #66afe9;  */
+      /* box-shadow: 0 0 5px rgba(102, 175, 233, 0.6); */
 }
 
 .message_bar .search-container button{

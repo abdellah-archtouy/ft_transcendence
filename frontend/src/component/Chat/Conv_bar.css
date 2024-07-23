@@ -1,10 +1,18 @@
 .conv_bar{
     background-color: #22222280;
+    /* position: relative; */
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     height: calc(100vh - 128px);
     align-items: center;
     font-family: 'URW Geometric';
+}
+
+.Search-bar{
+    display: none;
+    visibility: hidden;
+    position: relative;
+    top: 0;
 }
 
 .conv_bar .scrol{
@@ -30,6 +38,13 @@
 
 .add{
     position: absolute;
+    background-color: transparent;
+    all: unset;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    box-sizing: border-box;
+    justify-content: center;
     right: 30px;
     float: right;
     height: 17px;

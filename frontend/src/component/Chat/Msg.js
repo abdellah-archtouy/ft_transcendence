@@ -128,34 +128,4 @@ const Chat = ({data1}) => {
   )
 }
 
-// const handleSubmit = async (event) => {
-//     event.preventDefault();
-//     const data1 = {
-//         conversation: 1,
-//         user: 1,
-//         message: message,
-//         time: new Date().toISOString(),
-//     }
-//     axios.post('http://localhost:8000/api/post/msg/', data1, {
-//     headers: {
-//         'Content-Type': 'application/json',
-//     },
-//     })
-//     .then(response => {
-//     console.log(response.data);
-//     setMessage('');
-//     })
-//     .catch(error => {
-//     if (error.response) {
-//         console.error('Error response data:', error.response.data);
-//         console.error('Error response status:', error.response.status);
-//         console.error('Error response headers:', error.response.headers);
-//     } else if (error.request) {
-//         console.error('Error request:', error.request);
-//     } else {
-//         console.error('Error message:', error.message);
-//     }
-//     });
-
-//   };
 export default Chat
