@@ -17,11 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include
 from backend.views import hello , root
+# from User.models import User
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hi/', hello),
-    # path('ping/', include('pingpong.urls')),
     path('', root),
+    path('user-api/', include('User.urls'))
+    # path('ping/', include('pingpong.urls')),
     # path('pingpong/', include('pingpong.urls')),
 ]
