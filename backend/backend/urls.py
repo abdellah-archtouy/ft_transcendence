@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('hi/', hello),
     path('', root),
-    path('user-api/', include('User.urls'))
+    # path('user-api/', include('User.urls'))
     # path('ping/', include('pingpong.urls')),
     # path('pingpong/', include('pingpong.urls')),
 ]
