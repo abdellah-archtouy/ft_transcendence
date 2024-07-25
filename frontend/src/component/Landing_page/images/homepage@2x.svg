@@ -6,10 +6,10 @@
 <g filter="url(#filter0_f_0_1)">
 <ellipse cx="720.5" cy="512" rx="304.5" ry="216" fill="black"/>
 </g>
-<ellipse cx="74.5" cy="984" rx="127.5" ry="133" stroke="#565656" stroke-width="47"/>
-<rect x="-92" y="300.966" width="143.203" height="143.203" transform="rotate(-20.4209 -92 300.966)" stroke="#565656" stroke-width="40"/>
-<path d="M1323 612.711L1597.39 757.015" stroke="#565656" stroke-width="40" stroke-linecap="round"/>
-<path d="M1394.41 823.6L1538.71 549.21" stroke="#565656" stroke-width="40" stroke-linecap="round"/>
+<ellipse cx="74.5" cy="984" rx="127.5" ry="133" stroke="#565656" strokeWidth="47"/>
+<rect x="-92" y="300.966" width="143.203" height="143.203" transform="rotate(-20.4209 -92 300.966)" stroke="#565656" strokeWidth="40"/>
+<path d="M1323 612.711L1597.39 757.015" stroke="#565656" strokeWidth="40" stroke-linecap="round"/>
+<path d="M1394.41 823.6L1538.71 549.21" stroke="#565656" strokeWidth="40" stroke-linecap="round"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M1265.62 212.297L1278.79 1.46523L1232 1.46521L1213.67 290.026L1440 179L1440 126L1265.62 212.297Z" fill="#565656"/>
 </g>
 <defs>

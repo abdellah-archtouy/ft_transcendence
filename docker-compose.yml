@@ -14,3 +14,7 @@ services:
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  database:
+    driver: local

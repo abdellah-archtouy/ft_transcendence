@@ -32,8 +32,9 @@ class MsgView(APIView):
 
         # Check if any messages were found  
         if not msg_instances.exists():  
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)  
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
         
+        print(msg_instances)
         # Serialize the Message instances  
         serializer = MessageSerializer(msg_instances, many=True)  # Ensure ConvSerializer is correctly set up  
         

@@ -19,9 +19,18 @@ const Conv_bar = () => {
     const fetchData = async () => {  
       try {  
           const response = await axios.get('http://localhost:8000/api/conv/1/');  
-          setConv(response.data);  
+          // setConv(response.data);  
+          if (response.data && response.data.length > 0) {
+            setConv(response.data);              
+          }
+          else {
+            setConv([]);
+            console.log('No data found');
+          }
       } catch (error) {  
           setError(error);  
+          console.log(error)
+          setConv([]);
       } finally {  
           setLoading(false);  
       }  
@@ -32,8 +41,8 @@ const Conv_bar = () => {
   }, [])
 
 
-if (loading) return <div>Loading...</div>;  
-if (error) return <div>Error: {error.message}</div>; 
+// if (loading) return <div>Loading...</div>;  
+// if (error) return <div>Error: {error.message}</div>; 
 
 const handelclick = () => {
   setOn(false);
@@ -49,10 +58,10 @@ const handelclick = () => {
         </div>
       </div>
       <div className='center'>
-        <div class="search-container">
+        <div className="search-container">
         <Vector></Vector>
         {/* onClick={handleChange} */}
-        <input type="text" placeholder="Search..." name="search" class="search-input"></input>
+        <input type="text" placeholder="Search..." name="search" className="search-input"></input>
         </div>
       </div>
       <div className='scrol'>
