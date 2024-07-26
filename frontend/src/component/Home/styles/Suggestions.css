@@ -26,6 +26,35 @@
     height: 100%;
 }
 
+.name-container {
+    width: 100%;
+    /* Adjust as needed */
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+.name {
+    display: inline-block;
+    transition: transform 0.3s linear;
+    font-size: 1.5em;
+}
+
+.name-container.overflow:hover .name {
+    animation: loop 10s linear infinite;
+}
+
+@keyframes loop {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+
 .card img {
     margin-top: 10%;
     width: 60%;
@@ -85,6 +114,8 @@
     margin-right: 0;
     font-size: 1.5em;
     font-weight: 900;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .header_element {
@@ -139,4 +170,12 @@
     margin-bottom: 7%;
     scale: 1.2;
 
+}
+
+@media (max-width: 1920px) {
+    .suggestions {
+        max-width: 50vw;
+        height: 30vh;
+        width: 50vw;
+    }
 }

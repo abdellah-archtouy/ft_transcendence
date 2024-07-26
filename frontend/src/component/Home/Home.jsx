@@ -22,7 +22,7 @@ import profile8 from './images/profile8.jpg';
 const Home = () => {
   console.log('profile1', profile1);
   const friends = [
-    { name: 'John Doe', online: true, id: 1, img: profile1 },
+    { name: 'John Does shmoew pipipopo', online: true, id: 1, img: profile1 },
     { name: 'Jane Doe', online: false, id: 2, img: profile2 },
     { name: 'Jill Doe', online: true, id: 3, img: profile3 },
     { name: 'Jack Doe', online: false, id: 4, img: profile4 },
@@ -44,7 +44,7 @@ const Home = () => {
         <button className='home-dive-welcome-btn'>Play now</button>
       </div>
       <div className="suggestions">
-        <div className='header_element'> 
+        <div className='header_element'>
           <h3>Suggested for you</h3>
         </div>
         <div className="slide-elements">

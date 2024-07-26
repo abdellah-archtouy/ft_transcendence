@@ -22,23 +22,22 @@ const Game = () => {
   const unhoverPlay = () => {
     audio.pause();
   };
-  
+
   const handleClick = (event, route) => {
     event.preventDefault();
     setTarget(route);
     setFadeout(true);
-  }; 
-  
+  };
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setFade(false);
     }, 2.2 * 1000);
     return () => clearTimeout(timeout);
   }, []);
-  
+
   useEffect(() => {
-    if (fadeout)
-    {
+    if (fadeout) {
       const timeout = setTimeout(() => {
         history(target);
       }, 2 * 1000);
@@ -50,15 +49,15 @@ const Game = () => {
     <div className="game">
       <div className="game_container">
         <div className="game_first">
-            <Link
+          <Link
             className={`game_Tournament ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
             onMouseEnter={hoverPlay}
             onMouseLeave={unhoverPlay}
             onClick={(event) => handleClick(event, '/game/tournament')}
-            >
+          >
             <h1>Tournament</h1>
             <img src={TournamentVector} alt="" />
-            </Link>
+          </Link>
         </div>
         <div className="game_second">
           <Link
@@ -66,7 +65,7 @@ const Game = () => {
             onMouseEnter={hoverPlay}
             onMouseLeave={unhoverPlay}
             onClick={(event) => handleClick(event, '/game/gamemode')}
-            >
+          >
             <h1>Bot</h1>
             <img src={BotVector} alt="" />
           </Link>

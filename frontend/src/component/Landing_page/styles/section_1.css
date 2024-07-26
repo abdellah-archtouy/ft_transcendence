@@ -1,0 +1,102 @@
+.landing_section_1 {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.landing_section_1-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.center_image {
+    height: 50%;
+    width: 50%;
+}
+
+.logo {
+    position: fixed;
+    z-index: 5;
+}
+
+.landing_section_1-polygon-div {
+    position: absolute;
+    top: -15%;
+    right: -10%;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+.landing_section_1-square-div {
+    position: absolute;
+    left: -5%;
+    top: 20%;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+.landing_section_1-cross-div {
+    position: absolute;
+    right: -10%;
+    top: 60%;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+.landing_section_1-circle-div {
+    position: absolute;
+    left: -5%;
+    top: 80%;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+.scroll-down {
+    position: absolute;
+    left: 4%;
+    bottom: 1%;
+    transform: translateX(-50%);
+    z-index: 2;
+    user-select: none;
+    font-size: 1.5em;
+}
+
+.scroll-arrow {
+    position: absolute;
+    bottom: 20px;
+    /* Adjust the distance from the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    animation: breathe 1.5s infinite;
+}
+
+.scroll-arrow svg {
+    width: 30px;
+    /* Adjust the size of the arrow */
+    height: 30px;
+    fill: #D1D1D1;
+    /* Set the arrow color to D1D1D1 */
+}
+
+@keyframes breathe {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(10px);
+        /* Adjust the vertical movement */
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}

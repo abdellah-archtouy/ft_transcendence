@@ -1,0 +1,114 @@
+.landing_section_2 {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.landing_section_2-square1-div {
+    position: absolute;
+    top: 130%;
+    left: -5%;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    /* Ensure this shape is above other content */
+}
+
+.landing_section_2-cross-div {
+    position: absolute;
+    top: 185%;
+    left: -5%;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    /* Ensure this shape is above other content */
+}
+
+.landing_section_2-square2-div {
+    position: absolute;
+    top: 105%;
+    right: -5%;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    /* Ensure this shape is above other content */
+}
+
+.landing_section_2-polygon-div {
+    position: absolute;
+    top: 185%;
+    right: -10%;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    /* Ensure this shape is above other content */
+}
+
+.landing_section_2-star-dust {
+    position: absolute;
+    top: 160%;
+    left: 10%;
+    z-index: 1;
+    user-select: none;
+}
+
+.landing_section_2-lines {
+    position: absolute;
+    top: 140%;
+    left: -5%;
+    z-index: 1;
+    user-select: none;
+}
+
+
+
+
+
+.landing_section_2-container {
+    height: 70vh;
+    width: 70vw;
+    display: flex;
+    flex-direction: row;
+    z-index: 2;
+    overflow: hidden;
+    margin-top: 10%;
+    user-select: none;
+}
+
+.landing_section_2-container-guide-text {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 4rem;
+    margin-left: 2rem;
+    user-select: none;
+}
+
+.landing_section_2-container-h1 {
+    font-size: 5rem;
+    font-weight: 700;
+}
+
+.landing_section_2-container-h3 {
+    font-size: 2rem;
+    color: #606060;
+    font-weight: 400;
+}
+
+.landing_section_2-container-text {
+    width: 60%;
+    font-size: 1.5rem;
+    color: #D3D3D3;
+    font-weight: 400;
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.landing_section_2-container-guide-image {
+    height: 100%;
+    width: 50%;
+}

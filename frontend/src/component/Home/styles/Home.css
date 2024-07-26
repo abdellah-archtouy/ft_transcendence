@@ -47,11 +47,12 @@ svg {
   flex-direction: column;
   align-items: center;
   gap: 3em;
+  padding-bottom: 10%;
 }
 
 /* Welcome section */
 .home-dive-welcome {
-  margin-top: 20%;
+  margin-top: 27%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -123,7 +124,7 @@ svg {
   display: flex;
   gap: 1.2em;
   flex-direction: row;
-  height: 40vh;
+  height: 35vh;
   width: 50vw;
 }
 
@@ -241,3 +242,27 @@ svg {
 .last-matches-header div a {
   color: rgba(255, 255, 255, 0.4);
 }
+
+@media (max-width: 1920px) {
+
+  .home-dive-welcome h2 {
+    font-size: 6rem;
+    margin-bottom: -0.2em;
+    margin-left: 1.5rem;
+  }
+
+  .home-dive-welcome {
+    margin-top: 30%;
+  }
+
+  .stats {
+    display: flex;
+    gap: 1.2em;
+    flex-direction: row;
+    height: 30vh;
+    width: 50vw;
+  }
+}
+
+/* XXL */
+@media (min-width: 1536px) {}
