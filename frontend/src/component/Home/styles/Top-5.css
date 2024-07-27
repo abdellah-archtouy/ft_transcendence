@@ -79,8 +79,8 @@
 }
 
 .size-6 {
-    width: 30%;
-    height: 30%;
+    width: 25%;
+    height: auto;
 }
 
 .top-5-list-item {
@@ -97,7 +97,7 @@
 }
 
 .top-5-list-item-user img {
-    width: 60%;
+    width: 50%;
     height: auto;
     border-radius: 50%;
     border: 2px solid #636262;
@@ -121,7 +121,8 @@
 .top-5-list-item-rank,
 .top-5-list-item-score,
 .top-5-list-item-wins,
-.top-5-list-item-link {
+.top-5-list-item-link,
+.top-5-list-item-user {
     display: flex;
     align-items: center;
     justify-content: center;

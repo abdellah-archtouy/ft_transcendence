@@ -48,6 +48,7 @@ svg {
   align-items: center;
   border: solid;
   gap: 3em;
+  padding-bottom: 10%;
 }
 
 /* Welcome section */
