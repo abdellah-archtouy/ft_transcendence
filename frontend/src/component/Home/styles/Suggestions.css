@@ -1,6 +1,6 @@
 .suggestions {
     max-width: 50vw;
-    height: 35vh;
+    height: 40vh;
     width: 50vw;
     /* From https://css.glass */
     background: rgba(34, 34, 34, 0.46);
@@ -170,12 +170,4 @@
     margin-bottom: 7%;
     scale: 1.2;
 
-}
-
-@media (max-width: 1920px) {
-    .suggestions {
-        max-width: 50vw;
-        height: 30vh;
-        width: 50vw;
-    }
 }

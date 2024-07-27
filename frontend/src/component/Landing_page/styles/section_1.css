@@ -1,7 +1,6 @@
 .landing_section_1 {
     height: 100vh;
     width: 100vw;
-    overflow: hidden;
 }
 
 .landing_section_1-container {
@@ -16,6 +15,7 @@
 .center_image {
     height: 50%;
     width: 50%;
+    z-index: 6;
 }
 
 .logo {
@@ -27,7 +27,6 @@
     position: absolute;
     top: -15%;
     right: -10%;
-    overflow: hidden;
     user-select: none;
     pointer-events: none;
 }
@@ -36,7 +35,6 @@
     position: absolute;
     left: -5%;
     top: 20%;
-    overflow: hidden;
     user-select: none;
     pointer-events: none;
 }
