@@ -3,6 +3,10 @@
     overflow-x: hidden;
 }
 
+.no-scroll {
+    overflow: hidden;
+}
+
 .overlay {
     position: fixed;
     top: 0;
@@ -18,6 +22,7 @@
 /* Adjust the menu positioning and ensure it stays on top */
 .menu {
     position: fixed;
+    min-width: 300px;
     top: 0;
     left: -100%;
     width: 15%;
@@ -51,23 +56,33 @@
 
 .menu li {
     margin: 20px 0;
+    margin-left: 16px;
     font-size: 1.7em;
     transition: all 0.3s ease-in-out;
 }
 
+
 .menu-toggle {
     position: fixed;
     top: 20px;
-    right: 20px;
-    z-index: 1001;
+    right: 34px;
+    z-index: 889;
     text-decoration: none;
     cursor: pointer;
     font-size: 2rem;
-    padding-right: 1em;
     user-select: none;
 }
 
 .menu li:hover {
     transform: scale(1.2);
+    cursor: pointer;
+}
+
+.close-menu {
+    position: absolute;
+    right: 6%;
+    bottom: 1%;
+    font-size: 1.7em;
+    transition: all 0.3s ease-in-out;
     cursor: pointer;
 }

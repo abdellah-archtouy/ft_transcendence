@@ -19,7 +19,7 @@
 .landing_section_2-cross-div {
     position: absolute;
     top: 185%;
-    left: -5%;
+    left: -6.5%;
     user-select: none;
     pointer-events: none;
     z-index: 1;
@@ -63,14 +63,15 @@
 }
 
 .landing_section_2-container {
-    height: 70vh;
-    width: 70vw;
+    height: 70%;
+    width: 70%;
     display: flex;
     flex-direction: row;
     z-index: 2;
     overflow: hidden;
     margin-top: 10%;
     user-select: none;
+    border: solid;
 }
 
 .landing_section_2-container-guide-text {
@@ -107,4 +108,11 @@
 .landing_section_2-container-guide-image {
     height: 100%;
     width: 50%;
+    border: solid red;
+
+}
+
+.game_image {
+    height: auto;
+    width: 100%;
 }

@@ -19,34 +19,27 @@ const Landing_page = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
 
+    useEffect(() => {
+        if (menuOpen) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+    }, [menuOpen]);
+
     const toggleMenu = () => {
         setMenuOpen(prev => !prev);
     };
 
-    const handleClickOutside = (event) => {
-        if (menuOpen && menuRef.current && !menuRef.current.contains(event.target)) {
-            setMenuOpen(false);
-        }
-    };
-
-    useEffect(() => {
-        if (menuOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-
-        // Cleanup function to remove event listener on unmount
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [menuOpen]);
 
     return (
         <div className="page-container">
             <img src={logo} alt="" className="logo" />
             {menuOpen && <div className="overlay"></div>}
-            <a className="menu-toggle" onClick={toggleMenu}>
+            <a className="menu-toggle" onClick={() => {
+                if (menuOpen == false)
+                    toggleMenu();
+            }}>
                 Menu
             </a>
             <div className={`menu ${menuOpen ? 'open' : ''}`} ref={menuRef}>
@@ -55,6 +48,7 @@ const Landing_page = () => {
                     <li>How To Play</li>
                     <li>Login</li>
                 </ul>
+                <span className='close-menu' onClick={toggleMenu}>Close</span>
             </div>
             <section className="landing_section_1">
                 <div className='landing_section_1-polygon-div'>
@@ -80,6 +74,7 @@ const Landing_page = () => {
                         <path d="M12 21l-12-12h24L12 21z" />
                     </svg>
                 </div>
+
             </section>
             <section className="landing_section_2">
                 <div className='landing_section_2-square1-div'>

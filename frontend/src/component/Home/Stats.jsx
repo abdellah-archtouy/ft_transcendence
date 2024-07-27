@@ -6,6 +6,7 @@ import profile5 from './images/profile5.jpg';
 import profile6 from './images/profile6.jpg';
 import profile7 from './images/profile7.jpg';
 import profile8 from './images/profile8.jpg';
+import dash from './styles/dash.svg';
 
 
 function Stats() {
@@ -23,16 +24,16 @@ function Stats() {
                     <li key={index} className="matches-list-item">
                         <div className="matches-list-item-user">
                             <img src={stat.user1_img} alt="user1" />
-                            <p>{stat.user1}</p>
+                            <p>{stat.user1.toUpperCase()}</p>
                         </div>
                         <div className="matches-list-item-score">
                             <p>{stat.use1_score}</p>
-                            <p>-</p>
+                            <img src={dash} alt="" style={{ width: "30%" }} />
                             <p>{stat.user2_score}</p>
                         </div>
                         <div className="matches-list-item-user">
                             <img src={stat.user2_img} alt="user2" />
-                            <p>{stat.user2}</p>
+                            <p>{stat.user2.toUpperCase()}</p>
                         </div>
                     </li>
                 ))}
