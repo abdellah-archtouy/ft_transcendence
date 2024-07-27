@@ -1,4 +1,4 @@
-import { Routes, Route, useFetcher, json } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Navbar from "./component/Navbar/Navbar";
@@ -9,15 +9,20 @@ import Setting from "./component/Setting/Setting";
 import Chat from "./component/Chat/Chat";
 import Leaderboard from "./component/Leaderboard/Leaderboard";
 import Home from "./component/Home/Home";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
 
 function App() {
   const [auth, setAuth] = useState(true);
   const bgImage = auth && {
-    background: `url(${bg2}) center bottom / contain no-repeat fixed, url(${bg1})`,
+    background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
   };
+
+  // useEffect(() => {
+  //   setAuth(true);
+  // }, []);
+
   return (
     <div className="App" style={{ ...bgImage }}>
       {" "}

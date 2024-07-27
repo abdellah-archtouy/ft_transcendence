@@ -39,19 +39,20 @@ svg {
 
 /* Container for the home section */
 .home-div {
-  overflow: auto;
+  overflow: scroll;
   /* Use 'auto' to show scrollbars only when necessary */
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  border: solid;
   gap: 3em;
 }
 
 /* Welcome section */
 .home-dive-welcome {
-  margin-top: 20%;
+  margin-top: 100px; /* i changed 20% with 100px */
   display: flex;
   flex-direction: column;
   justify-content: space-between;

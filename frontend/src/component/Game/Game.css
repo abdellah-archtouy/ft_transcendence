@@ -4,9 +4,9 @@
     flex-direction: column;
     width: 62.5%;
     height: 56.5%;
-    gap: 4%;
+    gap: 25px;
     transition:  0.8s ease-in-out;
-    max-width: 1300px;
+    max-width: 1000px;
 }
 
 .game_container a, .game_container img
@@ -128,6 +128,7 @@
     border-radius: 30px;
     width: auto;
     height: 100%;
+    right: -40px;
 }
 
 .game_bot {
@@ -149,7 +150,7 @@
 }
 
 .game{
-    height: 100vh;
+    height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;

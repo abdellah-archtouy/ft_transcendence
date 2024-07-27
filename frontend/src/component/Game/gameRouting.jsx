@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Tournament from "./tournament";
-import Friend from "./friend";
+import Friend from "./Friend/friend";
 import Game from "./Game";
 import Bot from "./bot/bot";
 import GameMode from "./bot/gameMode"
