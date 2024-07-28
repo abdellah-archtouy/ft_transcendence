@@ -71,7 +71,6 @@
     overflow: hidden;
     margin-top: 10%;
     user-select: none;
-    border: solid;
 }
 
 .landing_section_2-container-guide-text {
@@ -108,8 +107,6 @@
 .landing_section_2-container-guide-image {
     height: 100%;
     width: 50%;
-    border: solid red;
-
 }
 
 .game_image {

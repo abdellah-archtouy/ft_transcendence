@@ -3,6 +3,7 @@ import "./styles/section_1.css";
 import "./styles/section_2.css";
 import "./styles/section_3.css";
 import "./styles/root.css";
+import "./styles/footer.css";
 import center from "./images/Center_image.svg";
 import logo from "./../../icons/logo.svg";
 import polygon from "./images/section1_Polygon.svg";
@@ -14,6 +15,10 @@ import star_dust from "./images/Star_dust.svg";
 import lines from "./images/lines.svg";
 import AuthForm from './form';
 import table from "./images/floating_table.svg";
+import instagram_logo from "./images/instagram.svg";
+import github_logo from "./images/github.svg";
+import linkedin_logo from "./images/linkedin.svg";
+
 
 const Landing_page = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -113,6 +118,12 @@ const Landing_page = () => {
                 </div>
             </section>
             <section className="landing_section_3">
+                <div className='landing_section_3-circle'>
+                    <img src={circle} alt="" className='circle' />
+                </div>
+                <div className='landing_section_3-cross'>
+                    <img src={cross} alt="" className='cross' />
+                </div>
                 <div className='landing_section_3-container'>
                     <div className='landing_section_3-container-form'>
                         <AuthForm />
@@ -123,7 +134,31 @@ const Landing_page = () => {
                     </div>
                 </div>
             </section>
-            <section className="landing_section_4"></section>
+            <section className="footer">
+                <div className='footer-div'>
+                    <ul>
+                        <li className='list-heading'><h1>Contact@msg.com</h1></li>
+                        <li className='list-info'>1337 Khouribga </li>
+                        <li className='list-info'>32.882163, -6.897713</li>
+                        <li className='list-info'>Mail Central, Mine verte</li>
+                        <li className='list-heading-3'><h3>Privacy Policy</h3></li>
+                    </ul>
+                    <ul>
+                        <h1 className='list-heading'>About</h1>
+                        <li>Home</li>
+                        <li>How to Play</li>
+                        <li>Log in</li>
+                        <li>Sign up</li>
+                    </ul>
+                    <ul>
+                        <h1 className='list-heading'>Media</h1>
+                        <li><img src="" alt="" />Linkedin</li>
+                        <li>Github</li>
+                        <li>instagram</li>
+                    </ul>
+
+                </div>
+            </section>
         </div>
     );
 };
