@@ -19,11 +19,7 @@ function App() {
   const bgImage = auth && {
     background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
   };
-
-  // useEffect(() => {
-  //   setAuth(true);
-  // }, []);
-
+  
   return (
     <div className="App" style={{ ...bgImage }}>
       {" "}
