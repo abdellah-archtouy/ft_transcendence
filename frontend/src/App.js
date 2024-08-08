@@ -12,9 +12,10 @@ import Home from "./component/Home/Home";
 import { useState } from "react";
 import bg1 from "./icons/bg1.svg"
 import bg2 from "./icons/Group.svg"
+import LandingPage from "./component/Landing_page/Landing_page";
 
 function App() {
-  const [auth, setAuth] = useState(true);
+  const [auth, setAuth] = useState(false);
   const bgImage = auth && {background: `url(${bg2}) center bottom / contain no-repeat fixed, url(${bg1})`};
   return (
     <div className="App" style={{...bgImage}}> {/* style={{...bgImage}} */}
@@ -36,6 +37,7 @@ function App() {
       ) : (
         <>
             {/* write your code here ===> landingPage <=== */}
+            <LandingPage setAuth={setAuth} auth={auth} />
         </>
       )}
     </div>

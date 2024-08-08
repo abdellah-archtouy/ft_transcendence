@@ -72,6 +72,10 @@
     margin: 0;
 }
 
+.shadow{
+    box-shadow: 0 0 8px  #ddd;
+}
+
 .center .search-container {
     display: flex;
     justify-content: start;
@@ -120,11 +124,14 @@ form {
     background: #FFFFFF60;
 }
 
+.conv_bar .center.selected {
+    /* border-left: 4px solid #007bff; */
+  }
 .empty{
     color: #FFFFFF50;
     display: flex;
     text-align: center;
-    height: calc(100vh - 275px);
+    height: calc(100vh - 300px);
     align-items: center;
     justify-content: center;
 }

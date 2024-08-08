@@ -28,3 +28,8 @@
     margin: 10px;
     height: 60px;
 }
+  
+.conv.selected {
+    box-shadow: 0 0 8px  #ddd;
+}
+  

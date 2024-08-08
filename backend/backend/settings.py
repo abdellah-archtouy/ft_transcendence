@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,10 +52,36 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'rest_framework',
+    'rest_framework_simplejwt',
     'User',
     'Game',
     'Chat',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ('Content-Type', 'Authorization')
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+
+# Simple JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=70),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'ALGORITHM': 'HS256',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -73,11 +100,14 @@ MIDDLEWARE = [
 #     "http://localhost:3000",
 # ]
 
+CSRF_COOKIE_HTTPONLY = False  # Si vous avez besoin d'accéder au cookie CSRF via JavaScript, définissez ceci à False
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Add your frontend origin here
 ]
 
 CORS_ORIGIN_ALLOW_ALL=True
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = ('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')
 CORS_ALLOW_HEADERS = ('Content-Type', 'Authorization')
@@ -115,6 +145,8 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+AUTH_USER_MODEL = 'User.User'
 
 
 # Password validation

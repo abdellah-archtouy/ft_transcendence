@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password', 'cover', 'avatar')
+        # , 'cover', 'avatar'
 
 class ConvSerializer(serializers.ModelSerializer):
     uid1_info = UserSerializer(source='uid1')

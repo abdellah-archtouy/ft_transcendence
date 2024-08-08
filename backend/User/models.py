@@ -1,10 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-class User(models.Model):
-    username = models.CharField(max_length=50, null=False)
-    email = models.EmailField(null=False)
-    password = models.CharField(max_length=50, null=False)
+class User(AbstractUser):
+    # username = models.CharField(max_length=100, unique=True)
+    # email = models.EmailField(unique=True)
+    # password = models.CharField(max_length=50, null=False)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default.png')
     cover = models.ImageField(upload_to='covers/', null=True, blank=True, default='covers/default.jpeg')
     bio = models.TextField(blank=True)  # Removed max_length, added blank=True
@@ -14,6 +15,8 @@ class User(models.Model):
     rank = models.IntegerField(default=0)
     stat = models.BooleanField(default=False)
 
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = []
     def __str__(self):
         return self.username
     

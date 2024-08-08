@@ -43,7 +43,7 @@ function AddBar({conv, setConv, on ,setOn}) {
     
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/user/');
+            const response = await axios.get('http://localhost:8000/api/users/');
             setresulte1(response.data.filter((user) => {
                 return data && user && user.username.toLowerCase().includes(data.toLowerCase());
             }));
@@ -65,8 +65,8 @@ function AddBar({conv, setConv, on ,setOn}) {
     const handleWebSocketMessage = (e) => {
         const conv1 = JSON.parse(e.data);
         setConv(conv => [...conv1, conv]);
-        console.log('data:', conv);
-        console.log('data1:', conv1);
+        // console.log('data:', conv);
+        // console.log('data1:', conv1);
     };
     const handleClick = (userId) => () => {
       setOn(true);

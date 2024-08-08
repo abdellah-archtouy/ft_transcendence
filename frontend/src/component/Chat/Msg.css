@@ -10,6 +10,17 @@
     font-weight: bold;
 }
 
+.empty-conv{
+    color: #FFFFFF50;
+    display: flex;
+    text-align: center;
+    height: calc(100vh - 275px);
+    align-items: end;
+    justify-content: center;
+    margin-top: 110px;
+    margin-bottom: 40px;
+}
+
 .Msg  .empty{
     color: #FFFFFF50;
     display: flex;

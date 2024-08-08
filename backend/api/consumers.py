@@ -25,7 +25,6 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
-        # print(text_data)
         message_i = text_data_json.get('message', '')
         conversation_id = text_data_json.get('conversation', '')
         user_id = text_data_json.get('user', '')
@@ -33,7 +32,6 @@ class ChatConsumer(WebsocketConsumer):
             msg = Message(conversation_id=conversation_id, user_id=user_id, message=message_i)
             msg.save()
 
-        # Update the last message in the conversation
             try:
                 with transaction.atomic():
                     conversation = Conversation.objects.filter(id=conversation_id).first()
