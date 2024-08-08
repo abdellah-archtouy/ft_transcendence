@@ -12,7 +12,8 @@ import Home from "./component/Home/Home";
 import { useState } from "react";
 import bg1 from "./icons/bg1.svg"
 import bg2 from "./icons/Group.svg"
-import LandingPage from "./component/Landing_page/Landing_page";
+// import LandingPage from "./component/Landing_page/Landing_page";
+import Landing from "./component/landtest/land";
 
 function App() {
   const [auth, setAuth] = useState(false);
@@ -37,7 +38,7 @@ function App() {
       ) : (
         <>
             {/* write your code here ===> landingPage <=== */}
-            <LandingPage setAuth={setAuth} auth={auth} />
+            <Landing setAuth={setAuth} auth={auth} />
         </>
       )}
     </div>
