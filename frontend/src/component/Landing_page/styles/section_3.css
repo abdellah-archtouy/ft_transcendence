@@ -8,7 +8,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: solid;
 }
 
 .landing_section_3-container {
@@ -79,6 +78,7 @@ form {
     align-items: center;
     gap: 1rem;
     padding-bottom: 7%;
+    user-select: none;
 }
 
 form input {
@@ -187,7 +187,6 @@ form button {
 .login_form-42-login-image {
     height: 70%;
     width: auto;
-
 }
 
 .login_form-42-login-p {
@@ -201,6 +200,7 @@ form button {
 .login_form-submit {
     color: #D4D4D4;
     font-size: 1.1em;
+    font-weight: 500;
 }
 
 .login_form-signup {
@@ -241,4 +241,14 @@ form button {
 .button-design:active {
     transform: translate(0, 0);
     box-shadow: none;
+}
+
+.login_form-42-login.button-design:hover .login_form-42-login-image {
+    filter: brightness(0) invert(1);
+    /* This will make the image white */
+}
+
+/* Optional: You can also style the text to change color on hover */
+.login_form-42-login.button-design:hover .login_form-42-login-p {
+    color: white;
 }

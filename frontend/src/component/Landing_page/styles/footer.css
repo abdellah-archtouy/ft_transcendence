@@ -8,6 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    user-select: none;
 }
 
 .footer-div {
@@ -19,7 +20,6 @@
     height: 30%;
     z-index: 2;
     gap: 10%;
-    border: solid;
     padding: 5%;
     margin: 0 10%;
 }
@@ -47,4 +47,27 @@
     font-size: 1.5rem;
     text-decoration: underline;
     font-weight: 100;
+}
+
+.social_links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    user-select: none;
+}
+
+.social_links img {
+    cursor: pointer;
+    padding-bottom: 0.2rem;
+}
+
+.social_links a {
+    text-decoration: none;
+    color: #D1D1D1;
+}
+
+.about li a {
+    text-decoration: none;
+    color: #D1D1D1;
 }
