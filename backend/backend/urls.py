@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include
 from backend.views import hello , root
+# from User.models import User
 
 
 urlpatterns = [

@@ -2,24 +2,28 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Navbar from "./component/Navbar/Navbar";
-import GameRouting from "./component/Game/gameRouting"
+import GameRouting from "./component/Game/gameRouting";
 import Profile from "./component/Profile/Profile";
 import OthersProfile from "./component/Profile/othersProfile";
 import Setting from "./component/Setting/Setting";
 import Chat from "./component/Chat/Chat";
 import Leaderboard from "./component/Leaderboard/Leaderboard";
 import Home from "./component/Home/Home";
-import { useState } from "react";
-import bg1 from "./icons/bg1.svg"
-import bg2 from "./icons/Group.svg"
-// import LandingPage from "./component/Landing_page/Landing_page";
-import Landing from "./component/landtest/land";
+import { useEffect, useState } from "react";
+import bg1 from "./icons/bg1.svg";
+import bg2 from "./icons/Group.svg";
+import LandingPage from "./component/Landing_page/Landing_page";
 
 function App() {
   const [auth, setAuth] = useState(false);
-  const bgImage = auth && {background: `url(${bg2}) center bottom / contain no-repeat fixed, url(${bg1})`};
+  const bgImage = auth && {
+    background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
+  };
+  
   return (
-    <div className="App" style={{...bgImage}}> {/* style={{...bgImage}} */}
+    <div className="App" style={{ ...bgImage }}>
+      {" "}
+      {/* style={{...bgImage}} */}
       {auth ? (
         <>
           <Navbar />

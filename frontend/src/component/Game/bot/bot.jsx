@@ -19,7 +19,7 @@ const Bot = () => {
     },
   ];
   
-  const [user, setUser] = useState(d);
+  const [user] = useState(d);
   if (!user) return <LoadingPage />;
   return (
     <>
