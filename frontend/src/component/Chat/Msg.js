@@ -115,16 +115,18 @@ const Msg = ({ userData , convid , conversationdata }) => {
                         )}
                     </div>
                     <div className={`message_bar`}>
-                        <Imoji />
-                        <PlayInv />
-                        <form onSubmit={handleSubmit} className="search-container">
-                            <textarea className="search-input"
+                        {/* <Imoji /> */}
+                        {/* <PlayInv /> */}
+                        <button ><PlayInv /></button>
+                        <button ><Imoji /></button>
+                        <form onSubmit={handleSubmit} className="search-container1">
+                            <textarea className="search-input1"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Enter your message"
                                 required
                             />
-                            <button type="submit"><Sent /></button>
+                            <button type="submit"><Sent id="sent" /></button>
                         </form>
                     </div>
                 </>

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
 import LandingPage from "./component/Landing_page/Landing_page";
+import Landing from "./component/landtest/land";
 
 function App() {
   const [auth, setAuth] = useState(false);

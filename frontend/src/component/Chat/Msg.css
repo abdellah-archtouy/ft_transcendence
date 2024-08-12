@@ -85,7 +85,7 @@
 
 
 
-.message_bar .search-input{
+.message_bar .search-input1{
     width: 95.5%;
     resize: none;
     height: 40px;
@@ -99,8 +99,8 @@
     padding-left: 10px;
 }
 
-.message_bar .search-container textarea:focus,
-.message_bar .search-container textarea:active{
+.message_bar .search-container1 textarea:focus,
+.message_bar .search-container1 textarea:active{
       width: 95.5%;
       outline: none;
       animation: none !important;  /* Remove any animations */
@@ -109,7 +109,16 @@
       /* box-shadow: 0 0 5px rgba(102, 175, 233, 0.6); */
 }
 
-.message_bar .search-container button{
+.message_bar  button:hover{
+    box-sizing: border-box;
+    filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.75));
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding-top: 5px ;
+}
+.message_bar  button{
+    transition: filter 0.3s ease;
     display: flex;
     position: absolute;
     color: #222222;
@@ -120,9 +129,10 @@
     padding-top: 5px ;
     align-items: center;
 }
-.message_bar .search-container{
+.message_bar .search-container1{
     position: relative;
     display: flex;
+    flex-direction: row;
     animation: none;
     gap: 14px;
     /* justify-content: start; */
