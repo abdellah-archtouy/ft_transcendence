@@ -1,9 +1,9 @@
 .SearchBar {
     background-color: rgba(0, 0, 0, 0.5);
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     z-index: 998;
     backdrop-filter: blur(40px);
@@ -20,14 +20,18 @@
 }
 
 .searchContent {
-    width: 42%;
-    max-width: 600px;
+    width: clamp(18.75rem, 37.5vw + 3.75rem, 37.5rem);
+    /* max-width: 600px; */
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     gap: 20px;
-    margin-top: 328px;
-    position: absolute;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: fit-content;
     z-index: 999;
     transition: all 1s;
     animation: fade-in ease-in-out 1s;

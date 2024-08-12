@@ -1,8 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import logo from "../../icons/logo.svg";
 import jarass from "../../icons/jarass.svg";
 import searchicon from "../../icons/search.svg";
+import burgerMenu from "../../icons/navicons/burgerMenu.svg";
 import React, { useEffect, useState } from "react";
 import "./navbar.css";
 import SearchBar from "./searchBar";
@@ -10,6 +11,7 @@ import SearchBar from "./searchBar";
 const Navbar = () => {
   const [activeElement, setActiveElement] = useState(null);
   const [search, setSearch] = useState(false);
+  const [navDisplay, setNavDisplay] = useState(true);
   const location = useLocation();
 
   const array = [
@@ -27,16 +29,17 @@ const Navbar = () => {
 
     const navItems = document.querySelectorAll(".nav ul li");
     const itemOffsetLeft = navItems[index].offsetLeft;
+    const itemOffsetTop = navItems[index].offsetTop;
     const coloredDiv = document.querySelector(".items");
     coloredDiv.style.transform = `translateX(${
       itemOffsetLeft - coloredDiv.offsetLeft
-    }px)`;
+    }px) translateY(${itemOffsetTop - coloredDiv.offsetTop}px)`;
+    console.log(itemOffsetTop);
     coloredDiv.style.transition = `transform 0.3s ease-in-out`;
   };
 
   function findIndex(element) {
-    if (element.path === window.location.pathname)
-      return element;
+    if (element.path === window.location.pathname) return element;
     return undefined;
   }
 
@@ -50,112 +53,130 @@ const Navbar = () => {
     setSearch(state);
   }
 
-  
-  useEffect(
-    () => {
-      window.pathname = location.pathname;
-      let Index = array.find(findIndex);
-      if (Index === undefined) Index = array.find(findElement);
-      setActiveElement(Index.activeElement);
-      const coloredDiv = document.querySelector(".items");
-      const navItems = document.querySelectorAll(".nav ul li");
-      const itemOffsetLeft = navItems[Index.index].offsetLeft;
-      coloredDiv.style.transform = `translateX(${
-        itemOffsetLeft - coloredDiv.offsetLeft
-      }px)`;
-      coloredDiv.style.transition = `transform 0.3s ease-in-out`;
-    },
-    [location.pathname]
-  );
+  useEffect(() => {
+    window.pathname = location.pathname;
+    let Index = array.find(findIndex);
+    if (Index === undefined) Index = array.find(findElement);
+    setActiveElement(Index.activeElement);
+    const coloredDiv = document.querySelector(".items");
+    const navItems = document.querySelectorAll(".nav ul li");
+    const itemOffsetLeft = navItems[Index.index].offsetLeft;
+    const itemOffsetTop = navItems[Index.index].offsetTop;
+    coloredDiv.style.setProperty(
+      "--transformX",
+      `${itemOffsetLeft - coloredDiv.offsetLeft}px`
+    );
+    coloredDiv.style.setProperty(
+      "--transformY",
+      `${itemOffsetTop - coloredDiv.offsetTop}px`
+    );
+  }, [location.pathname]);
+
+  const navigate = useNavigate();
 
   return (
     <>
-      <div className="navigation">
-        <Link
-          to="/"
-          onClick={() => {
-            setSearch(false);
-            handleClick("Home", 0);
-          }}
-        >
-          <img src={logo} className="logo" alt="logo" />
-        </Link>
-        <div className="nav">
-          <ul>
-            <div className="items"></div>
-            <li className={activeElement === "Home" ? "active" : ""}>
-              <Link
-                to="/"
-                onClick={() => {
-                  setSearch(false);
-                  handleClick("Home", 0);
-                }}
-              >
-                <Icon.Home />
-                <span>Home</span>
-              </Link>
-            </li>
-            <li className={activeElement === "Game" ? "active" : ""}>
-              <Link
-                to="/game"
-                onClick={() => {
-                  setSearch(false);
-                  handleClick("Game", 1);
-                }}
-              >
-                <Icon.Game />
-                <span>Game</span>
-              </Link>
-            </li>
-            <li className={activeElement === "Chat" ? "active" : ""}>
-              <Link
-                to="/chat"
-                onClick={() => {
-                  setSearch(false);
-                  handleClick("Chat", 2);
-                }}
-              >
-                <Icon.Chat />
-                <span>Chat</span>
-              </Link>
-            </li>
-            <li className={activeElement === "Leaderboard" ? "active" : ""}>
-              <Link
-                to="/leaderboard"
-                onClick={() => {
-                  setSearch(false);
-                  handleClick("Leaderboard", 3);
-                }}
-              >
-                <Icon.Leaderboard />
-                <span>Leaderboard</span>
-              </Link>
-            </li>
-            <li className={activeElement === "Setting" ? "active" : ""}>
-              <Link
-                to="/setting"
-                onClick={() => {
-                  setSearch(false);
-                  handleClick("Setting", 4);
-                }}
-              >
-                <Icon.Setting />
-                <span>Setting</span>
-              </Link>
-            </li>
-            <li className={activeElement === "Profile" ? "active" : ""}>
-              <Link
-                to="/profile"
-                onClick={() => {
-                  setSearch(false);
-                  handleClick("Profile", 5);
-                }}
-              >
-                <Icon.Profile />
-                <span>Profile</span>
-              </Link>
-            </li>
-          </ul>
+      <div className="navContainer">
+        <img
+          src={burgerMenu}
+          alt=""
+          className="hamburger"
+          onClick={() =>
+            setNavDisplay((value) => {
+              return !value;
+            })
+          }
+        />
+        <div className="logoContainer">
+          <img
+            src={logo}
+            className="logoImage"
+            alt="logo"
+            onClick={() => {
+              setSearch(false);
+              handleClick("Home", 0);
+              navigate("/");
+            }}
+          />
+        </div>
+        <div className={navDisplay ? "navigation"  : "activated navigation"}>
+          <div className={"nav"}>
+            <ul>
+              <div className="items"></div>
+              <li className={activeElement === "Home" ? "active" : ""}>
+                <Link
+                  to="/"
+                  onClick={() => {
+                    setSearch(false);
+                    handleClick("Home", 0);
+                  }}
+                >
+                  <Icon.Home />
+                  <span>Home</span>
+                </Link>
+              </li>
+              <li className={activeElement === "Game" ? "active" : ""}>
+                <Link
+                  to="/game"
+                  onClick={() => {
+                    setSearch(false);
+                    handleClick("Game", 1);
+                  }}
+                >
+                  <Icon.Game />
+                  <span>Game</span>
+                </Link>
+              </li>
+              <li className={activeElement === "Chat" ? "active" : ""}>
+                <Link
+                  to="/chat"
+                  onClick={() => {
+                    setSearch(false);
+                    handleClick("Chat", 2);
+                  }}
+                >
+                  <Icon.Chat />
+                  <span>Chat</span>
+                </Link>
+              </li>
+              <li className={activeElement === "Leaderboard" ? "active" : ""}>
+                <Link
+                  to="/leaderboard"
+                  onClick={() => {
+                    setSearch(false);
+                    handleClick("Leaderboard", 3);
+                  }}
+                >
+                  <Icon.Leaderboard />
+                  <span>Leaderboard</span>
+                </Link>
+              </li>
+              <li className={activeElement === "Setting" ? "active" : ""}>
+                <Link
+                  to="/setting"
+                  onClick={() => {
+                    setSearch(false);
+                    handleClick("Setting", 4);
+                  }}
+                >
+                  <Icon.Setting />
+                  <span>Setting</span>
+                </Link>
+              </li>
+              <li className={activeElement === "Profile" ? "active" : ""}>
+                <Link
+                  to="/profile"
+                  onClick={() => {
+                    setSearch(false);
+                    handleClick("Profile", 5);
+                  }}
+                >
+                  <Icon.Profile />
+                  <span>Profile</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
         <div className="button">
           <button

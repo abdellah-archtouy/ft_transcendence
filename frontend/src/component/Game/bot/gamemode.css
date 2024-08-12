@@ -10,18 +10,19 @@
     display: flex;
     width: 69.5%;
     height: 44%;
-    gap: 146px;
+    gap: clamp(1.25rem, 5.625vw + 0.125rem, 9.125rem);
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .botmode-button {
-    width: 227px;
-    height: 410px;
+    width: clamp(9.375rem, 3.438vw + 8.688rem, 14.188rem);
+    height: clamp(18.75rem, 4.911vw + 17.768rem, 25.625rem);
     border-radius: 10px;
     background-color: transparent;
     transition: all 0.4s;
-    font-size: 36px;
+    font-size: clamp(1.25rem, 0.714vw + 1.107rem, 2.25rem);
     font-family: 'URW Geometric';
     font-weight: bold;
     cursor: pointer;
@@ -38,7 +39,7 @@
 }
 
 #game-mode-header {
-    font-size: 48px;
+    font-size: clamp(1.5rem, 1.071vw + 1.286rem, 3rem);
     color: rgb(255, 255, 255, 0.6);
     line-height: 0.9;
     margin-top: 50px;
@@ -60,6 +61,7 @@
     color: #A4D2F4;
     text-shadow: 0 0 4px #0075ce;
     animation: fade-in .8s ease-in;
+    background-color: #070B14;
 }
 
 .medium{

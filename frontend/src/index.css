@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* border: solid; */
 }
 
 #root {
@@ -34,12 +35,11 @@ body {
 }
 
 .main {
-  margin-top: 128px;
   display: flex;
   flex: 1;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 200px;
+  /* padding-bottom: 200px; */
 }
 
 @keyframes vibrate {
@@ -114,4 +114,8 @@ body {
   100% {
     opacity: 0;
   }
+}
+
+@media (max-width: 1024px) {
+  
 }
