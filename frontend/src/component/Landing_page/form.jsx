@@ -3,8 +3,11 @@ import logo_42 from "./images/42_logo.svg";
 
 const AuthForm = () => {
     const [isSignUp, setIsSignUp] = useState(false);
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -13,11 +16,62 @@ const AuthForm = () => {
     const handleToggleForm = (event) => {
         event.preventDefault();
         setIsSignUp(!isSignUp);
+        setErrors({});
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (isSignUp) {
+            if (!username) {
+                newErrors.username = 'Required';
+            } else if (username.length < 3 || username.length > 15) {
+                newErrors.username = '3-15 chars';
+                setUsername(''); // Clear input
+            } else if (!/^[a-zA-Z0-9]+$/.test(username)) {
+                newErrors.username = 'Alphanumeric';
+                setUsername(''); // Clear input
+            }
+        }
+
+        if (!email) {
+            newErrors.email = 'Required';
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            newErrors.email = 'Invalid';
+            setEmail(''); // Clear input
+        }
+
+        if (!password) {
+            newErrors.password = 'Required';
+        } else if (password.length < 8) {
+            newErrors.password = '8+ chars';
+            setPassword(''); // Clear input
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/.test(password)) {
+            newErrors.password = 'Low Complexity';
+            setPassword(''); // Clear input
+        }
+
+        return newErrors;
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const formErrors = validateForm();
+        if (Object.keys(formErrors).length === 0) {
+            // Submit the form (e.g., send the data to the server)
+        } else {
+            setErrors(formErrors);
+        }
+    };
+
+    const handleChange = (setter) => (event) => {
+        setter(event.target.value);
+        setErrors(prevErrors => ({ ...prevErrors, [event.target.name]: '' })); // Clear the error for this field
     };
 
     return (
         <>
-            <form action="" className='login_form'>
+            <form action="" className='login_form' onSubmit={handleSubmit}>
                 <div className='login-form-div1'>
                     <p className='login_form-p1'>{isSignUp ? 'Sign up' : 'Login'}</p>
                     <h1 className='login_form-h1'>{isSignUp ? 'Welcome' : 'Welcome back'}</h1>
@@ -25,23 +79,30 @@ const AuthForm = () => {
                 </div>
                 {isSignUp && (
                     <input
-                        className='login_form-username'
+                        className={`login_form-username ${errors.username ? 'input-error' : ''}`}
                         type="text"
-                        placeholder="Username"
+                        name="username"
+                        placeholder={errors.username || "Username"}
+                        value={username}
+                        onChange={handleChange(setUsername)}
                     />
                 )}
                 <input
-                    className='login_form-email'
+                    className={`login_form-email ${errors.email ? 'input-error' : ''}`}
                     type="email"
-                    placeholder="Email"
+                    name="email"
+                    placeholder={errors.email || "Email"}
+                    value={email}
+                    onChange={handleChange(setEmail)}
                 />
                 <div className='password-container'>
                     <input
-                        className='login_form-password'
+                        className={`login_form-password ${errors.password ? 'input-error' : ''}`}
                         type={showPassword ? "text" : "password"}
-                        placeholder="Password"
+                        name="password"
+                        placeholder={errors.password || "Password"}
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handleChange(setPassword)}
                     />
                     <button type="button" className='show-password-button' onClick={toggleShowPassword}>
                         {showPassword ? "Hide" : "Show"}
@@ -67,4 +128,3 @@ const AuthForm = () => {
 };
 
 export default AuthForm;
-
