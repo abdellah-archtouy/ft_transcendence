@@ -61,6 +61,40 @@
     gap: 20px;
 }
 
+.picker{
+    position: absolute;
+    bottom: 70px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+.chat_top_bar .set_dropdown li{
+    list-style-type: none;
+    display: flex;
+    justify-content: start;
+}
+.chat_top_bar .set_dropdown ul{
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: start;
+}
+.chat_top_bar .set_dropdown{
+    position: absolute;
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px black;
+    right: 0px;
+    width: 130px;
+    height: 100px;
+    background-color: #222222;
+    cursor: pointer;
+}
+
 .chat_top_bar .set{
     position: absolute;
     right: 20px;

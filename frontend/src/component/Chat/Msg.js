@@ -6,6 +6,8 @@ import PlayInv from './icons/play_inv';
 import Sent from './icons/sent';
 import SenderBox from './sender_box';
 import axios from 'axios';
+import emojiData from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 
 const Msg = ({ userData , convid , conversationdata }) => {
     const [message, setMessage] = useState('');
@@ -13,6 +15,8 @@ const Msg = ({ userData , convid , conversationdata }) => {
     const [loading, setLoading] = useState(true);  
     const [error, setError] = useState(null);  
     const [daton, setDaton] = useState(false);
+    const [clicked, setClicked] = useState(false);
+    const [imogiclicked, setImogiclicked] = useState(false);
 
     const fetchData = async () => {  
         try {
@@ -36,7 +40,6 @@ const Msg = ({ userData , convid , conversationdata }) => {
         fetchData();
     }, [convid]);
 
-    const conversationId = 1;
     const [ws, setWs] = useState(null);
 
     useEffect(() => {
@@ -77,6 +80,19 @@ const Msg = ({ userData , convid , conversationdata }) => {
         }
     };
 
+    const handelsetclick = () => {
+        setClicked(!clicked);
+        // console.log('set clicked');
+    }
+    const handelemojiclick = () => {
+        setImogiclicked(!imogiclicked);
+
+    }
+
+    const addemoji = (emoji) => {
+        setMessage(message + emoji.native);
+    }
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
     const isEmptyObject = Object.keys(conversationdata).length === 0;
@@ -99,8 +115,15 @@ const Msg = ({ userData , convid , conversationdata }) => {
                             </>
                         )}
                         </div>
-                        <div className='set'>
+                        <div onClick={handelsetclick} className='set'>
                             <Set />
+                            <div className={`set_dropdown ${clicked === true ? '' : 'hide'}`}>
+                                <ul>
+                                    <li>Block</li>
+                                    <li>Mute</li>
+                                    <li>Close Chat</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     <div className={`conversation`}>
@@ -115,10 +138,11 @@ const Msg = ({ userData , convid , conversationdata }) => {
                         )}
                     </div>
                     <div className={`message_bar`}>
-                        {/* <Imoji /> */}
-                        {/* <PlayInv /> */}
                         <button ><PlayInv /></button>
-                        <button ><Imoji /></button>
+                        <button onClick={handelemojiclick} ><Imoji /></button>
+                        <div className={`picker ${imogiclicked === true ? '' : 'hide'}`}>
+                            {emojiData && <Picker emojiSize={20} emojiButtonSize={28} onEmojiSelect={addemoji} previewPosition={'none'} data={emojiData} />}
+                        </div>
                         <form onSubmit={handleSubmit} className="search-container1">
                             <textarea className="search-input1"
                                 value={message}
@@ -140,38 +164,3 @@ const Msg = ({ userData , convid , conversationdata }) => {
 };
 
 export default Msg;
-
-{/* <div className={`chat_top_bar ${daton === false ? '' : 'hide'}`}>
-                        <div className='icon_name'>
-                            <img src={data[0].conversation_info.uid2_info.avatar} alt='avatar' />
-                            <h3>{data[0].conversation_info.uid2_info.username}</h3>
-                        </div>
-                        <div className='set'>
-                            <Set />
-                        </div>
-                    </div>
-                    <div className={`conversation ${daton === false ? '' : 'hide'}`}>
-                        {data.length === 0 ? (
-                            <div className='empty'>
-                                <p>Add a person <br/> and start a conversation</p>
-                            </div>
-                        ) : (
-                            data.map((user, index) => (
-                                <SenderBox key={index} name={user.user === 1 ? 'sender' : 'receiver'} data={user} />
-                            ))
-                        )}
-                    </div>
-                    <div className={`message_bar ${daton === false ? '' : 'hide'}`}>
-                        <Imoji />
-                        <PlayInv />
-                        <form onSubmit={handleSubmit} className="search-container">
-                            <textarea className="search-input"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Enter your message"
-                                required
-                            />
-                            <button type="submit"><Sent /></button>
-                        </form>
-                    </div>
-                </> */}

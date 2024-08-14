@@ -21,12 +21,17 @@ const Friend = () => {
     <>
       <h1 className="Friend-header">1 V 1 <br /> Game</h1>
       <div className="FriendContainer">
-        <div className="PlayLocal">
-          <img src={FriendVector} alt="" className="PlayImage" />
+        <div className="friend-game-select">{/*style={{width:"fit-content", height:"fit-content", border:"solid"}}>*/}
+          <div className="PlayLocal">
+            <img src={FriendVector} alt="" className="PlayImage" />
+            <p>Local</p>
+          </div>
         </div>
-        <div className="PlayRemote">
-          <img src={FriendVector} alt="" className="PlayImage" />
-          <p>Remote</p>
+        <div className="friend-game-select">
+          <div className="PlayRemote">
+            <img src={FriendVector} alt="" className="PlayImage" />
+            <p>Remote</p>
+          </div>
         </div>
       </div>
     </>

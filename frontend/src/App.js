@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Navbar from "./component/Navbar/Navbar";
@@ -9,18 +9,21 @@ import Setting from "./component/Setting/Setting";
 import Chat from "./component/Chat/Chat";
 import Leaderboard from "./component/Leaderboard/Leaderboard";
 import Home from "./component/Home/Home";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
-import LandingPage from "./component/Landing_page/Landing_page";
+// import LandingPage from "./component/Landing_page/Landing_page";
 import Landing from "./component/landtest/land";
 
 function App() {
   const [auth, setAuth] = useState(false);
+  const location = useLocation();
   const bgImage = auth && {
     background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
   };
-  
+
+  const souldApplyMargin = location.pathname !== "/chat";
+
   return (
     <div className="App" style={{ ...bgImage }}>
       {" "}
@@ -28,7 +31,7 @@ function App() {
       {auth ? (
         <>
           <Navbar />
-          <div className="main">
+          <div className="main" style={{marginBottom: souldApplyMargin ? "200px" : "0px"}}>
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/game/*" element={<GameRouting />} />

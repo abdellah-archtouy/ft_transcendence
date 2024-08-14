@@ -2,14 +2,18 @@
     height: 100%;
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 100px;
+    gap: 6vh;
+    padding: 0 4%; /* Padding for the container */
+    user-select: none;
 }
 
 .Friend-header {
-    font-size: 48px;
-    line-height: 50px;
+    font-size: clamp(1.5rem, 1.071vw + 1.286rem, 3rem);
+    line-height: 1em;
+    font-weight: 800;
     margin-top: 50px;
     margin-bottom: 100px;
     text-shadow : 0px 0px 14.86px #ffffff80,
@@ -17,34 +21,48 @@
                  0px 0px 104px #ffffff80,
                  0px 0px 208px #ffffff80,
                  0px 0px 356.56px #ffffff80;
+    user-select: none;
 }
 
-.FriendContainer > div {
-    width: 300px;
-    height: 300px;
-    background-color: rgb(86, 86, 86, 0.8);
+.friend-game-select > div  {
+    width: calc(clamp(15.625rem, 22.321vw - 4.464rem, 31.25rem));
+    height: calc(clamp(15.625rem, 22.321vw - 4.464rem, 31.25rem));
+    max-width: 450px;
+    max-height: 450px;
+    background-color: rgba(86, 86, 86, 0.8);
     overflow: hidden;
     display: flex;
     position: relative;
     border-radius: 30px;
-    box-shadow: 0px 0px 10px 5px rgb(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(20px);
-    justify-content: end;
+    box-sizing: border-box;
+    padding: 10%;
+}
+
+.friend-game-select > div > p {
+    display: inline-block;
+    vertical-align: bottom;
+    font-size: calc(10px + 2vw);
+    font-weight: 700;
+    color: rgba(196, 196, 196, 0.5);
+    width: auto;
+    height: fit-content;
+    line-height: 1em;
 }
 
 .PlayImage {
     position: absolute;
-    right: -50px;
+    right: -39%;
     bottom: 0;
     height: 100%;
 }
 
-.PlayRemote {
+.PlayRemote > img {
     transform: scaleX(-1);
-    position: relative;
+    left: -39%;
 }
 
-.PlayRemote > p{
-    position: absolute;
-    right: 0;
+.PlayRemote {
+    justify-content: end;
 }

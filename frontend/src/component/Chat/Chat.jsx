@@ -43,12 +43,12 @@ const Chat = () => {
   }
 
   return (
-    <div className="App">
+    // <div className="App">
       <div className='chat_container'>
         <ConvBar userData={userData} setconvid={setconvid} setConversationdata={setConversationdata}/>
         <Msg userData={userData} convid={convid} conversationdata={conversationdata}/>
       </div>
-    </div>
+    // </div>
   );
 }
 

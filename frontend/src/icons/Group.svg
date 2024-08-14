@@ -1,7 +1,7 @@
 <svg width="1440" height="417" viewBox="0 0 1440 417" fill="none" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="74.5" cy="157" rx="127.5" ry="133" stroke="#565656" strokeWidth="47"/>
-<path d="M635 472.557L909.39 328.252" stroke="#565656" strokeWidth="40" stroke-linecap="round"/>
-<path d="M706.408 261.668L850.713 536.058" stroke="#565656" strokeWidth="40" stroke-linecap="round"/>
-<path d="M1060.34 125.304L1293.42 284.288L1042.75 406.897L1060.34 125.304Z" stroke="#565656" strokeWidth="47"/>
-<rect x="305" y="291.966" width="143.203" height="143.203" transform="rotate(-20.4209 305 291.966)" stroke="#565656" strokeWidth="40"/>
+<ellipse cx="74.5" cy="157" rx="127.5" ry="133" stroke="#565656" stroke-width="47"/>
+<path d="M635 472.557L909.39 328.252" stroke="#565656" stroke-width="40" stroke-linecap="round"/>
+<path d="M706.408 261.668L850.713 536.058" stroke="#565656" stroke-width="40" stroke-linecap="round"/>
+<path d="M1060.34 125.304L1293.42 284.288L1042.75 406.897L1060.34 125.304Z" stroke="#565656" stroke-width="47"/>
+<rect x="305" y="291.966" width="143.203" height="143.203" transform="rotate(-20.4209 305 291.966)" stroke="#565656" stroke-width="40"/>
 </svg>
