@@ -17,12 +17,13 @@ import Game.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 
+websocket_urlpatterns = routing.websocket_urlpatterns + Game.routing.websocket_urlpatterns
+
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            routing.websocket_urlpatterns,
-            Game.routing.websocket_urlpatterns
+            websocket_urlpatterns
         )
     )
 })

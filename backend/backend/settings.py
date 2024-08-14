@@ -41,7 +41,6 @@ CHANNEL_LAYERS = {
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'channels',
     'daphne',
     'django.contrib.admin',
