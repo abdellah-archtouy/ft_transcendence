@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect  , useRef} from 'react';
 import './Msg.css';
 import Set from './icons/set';
 import Imoji from './icons/imoji';
@@ -9,7 +9,7 @@ import axios from 'axios';
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
-const Msg = ({ userData , convid , conversationdata }) => {
+const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [message, setMessage] = useState('');
     const [data, setData] = useState([]);  
     const [loading, setLoading] = useState(true);  
@@ -17,6 +17,7 @@ const Msg = ({ userData , convid , conversationdata }) => {
     const [daton, setDaton] = useState(false);
     const [clicked, setClicked] = useState(false);
     const [imogiclicked, setImogiclicked] = useState(false);
+    const messagesEndRef = useRef(null);
 
     const fetchData = async () => {  
         try {
@@ -35,7 +36,7 @@ const Msg = ({ userData , convid , conversationdata }) => {
     };  
 
     console.log('conversationdata:', conversationdata);
-    console.log('data:', userData);
+    // console.log('data:', userData);
     useEffect(() => {
         fetchData();
     }, [convid]);
@@ -51,8 +52,8 @@ const Msg = ({ userData , convid , conversationdata }) => {
         socket.onmessage = (e) => {
             const data1 = JSON.parse(e.data);
             setData(data => [...data, data1]);
-            console.log('data:', data);
-            console.log('data1:', data1);
+            // console.log('data:', data);
+            // console.log('data1:', data1);
         };
 
         socket.onclose = () => {
@@ -82,19 +83,31 @@ const Msg = ({ userData , convid , conversationdata }) => {
 
     const handelsetclick = () => {
         setClicked(!clicked);
-        // console.log('set clicked');
     }
     const handelemojiclick = () => {
         setImogiclicked(!imogiclicked);
 
     }
 
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [data]);
+
     const addemoji = (emoji) => {
         setMessage(message + emoji.native);
     }
 
+    const handelcloseChat = () => {
+        setSelectedConvId(0);
+        console.log('selectedConvId:');
+    }
+
     if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+    // if (error) return <div>Error: {error.message}</div>;
     const isEmptyObject = Object.keys(conversationdata).length === 0;
 
     return (
@@ -121,12 +134,12 @@ const Msg = ({ userData , convid , conversationdata }) => {
                                 <ul>
                                     <li>Block</li>
                                     <li>Mute</li>
-                                    <li>Close Chat</li>
+                                    <li onClick={handelcloseChat}>Close Chat</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div className={`conversation`}>
+                    <div  className={`conversation`}>
                         {data.length === 0 ? (
                             <div className='empty-conv'>
                                 <p>type some thing <br/> to your friend</p>
@@ -136,6 +149,8 @@ const Msg = ({ userData , convid , conversationdata }) => {
                                 <SenderBox key={index} name={user.user === userData.id ? 'sender' : 'receiver'} data={user} />
                             ))
                         )}
+                        <div ref={messagesEndRef} />
+                        <div/>
                     </div>
                     <div className={`message_bar`}>
                         <button ><PlayInv /></button>

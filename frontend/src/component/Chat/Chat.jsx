@@ -9,6 +9,7 @@ const Chat = () => {
   const [userData, setUserData] = useState(null);
   const [convid , setconvid] = useState(0);
   const [conversationdata, setConversationdata] = useState([]);
+  const [selectedConvId, setSelectedConvId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,8 +46,8 @@ const Chat = () => {
   return (
     // <div className="App">
       <div className='chat_container'>
-        <ConvBar userData={userData} setconvid={setconvid} setConversationdata={setConversationdata}/>
-        <Msg userData={userData} convid={convid} conversationdata={conversationdata}/>
+        <ConvBar userData={userData} setconvid={setconvid} setSelectedConvId={setSelectedConvId} selectedConvId={selectedConvId} setConversationdata={setConversationdata}/>
+        <Msg userData={userData} convid={convid} setSelectedConvId={setSelectedConvId} conversationdata={conversationdata}/>
       </div>
     // </div>
   );

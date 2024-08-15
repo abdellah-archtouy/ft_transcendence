@@ -6,12 +6,12 @@ import Add from './icons/Vector';
 import Vector from './icons/Vector_1';
 import './Conv_bar.css';
 
-const ConvBar = ({ userData , setconvid , setConversationdata}) => {
+const ConvBar = ({ userData , setconvid , setSelectedConvId , selectedConvId, setConversationdata}) => {
   const [conv, setConv] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [on, setOn] = useState(true);
-  const [selectedConvId, setSelectedConvId] = useState(null);
+  // const [selectedConvId, setSelectedConvId] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -40,6 +40,13 @@ const ConvBar = ({ userData , setconvid , setConversationdata}) => {
     setconvid(conv.id);
     setConversationdata(conv);
   };
+
+  useEffect(() => {
+    if (selectedConvId != 0)
+      return;
+    setconvid(selectedConvId);
+    setConversationdata([]);
+  }, [selectedConvId]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
