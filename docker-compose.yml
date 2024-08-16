@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /Users/tmiftah/Desktop/database:/var/lib/postgresql/data
+      - /Users/rel-fila/Desktop/database:/var/lib/postgresql/data
     networks:
       - my-network
     restart: always

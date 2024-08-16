@@ -115,7 +115,10 @@
 .top-5-list-item-link a {
     text-decoration: none;
     color: #FFFFFF;
+}
 
+.top-5-list-item-link {
+    margin-top: 0.3rem;
 }
 
 
@@ -123,6 +126,7 @@
     margin-left: 0.5em;
 }
 
+.top-5-list-item-user,
 .top-5-list-item-name,
 .top-5-list-item-rank,
 .top-5-list-item-score,
@@ -130,4 +134,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media (min-width: 1440px) and (max-width: 1919px) {
+    .top-5-list-item-user img {
+        width: 55%;
+        height: auto;
+        border: 1.5px solid #636262;
+    }
+
+    .top-5-list-item {
+        margin-right: 2rem;
+    }
+
+    .top-5-list-item-link {
+        margin-top: 0.3rem;
+    }
+
+    .top-5-header div a {
+        font-size: 16px;
+    }
 }
