@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* border: solid; */
 }
 
 #root {
@@ -113,6 +112,18 @@ body {
   }
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes hoverScale {
+  0% {
+      transform:scale(1, 1);
+  }
+  50% {
+      transform:scale(1.05, 1.05);
+  }
+  100% {
+      transform:scale(1.025, 1.025);
   }
 }
 

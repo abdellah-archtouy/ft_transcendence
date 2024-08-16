@@ -73,22 +73,10 @@
     opacity: 0;
 }
 
-@keyframes talal {
-    0% {
-        transform:scale(1, 1);
-    }
-    50% {
-        transform:scale(1.05, 1.05);
-    }
-    100% {
-        transform:scale(1.025, 1.025);
-    }
-}
-
 .game_Tournament:hover , .game_friend:hover, .game_bot:hover
 {
     z-index: 1;
-    animation: talal 0.4s ease-in-out;
+    animation: hoverScale 0.4s ease-in-out;
     transform: scale(1.025, 1.025);
     filter: drop-shadow(0px 0 0 white);
 }
@@ -128,7 +116,6 @@
     border-radius: 30px;
     width: auto;
     height: 100%;
-    /* right: -80px; */
 }
 
 .game_bot {

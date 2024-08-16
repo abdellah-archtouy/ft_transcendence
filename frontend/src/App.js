@@ -30,7 +30,7 @@ function App() {
       {auth ? (
         <>
           <Navbar />
-          <div className="main" style={{marginBottom: souldApplyMargin ? "200px" : "0px"}}>
+          <div className="main" style={{marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px"}}>
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/game/*" element={<GameRouting />} />
