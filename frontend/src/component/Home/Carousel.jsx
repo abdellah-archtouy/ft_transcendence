@@ -1,17 +1,44 @@
-import Slider from "react-slick";
-import Card from "./Card.jsx";
-
+import React, { useState, useEffect } from 'react';
+import Slider from 'react-slick';
+import Card from './Card'; // Assuming you have a Card component
 
 function Carousel({ friends, handleAddFriend }) {
-
-    var settings = {
+    const [settings, setSettings] = useState({
         dots: false,
         infinite: false,
         speed: 500,
         slidesToShow: 5,
         slidesToScroll: 1,
         initialSlide: 0,
-    };
+    });
+
+    useEffect(() => {
+        // Function to update the settings based on the viewport width
+        const updateSettings = () => {
+            if (window.innerWidth < 1919) {
+                setSettings(prevSettings => ({
+                    ...prevSettings,
+                    slidesToShow: 4,
+                }));
+            } else {
+                setSettings(prevSettings => ({
+                    ...prevSettings,
+                    slidesToShow: 5,
+                }));
+            }
+        };
+
+        // Initial settings update
+        updateSettings();
+
+        // Update settings on resize
+        window.addEventListener('resize', updateSettings);
+
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', updateSettings);
+        };
+    }, []);
 
     return (
         <Slider {...settings}>

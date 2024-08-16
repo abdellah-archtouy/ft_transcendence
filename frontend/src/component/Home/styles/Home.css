@@ -39,7 +39,6 @@ svg {
 
 /* Container for the home section */
 .home-div {
-  overflow: scroll;
   /* Use 'auto' to show scrollbars only when necessary */
   display: flex;
   align-items: center;
@@ -47,12 +46,13 @@ svg {
   flex-direction: column;
   align-items: center;
   gap: 3em;
-  padding-bottom: 10%;
 }
+
 
 /* Welcome section */
 .home-dive-welcome {
-  margin-top: 100px; /* i changed 20% with 100px */
+  margin-top: 100px;
+  /* i changed 20% with 100px */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -66,7 +66,6 @@ svg {
   border-radius: 30px;
   box-shadow: rgba(244, 244, 244, 0.35) 0px 0px 10px 5px;
   position: relative;
-  max-width: 50vw;
   height: 40vh;
   width: 50vw;
   flex-shrink: 0;
@@ -124,7 +123,7 @@ svg {
   display: flex;
   gap: 1.2em;
   flex-direction: row;
-  height: 40vh;
+  height: 35vh;
   width: 50vw;
 }
 
@@ -144,7 +143,7 @@ svg {
   height: 100%;
   overflow-y: auto;
   /* Ensure scrollbars appear */
-  padding: 1rem;
+  padding: 1.2rem;
   border-radius: 4px;
 }
 
@@ -161,7 +160,7 @@ svg {
   align-items: center;
   padding: 1rem;
   margin-bottom: 2em;
-  border-radius: 9px;
+  border-radius: 10px;
   background-color: #222222;
 }
 
@@ -175,8 +174,8 @@ svg {
 }
 
 .matches-list-item-user img {
-  width: 5rem;
-  height: 5rem;
+  width: 6rem;
+  height: auto;
   border-radius: 50%;
   border: 3px solid #636262;
 }
@@ -186,11 +185,13 @@ svg {
   padding: 2rem;
   margin-bottom: 1rem;
   border-radius: 4px;
+  border: solid;
 }
 
 .matches-list-item:last-of-type {
   margin-bottom: 0;
 }
+
 
 .last-matches-header h2 {
   font-size: 2em;
@@ -240,5 +241,87 @@ svg {
 }
 
 .last-matches-header div a {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 18px;
+}
+
+
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .home-dive-welcome {
+    height: 30vh;
+    width: 65vw;
+  }
+
+  .home-dive-welcome h2 {
+    font-size: 5rem;
+    margin-left: 1.5rem;
+  }
+
+  .stats {
+    height: 30vh;
+    width: 65vw;
+  }
+
+  .matches-list-item-user img {
+    width: 5rem;
+    border: 2px solid #636262;
+  }
+
+  .home-dive-welcome-btn {
+    font-size: 2rem;
+  }
+
+  .last-matches-header div a {
+    font-size: 16px;
+  }
+
+}
+
+/* Large Devices (Desktops) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .home-dive-welcome {
+    height: 30vh;
+    width: 80vw;
+  }
+
+  .home-dive-welcome h2 {
+    font-size: 4.5rem;
+    margin-left: 1.5rem;
+  }
+
+  .stats {
+    height: 30vh;
+    width: 80vw;
+  }
+
+  .matches-list-item-user img {
+    width: 4rem;
+    border: 2px solid #636262;
+  }
+
+  .matches-list-item-score {
+    font-size: 1.4em;
+    margin-left: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .home-dive-welcome-btn {
+    font-size: 1.7rem;
+  }
+
+}
+
+/* Medium Devices (Tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* Styles for tablets */
+}
+
+/* Small Devices (Mobile Phones) */
+@media (min-width: 576px) and (max-width: 767px) {
+  /* Styles for small mobile phones */
+}
+
+/* Extra Small Devices (Mobile Phones) */
+@media (max-width: 575px) {
+  /* Styles for extra small mobile phones */
 }

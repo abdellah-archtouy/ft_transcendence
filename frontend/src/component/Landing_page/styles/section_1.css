@@ -20,7 +20,7 @@
 
 .logo {
     position: fixed;
-    z-index: 5;
+    z-index: 1001;
 }
 
 .landing_section_1-polygon-div {
@@ -97,4 +97,10 @@
     100% {
         transform: translateY(0);
     }
+}
+
+.scroll-down p {
+    font-family: 'akshar', sans-serif;
+    font-size: 1em;
+    font-weight: 300;
 }

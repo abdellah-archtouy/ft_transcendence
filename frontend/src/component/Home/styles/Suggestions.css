@@ -1,6 +1,5 @@
 .suggestions {
-    max-width: 50vw;
-    height: 40vh;
+    height: 30vh;
     width: 50vw;
     /* From https://css.glass */
     background: rgba(34, 34, 34, 0.46);
@@ -24,6 +23,7 @@
     background-color: #222222;
     width: 100%;
     height: 100%;
+    padding: 12% 0 12% 0;
 }
 
 .name-container {
@@ -38,6 +38,7 @@
     display: inline-block;
     transition: transform 0.3s linear;
     font-size: 1.5em;
+
 }
 
 .name-container.overflow:hover .name {
@@ -56,8 +57,7 @@
 
 
 .card img {
-    margin-top: 10%;
-    width: 60%;
+    width: 50%;
     height: auto;
     border-radius: 50%;
     border: 3px solid #636262;
@@ -99,7 +99,7 @@
 }
 
 .container {
-    width: 70%;
+    width: 60%;
     height: 15%;
     display: flex;
     flex-direction: row;
@@ -165,9 +165,30 @@
 }
 
 .container-btn {
-    width: 50%;
+    width: 40%;
     height: auto;
-    margin-bottom: 7%;
     scale: 1.2;
 
+}
+
+@media (min-width: 1440px) and (max-width: 1919px) {
+    .suggestions {
+        height: 30vh;
+        width: 65vw;
+    }
+
+    .card img {
+        border: 2px solid #636262;
+    }
+
+    .card-btn {
+        font-weight: 600;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .suggestions {
+        height: 30vh;
+        width: 80vw;
+    }
 }
