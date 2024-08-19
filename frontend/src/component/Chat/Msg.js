@@ -13,7 +13,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [message, setMessage] = useState('');
     const [data, setData] = useState([]);  
     const [loading, setLoading] = useState(true);  
-    const [error, setError] = useState(null);  
+    // const [error, setError] = useState(null);  
     const [daton, setDaton] = useState(false);
     const [clicked, setClicked] = useState(false);
     const [imogiclicked, setImogiclicked] = useState(false);
@@ -22,11 +22,12 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const fetchData = async () => {  
         try {
             console.log('convid:', convid);
-            const response = await axios.get(`http://localhost:8000/api/msg/${convid}/`);  
+            const response = await axios.get(`http://${window.location.hostname}:8000/api/msg/${convid}/`);
             setData(response.data);
+            console.log('data:', response.data);
             setDaton(true);
         } catch (error) {  
-            setError(error);
+            // setError(error);
             console.log(error);
             setData([]);
             setDaton(false);
@@ -35,7 +36,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
         }  
     };  
 
-    console.log('conversationdata:', conversationdata);
+    // console.log('conversationdata:', conversationdata);
     // console.log('data:', userData);
     useEffect(() => {
         fetchData();
@@ -44,7 +45,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [ws, setWs] = useState(null);
 
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8000/ws/api/msg/${convid}/`);
+        const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/msg/${convid}/`);
         socket.onopen = () => {
             console.log('WebSocket connection established');
         };
@@ -159,7 +160,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
                             {emojiData && <Picker emojiSize={20} emojiButtonSize={28} onEmojiSelect={addemoji} previewPosition={'none'} data={emojiData} />}
                         </div>
                         <form onSubmit={handleSubmit} className="search-container1">
-                            <textarea className="search-input1"
+                            <input className="search-input1"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Enter your message"

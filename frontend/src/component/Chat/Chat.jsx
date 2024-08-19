@@ -16,7 +16,7 @@ const Chat = () => {
       const accessToken = localStorage.getItem('token');
   
       try {
-          const response = await axios.get('http://127.0.0.1:8000/api/user/', {
+          const response = await axios.get(`http://${window.location.hostname}:8000/api/user/`, {
               headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${accessToken}`,
@@ -46,7 +46,7 @@ const Chat = () => {
   return (
     // <div className="App">
       <div className='chat_container'>
-        <ConvBar userData={userData} setconvid={setconvid} setSelectedConvId={setSelectedConvId} selectedConvId={selectedConvId} setConversationdata={setConversationdata}/>
+        <ConvBar userData={userData} setconvid={setconvid} selectedConvId={selectedConvId} setSelectedConvId={setSelectedConvId} setConversationdata={setConversationdata}/>
         <Msg userData={userData} convid={convid} setSelectedConvId={setSelectedConvId} conversationdata={conversationdata}/>
       </div>
     // </div>

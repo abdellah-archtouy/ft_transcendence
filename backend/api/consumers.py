@@ -6,6 +6,7 @@ from User.models import User
 from asgiref.sync import async_to_sync
 from django.core.serializers import serialize
 from django.db import transaction
+from django.db.models import Q
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -66,20 +67,31 @@ class AddConvConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         pass
 
+
     def receive(self, text_data):
+        print(text_data)
         text_data_json = json.loads(text_data)
         user_id_str = text_data_json.get('user', '')
+        user1_id_str = text_data_json.get('user1', '')
         user_id = int(user_id_str)
-        user1 = User.objects.filter(id=1).first()
+        user1_id = int(user1_id_str)
+
+        user1 = User.objects.filter(id=user1_id).first()
         user2 = User.objects.filter(id=user_id).first()
-        conv = Conversation.objects.filter(uid1=user_id) | Conversation.objects.filter(uid2=user_id)
-        if conv.exists():
-        # Serialize multiple objects
-            serializer = ConvSerializer(conv, many=True)
+
+        # Query for conversation between user_id and user1_id in either direction
+        conv = Conversation.objects.filter(
+            (Q(uid1=user_id) & Q(uid2=user1_id)) |
+            (Q(uid1=user1_id) & Q(uid2=user_id))
+        ).first()
+
+        if conv:
+            print("Conversation already exists")
+            serializer = ConvSerializer(conv)
             conv_data = serializer.data
+            print(f"Conversation data: {conv_data}")
             response = {'conversation': conv_data}
-            print(f"Conversation already exists: {conv_data}")
-            self.send( text_data=json.dumps(response))
+            self.send(text_data=json.dumps(response))
         else:
         # Create new conversation
             conversation = Conversation(uid1=user1, uid2=user2, last_message='')
@@ -88,5 +100,5 @@ class AddConvConsumer(WebsocketConsumer):
             conv_data = serializer.data
             response = {'conversation': conv_data}
             print(f"Created new conversation: {conversation}")
-    
+
             self.send( text_data=json.dumps(response))

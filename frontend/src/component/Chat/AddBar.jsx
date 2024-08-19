@@ -14,11 +14,12 @@ AddBar.propTypes = {
 };
 
 
-function AddBar({conv, setConv, on ,setOn}) {
+function AddBar({setconvid , setConversationdata , conv, userData, setSelectedConvId , setConv, on ,setOn}) {
     const [data, setData] = useState([]);
     const [resulte1, setresulte1] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    // const [error, setError] = useState(null);
+    const [ws, setWs] = useState(null);
 
     const handleKeyDown = (event) => {
         if (event.key === 'Escape' || event.keyCode === 27) {
@@ -43,12 +44,12 @@ function AddBar({conv, setConv, on ,setOn}) {
     
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/users/');
+            const response = await axios.get(`http://${window.location.hostname}:8000/api/users/`);
             setresulte1(response.data.filter((user) => {
                 return data && user && user.username.toLowerCase().includes(data.toLowerCase());
             }));
         } catch (error) {
-            setError(error);
+            // setError(error);
         } finally {
             setLoading(false);
         }
@@ -59,72 +60,82 @@ function AddBar({conv, setConv, on ,setOn}) {
         setData(e);
         // fetchData();
     }
-    // if (loading) return <div>Loading...</div>;
-    // if (error) return <div>Error: {error.message}</div>;
-    const [ws, setWs] = useState(null);
     const handleWebSocketMessage = (e) => {
         const conv1 = JSON.parse(e.data);
         setConv(conv => [...conv1, conv]);
-        // console.log('data:', conv);
-        // console.log('data1:', conv1);
     };
-    const handleClick = (userId) => () => {
-      setOn(true);
-      if (ws && ws.readyState === WebSocket.OPEN) {
-          const msg = { user: userId};
-          ws.send(JSON.stringify(msg));
-          setData('');
-      } else {
-          console.log('WebSocket is not ready');
-      }
-  };
     
-
+    
+    
     useEffect(() => {
         
-        const socket = new WebSocket(`ws://localhost:8000/ws/api/addconv/`);
+        const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/addconv/`);
         socket.onopen = () => {
-          console.log('WebSocket connection established');
+            console.log('WebSocket connection established');
         };
-
-
+        
+        
         socket.onmessage = socket.onmessage = (e) => {
-            console.log('WebSocket message received:', e.data);
-
+            // console.log('WebSocket message received:', e.data);
+            
             try {
                 const data = JSON.parse(e.data);
                 const conv1 = data.conversation;
-
-                if (Array.isArray(conv1)) {
-                    console.log('Updating conversations (array):', conv1);
-                    setConv(conv => [...conv1, ...conv]);
-                } else if (conv1 && typeof conv1 === 'object') {
-                    console.log('Updating conversations (object):', conv1);
-                    setConv(conv => [conv1, ...conv]);
-                } else {
-                    console.error('Unexpected data format:', conv1);
+                const found = conv.find((conv) => conv.id === conv1.id);
+                if (found) {
+                    setSelectedConvId(conv1.id);
+                    setConversationdata(conv1);
+                    setconvid(conv1.id);
+                }   
+                else{
+                    if (Array.isArray(conv1)) {
+                        console.log('Updating conversations (array):', conv1);
+                        setConv(conv => [...conv1, ...conv]);
+                        setSelectedConvId(conv1.id);
+                        setConversationdata(conv1);
+                        setconvid(conv1.id);
+                    } else if (conv1 && typeof conv1 === 'object') {
+                        console.log('Updating conversations (object):', conv1);
+                        setConv(conv => [conv1, ...conv]);
+                    } else {
+                        console.error('Unexpected data format:', conv1);
+                    }
                 }
             } catch (error) {
                 console.error('Failed to parse WebSocket message:', error);
             }
         };
-
+        
         socket.onclose = () => {
-          console.log('WebSocket connection closed');
+            console.log('WebSocket connection closed');
         };
-    
+        
         setWs(socket);
-    
-        return () => {
-          socket.close();
+        
+        // return () => {
+            //   socket.close();
+            // };
+        },[]);
+        
+        const handleClick = (userId) => () => {
+            setOn(true);
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                const msg = { user: userId,
+                    user1: userData.id,
+                };
+                ws.send(JSON.stringify(msg));
+                setData('');
+            } else {
+                console.log('WebSocket is not ready');
+            }
         };
-      },[]);
-
-
-    
-  return (
-    <div className={`AddBar ${on === false ? '' : 'hide'}`}>
-        <div className='SearchBar-container'>
+        
+        // if (error) return <div>Error: {error.message}</div>;
+        if (loading) return <div>Loading...</div>;
+        
+        return (
+            <div className={`AddBar ${on === false ? '' : 'hide'}`}>
+        <div className='SearchBar-container1'>
             <div className='SearchBar'>
                 <Search className='SearchIcon'/>
                 <input type="text" placeholder="Search..." name="search" className="SearchInput" value={data} onClick={handleKeyDown} onChange={(e) => handleChange(e.target.value)}></input>

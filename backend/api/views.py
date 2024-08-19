@@ -59,7 +59,7 @@ class UsersView(generics.ListCreateAPIView):
 
 @api_view(['GET'])
 def get_messages(request, id):
-    messages = Message.objects.all()
+    messages = Message.objects.filter(conversation=id)
     serializer = MessageSerializer(messages, many=True)
     return Response(serializer.data)
 

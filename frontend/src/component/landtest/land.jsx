@@ -11,7 +11,7 @@ const Landing = ({setAuth , auth}) => {
         const data = { email, password };
     
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/login/', data, {
+            const response = await axios.post(`http://${window.location.hostname}:8000/api/login/`, data, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
             });
@@ -32,11 +32,11 @@ const Landing = ({setAuth , auth}) => {
     return (
         <div className='landig'>
             <form onSubmit={handleSubmit} className='landing-form'>
-                <textarea value={email} 
+                <input value={email} 
                     onChange={(e) => setEmail(e.target.value)}
                     required 
                     placeholder='enter your email' id=""/>
-                <textarea value={password}
+                <input value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required 
                     placeholder='enter you password' id=""/>

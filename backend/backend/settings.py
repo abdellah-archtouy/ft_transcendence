@@ -31,7 +31,8 @@ ASGI_APPLICATION = 'backend.asgi.application'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 CHANNEL_LAYERS = {
     'default': {
@@ -102,9 +103,11 @@ MIDDLEWARE = [
 
 CSRF_COOKIE_HTTPONLY = False  # Si vous avez besoin d'accéder au cookie CSRF via JavaScript, définissez ceci à False
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Add your frontend origin here
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://10.11.4.8"  # Add your frontend origin here
+# ]
+CORS_ALLOWED_ORIGINS = ['http://0.0.0.0']
 
 CORS_ORIGIN_ALLOW_ALL=True
 CORS_ALLOW_CREDENTIALS = True

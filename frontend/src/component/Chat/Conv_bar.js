@@ -6,7 +6,7 @@ import Add from './icons/Vector';
 import Vector from './icons/Vector_1';
 import './Conv_bar.css';
 
-const ConvBar = ({ userData , setconvid , setSelectedConvId , selectedConvId, setConversationdata}) => {
+const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, setConversationdata}) => {
   const [conv, setConv] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +15,7 @@ const ConvBar = ({ userData , setconvid , setSelectedConvId , selectedConvId, se
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/conv/${userData.id}/`);
+      const response = await axios.get(`http://${window.location.hostname}:8000/api/conv/${userData.id}/`);
       if (response.data && response.data.length > 0) {
         setConv(response.data);
       } else {
@@ -42,7 +42,7 @@ const ConvBar = ({ userData , setconvid , setSelectedConvId , selectedConvId, se
   };
 
   useEffect(() => {
-    if (selectedConvId != 0)
+    if (selectedConvId !== 0)
       return;
     setconvid(selectedConvId);
     setConversationdata([]);
@@ -57,7 +57,7 @@ const ConvBar = ({ userData , setconvid , setSelectedConvId , selectedConvId, se
 
   return (
     <div className='conv_bar'>
-      <AddBar conv={conv} setConv={setConv} on={on} setOn={setOn} className='Search-bar' />
+      <AddBar setconvid={setconvid} setConversationdata={setConversationdata} conv={conv} userData={userData} setSelectedConvId={setSelectedConvId} setConv={setConv} on={on} setOn={setOn} className='Search-bar' />
       <div className='top'>
         <div className='center_top'>
           <h2>Chat</h2>
