@@ -11,6 +11,10 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [on, setOn] = useState(true);
+  const [search, setSearch] = useState('');
+  const [tmp, setTmp] = useState([]);
+  const [isEmptyObject, setisEmptyObject] = useState(false);
+
   // const [selectedConvId, setSelectedConvId] = useState(null);
 
   const fetchData = async () => {
@@ -55,6 +59,37 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     setOn(false);
   };
 
+
+  const handleChange = (e) => {
+    setSearch(e);
+    if (e === '') {
+      setisEmptyObject(true);
+    }
+    else {
+      setisEmptyObject(false);
+    }
+    if (e) {
+      const searchQuery = e.toLowerCase();
+      console.log(searchQuery);
+      const result = conv.filter((user) => {
+        return user && user.uid2_info.username && user.uid2_info.username.toLowerCase().includes(searchQuery);
+      });
+      console.log(result);
+      setTmp(result);
+    } else {
+      setTmp([]);
+    }
+  };
+
+  const handlesearchclick = (user) => {
+    setSearch('');
+    setisEmptyObject(true);
+    setSelectedConvId(user.id);
+    setconvid(user.id);
+    setConversationdata(user);
+  };
+  
+
   return (
     <div className='conv_bar'>
       <AddBar setconvid={setconvid} setConversationdata={setConversationdata} conv={conv} userData={userData} setSelectedConvId={setSelectedConvId} setConv={setConv} on={on} setOn={setOn} className='Search-bar' />
@@ -67,9 +102,28 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
       <div className='center'>
         <div className="search-container">
           <Vector />
-          <input type="text" placeholder="Search..." name="search" className="search-input" />
+          <input type="text" placeholder="Search..." name="search" className="search-input"
+            value={search} onChange={(e) => handleChange(e.target.value)} />
         </div>
       </div>
+      {isEmptyObject === false ? (
+      <div className={`scrol`}>
+          {tmp.length === 0 ? (
+            <div className='empty'>
+              <p>No conversation <br/> with this name</p>
+            </div>
+          ) : (
+            tmp.map(user => (
+              <div
+                className='center'
+                key={user.id}
+                onClick={() => handlesearchclick(user)}
+              >
+                <Conv data={user} userData={userData} selectedConvId={selectedConvId} />
+              </div>
+            ))
+          )}
+      </div>) :(
       <div className='scrol'>
         {conv.length === 0 ? (
           <div className='empty'>
@@ -86,7 +140,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
             </div>
           ))
         )}
-      </div>
+      </div>)}
     </div>
   );
 };
