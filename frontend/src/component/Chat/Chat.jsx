@@ -9,7 +9,7 @@ const Chat = () => {
   const [userData, setUserData] = useState(null);
   const [convid , setconvid] = useState(0);
   const [conversationdata, setConversationdata] = useState([]);
-  const [selectedConvId, setSelectedConvId] = useState(null);
+  const [selectedConvId, setSelectedConvId] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,10 +42,10 @@ const Chat = () => {
   if (!userData) {
     return <div>Loading...</div>;
   }
-
+  console.log('selectedConvId:', selectedConvId);
   return (
     // <div className="App">
-      <div className='chat_container'>
+      <div className={`chat_container ${selectedConvId === 0 ? 'null' : 'mobile-msg' }`}>
         <ConvBar userData={userData} setconvid={setconvid} selectedConvId={selectedConvId} setSelectedConvId={setSelectedConvId} setConversationdata={setConversationdata}/>
         <Msg userData={userData} convid={convid} setSelectedConvId={setSelectedConvId} conversationdata={conversationdata}/>
       </div>

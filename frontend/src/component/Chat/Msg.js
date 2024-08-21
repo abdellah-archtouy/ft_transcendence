@@ -8,6 +8,7 @@ import SenderBox from './sender_box';
 import axios from 'axios';
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import Back from './icons/back';
 
 const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [message, setMessage] = useState('');
@@ -117,20 +118,25 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
                 <>
                     <div className={`chat_top_bar `}>
                         <div className='icon_name'>
-                        {conversationdata.uid1_info.username === userData.username ? (
-                            <>
-                                <img src={conversationdata.uid2_info.avatar} />
-                                <h3>{conversationdata.uid2_info.username}</h3>
-                            </>
-                        ) : (
-                            <>
-                            <img src={conversationdata.uid1_info.avatar}/>
-                            <h3>{conversationdata.uid1_info.username}</h3>
-                            </>
-                        )}
+                            <button className='Backbutton' onClick={handelcloseChat}>
+                                <Back /> 
+                            </button>
+                            {conversationdata.uid1_info.username === userData.username ? (
+                                <>
+                                    <img src={conversationdata.uid2_info.avatar} />
+                                    <h3>{conversationdata.uid2_info.username}</h3>
+                                </>
+                            ) : (
+                                <>
+                                <img src={conversationdata.uid1_info.avatar}/>
+                                <h3>{conversationdata.uid1_info.username}</h3>
+                                </>
+                            )}
                         </div>
                         <div onClick={handelsetclick} className='set'>
-                            <Set />
+                            <button>
+                                <Set />
+                            </button>
                             <div className={`set_dropdown ${clicked === true ? '' : 'hide'}`}>
                                 <ul>
                                     <li>Block</li>

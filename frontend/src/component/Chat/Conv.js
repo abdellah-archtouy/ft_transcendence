@@ -1,34 +1,41 @@
-import React from 'react';
+import React, { useEffect , useState } from 'react';
 import './Conv.css';
 // import Delete from './icons/delete';
 
 const Conv = ({ data, userData, selectedConvId }) => {
-  // const [selectedConv, setSelectedConv] = useState(null);
-  // const [chatContent, setChatContent] = useState([]);
+  const date = new Date(data.last_message_time);
+  const [last_message_time, setLast_message_time] = useState(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
 
-  // const handleSelect = async (conv) => {
-  //   setSelectedConv(conv.id);
-
-  //   try {
-  //     const response = await fetch(`http://${window.location.hostname}:8000/api/chat/${conv.id}/`);
-  //     const data = await response.json();
-  //     setChatContent(data);
-  //   } catch (error) {
-  //     console.error('Error fetching chat content:', error);
-  //   }
-  // };
-
+  useEffect(() => {
+    setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
+  }, []);
+  
+  console.log('last_message_time:', last_message_time);
   return (
     <div className={`conv ${selectedConvId === data.id ? 'selected' : ''}`}>
       {data.uid1_info.username === userData.username ? (
         <>
           <img src={data.uid2_info.avatar} alt='user avatar' />
-          <h3>{data.uid2_info.username}</h3>
+          <div className='user_lastmsg'>
+            <div className='avatar_on'>
+              <h3>{data.uid2_info.username}</h3>
+              <div className='online'></div>
+            </div>
+            <p>{`${data.last_message.substring(0, 20)} ${data.last_message.length > 20 ? '...' : ''}`}</p>
+          </div>
+            <p className='timee'>{last_message_time}</p>
         </>
       ) : (
         <>
           <img src={data.uid1_info.avatar} alt='user avatar'/>
-          <h3>{data.uid1_info.username}</h3>
+          <div>
+            <div className='avatar_on'>
+              <h3>{data.uid1_info.username}</h3>
+              <div className='online'></div>
+            </div>
+
+            <p>{`${data.last_message.substring(0, 20)}`}</p>
+          </div>
         </>
       )}
       {/* <Delete /> */}

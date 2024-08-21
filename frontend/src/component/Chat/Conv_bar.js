@@ -13,7 +13,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [on, setOn] = useState(true);
   const [search, setSearch] = useState('');
   const [tmp, setTmp] = useState([]);
-  const [isEmptyObject, setisEmptyObject] = useState(false);
+  const [isEmptyObject, setisEmptyObject] = useState(true);
 
   // const [selectedConvId, setSelectedConvId] = useState(null);
 

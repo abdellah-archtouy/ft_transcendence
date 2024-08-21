@@ -61,6 +61,28 @@
     gap: 20px;
 }
 
+.chat_top_bar button:hover {
+    box-sizing: border-box;
+    filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.75));
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding-top: 5px ;
+}
+.chat_top_bar button{
+    /* display: none; */
+    transition: filter 0.3s ease;
+    display: flex;
+    position: absolute;
+    color: #222222;
+    background-color: #222222;
+    all: unset;
+    box-sizing: border-box;
+    justify-content: center;
+    padding-top: 5px ;
+    align-items: center;
+}
+
 .picker{
     position: absolute;
     bottom: 70px;
