@@ -15,7 +15,7 @@ import bg2 from "./icons/Group.svg";
 import LandingPage from "./component/Landing_page/Landing_page";
 
 function App() {
-  const [auth, setAuth] = useState(true);
+  const [auth, setAuth] = useState(false);
   const location = useLocation();
   const bgImage = auth && {
     background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`

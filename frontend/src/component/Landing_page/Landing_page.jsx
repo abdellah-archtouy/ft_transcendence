@@ -65,14 +65,16 @@ const Landing_page = () => {
 
     return (
         <div className="page-container">
-            <img src={logo} alt="" className="logo" />
-            {menuOpen && <div className="overlay"></div>}
-            <a className="menu-toggle" onClick={() => {
-                if (menuOpen == false)
-                    toggleMenu();
-            }}>
-                Menu
-            </a>
+            <div className='test'>
+                <img src={logo} alt="" className="logo" />
+                {menuOpen && <div className="overlay"></div>}
+                <a className="menu-toggle" onClick={() => {
+                    if (menuOpen == false)
+                        toggleMenu();
+                }}>
+                    Menu
+                </a>
+            </div>
             <div className={`menu ${menuOpen ? 'open' : ''}`} ref={menuRef}>
                 <ul>
                     <li onClick={() => handleMenuClick('home')}>Home</li>
