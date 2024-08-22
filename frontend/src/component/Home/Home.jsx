@@ -45,7 +45,7 @@ const Home = () => {
       </div>
       <div className="suggestions">
         <div className='header_element'>
-          <h3>Suggested for you</h3>
+          <h2>Suggested for you</h2>
         </div>
         <div className="slide-elements">
           <Carousel friends={friends} handleAddFriend={handleAddFriend} />
@@ -54,7 +54,7 @@ const Home = () => {
       <div className="stats">
         <div className="last-matches">
           <div className='last-matches-header'>
-            <h2>Last matches</h2>
+            <h2>Last Three matches</h2>
             <div>
               <a href="">see more</a>
             </div>

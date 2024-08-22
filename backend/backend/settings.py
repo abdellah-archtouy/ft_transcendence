@@ -101,8 +101,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ft_trans',
-        'USER': 'talal',
-        'PASSWORD': '200244',
+        'USER': 'rel-fila',
+        'PASSWORD': '2002',
         'HOST': 'localhost',
         'PORT': '5432',
     }
