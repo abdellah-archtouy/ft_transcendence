@@ -10,7 +10,6 @@ const Conv = ({ data, userData, selectedConvId }) => {
     setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
   }, []);
   
-  console.log('last_message_time:', last_message_time);
   return (
     <div className={`conv ${selectedConvId === data.id ? 'selected' : ''}`}>
       {data.uid1_info.username === userData.username ? (
@@ -36,6 +35,7 @@ const Conv = ({ data, userData, selectedConvId }) => {
 
             <p>{`${data.last_message.substring(0, 20)}`}</p>
           </div>
+            <p className='timee'>{last_message_time}</p>
         </>
       )}
       {/* <Delete /> */}

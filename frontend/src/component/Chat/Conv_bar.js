@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import Conv from './Conv';
 import AddBar from './AddBar';
 import Add from './icons/Vector';
 import Vector from './icons/Vector_1';
 import './Conv_bar.css';
+import { WebSocketContext } from './Chat';
 
 const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, setConversationdata}) => {
   const [conv, setConv] = useState([]);
@@ -14,6 +15,8 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [search, setSearch] = useState('');
   const [tmp, setTmp] = useState([]);
   const [isEmptyObject, setisEmptyObject] = useState(true);
+
+  const socket = useContext(WebSocketContext);
 
   // const [selectedConvId, setSelectedConvId] = useState(null);
 
@@ -34,6 +37,30 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    console.log('socket:', socket);
+    if (!socket) return;
+
+    
+    const handleMessage = (e) => {
+      console.log('Message from WebSocket:', e.data);
+    };
+
+    socket.addEventListener('message', handleMessage);
+
+    // socket.onmessage = (event) => {
+    //   const data = JSON.parse(event.data);
+    //   console.log('Message from WebSocket2:', data);
+    // };
+
+    // Clean up
+
+    return () => {
+      socket.removeEventListener('message', handleMessage);
+    };
+  }, [socket]);
 
   useEffect(() => {
     fetchData();
@@ -70,11 +97,11 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     }
     if (e) {
       const searchQuery = e.toLowerCase();
-      console.log(searchQuery);
+      // console.log(searchQuery);
       const result = conv.filter((user) => {
         return user && user.uid2_info.username && user.uid2_info.username.toLowerCase().includes(searchQuery);
       });
-      console.log(result);
+      // console.log(result);
       setTmp(result);
     } else {
       setTmp([]);

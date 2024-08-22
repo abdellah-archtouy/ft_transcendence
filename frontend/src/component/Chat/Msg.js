@@ -1,4 +1,4 @@
-import React, { useState, useEffect  , useRef} from 'react';
+import React, { useState, useEffect  , useRef, useContext} from 'react';
 import './Msg.css';
 import Set from './icons/set';
 import Imoji from './icons/imoji';
@@ -9,6 +9,7 @@ import axios from 'axios';
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import Back from './icons/back';
+import {WebSocketContext} from './Chat';
 
 const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [message, setMessage] = useState('');
@@ -19,13 +20,17 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [clicked, setClicked] = useState(false);
     const [imogiclicked, setImogiclicked] = useState(false);
     const messagesEndRef = useRef(null);
+    const [ws, setWs] = useState(null);
+
+
+    const socket = useContext(WebSocketContext);
 
     const fetchData = async () => {  
         try {
-            console.log('convid:', convid);
+            // console.log('convid:', convid);
             const response = await axios.get(`http://${window.location.hostname}:8000/api/msg/${convid}/`);
             setData(response.data);
-            console.log('data:', response.data);
+            // console.log('data:', response.data);
             setDaton(true);
         } catch (error) {  
             // setError(error);
@@ -37,37 +42,55 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
         }  
     };  
 
+    useEffect(() => {
+        if (!socket) return;
+    
+        socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          console.log('Message from WebSocket1:', data);
+          const data1 = JSON.parse(event.data);
+          setData(data => [...data, data1]);
+        };
+    
+        setWs(socket);
+        // Clean up
+        // return () => {
+        //   socket.onmessage = null;
+        // };
+      }, [socket]);
+    
+
     // console.log('conversationdata:', conversationdata);
     // console.log('data:', userData);
     useEffect(() => {
         fetchData();
     }, [convid]);
 
-    const [ws, setWs] = useState(null);
 
-    useEffect(() => {
-        const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/msg/${convid}/`);
-        socket.onopen = () => {
-            console.log('WebSocket connection established');
-        };
+    // useEffect(() => {
+    //     const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/msg/${convid}/`);
+    //     socket.onopen = () => {
+    //         console.log('WebSocket connection established');
+    //     };
 
-        socket.onmessage = (e) => {
-            const data1 = JSON.parse(e.data);
-            setData(data => [...data, data1]);
-            // console.log('data:', data);
-            // console.log('data1:', data1);
-        };
+    //     socket.onmessage = (e) => {
+    //         const data1 = JSON.parse(e.data);
+    //         setData(data => [...data, data1]);
+            
+    //         // console.log('data:', data);
+    //         // console.log('data1:', data1);
+    //     };
 
-        socket.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
+    //     socket.onclose = () => {
+    //         console.log('WebSocket connection closed');
+    //     };
 
-        setWs(socket);
+    //     setWs(socket);
 
-        return () => {
-            socket.close();
-        };
-    }, [data, convid]);
+    //     return () => {
+    //         socket.close();
+    //     };
+    // }, [data, convid]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -105,7 +128,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
 
     const handelcloseChat = () => {
         setSelectedConvId(0);
-        console.log('selectedConvId:');
+        // console.log('selectedConvId:');
     }
 
     if (loading) return <div>Loading...</div>;
