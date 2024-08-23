@@ -45,7 +45,8 @@ const Chat = () => {
 
   useEffect(() => {
     // Create WebSocket connection
-    const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/data/${selectedConvId}/`);
+    const accessToken = localStorage.getItem('token');
+    const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/data/${accessToken}/`);
 
     ws.onopen = () => {
       console.log('WebSocket connection established');

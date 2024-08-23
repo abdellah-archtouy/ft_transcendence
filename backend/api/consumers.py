@@ -8,6 +8,8 @@ from django.core.serializers import serialize
 from django.db import transaction
 from django.db.models import Q
 import datetime
+from django.conf import settings
+import jwt
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -109,7 +111,20 @@ class DataConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
 
-        self.room_name = self.scope['url_route']['kwargs']['conversation_id']
+        access_token = self.scope['url_route']['kwargs']['accessToken']
+
+        if access_token:
+            # get user id from the access token by decoding it
+            user_id = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])["user_id"]
+            print(f"User id: {user_id}")
+
+            user = User.objects.get(id=user_id)
+            print(f"User: {user.username}")
+
+
+        
+
+        self.room_name = user.username
         self.room_group_name = f'chat_{self.room_name}'
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -137,6 +152,10 @@ class DataConsumer(WebsocketConsumer):
                         conversation.last_message = message_i
                         conversation.last_message_time = datetime.datetime.now()
                         conversation.save()
+                        if user_id == conversation.uid1.id:
+                            user2_id = conversation.uid2.id
+                        else:
+                            user2_id = conversation.uid1.id
                         print(f"Updated conversation last message: {conversation.last_message}")
                     else:
                         print(f"Conversation with id {conversation_id} not found")
@@ -144,20 +163,36 @@ class DataConsumer(WebsocketConsumer):
                 print(f"Error updating conversation: {e}")
         else:
             print("Received data is not a dictionary")
-        convdata = ConvSerializer(Conversation.objects.all(), many=True)
+        # convdata = ConvSerializer(Conversation.objects.all(), many=True)
+        convdata = ConvSerializer(conversation)
+        convdata_json = json.dumps(convdata.data)
+        user2 = User.objects.get(id=user2_id)
+        async_to_sync(self.channel_layer.group_send)(
+            f'chat_{user2.username}',
+            {
+                'type': 'chat_message',
+                'message': text_data,
+                'data': convdata.data
+            }
+        )
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chat_message',
                 'message': text_data,
-                # 'data': convdata.data
+                'data': convdata.data
             }
         )
 
     def chat_message(self, event):
         message = event['message']
-        print(event)
-        self.send(message)
+        data = event['data']
+
+        # Convert the dictionary to a JSON string
+        self.send(text_data=json.dumps({
+            'message': message,
+            'data': data,
+        }))
     def data_send(self, event):
         message = event['data']
         self.send(message)

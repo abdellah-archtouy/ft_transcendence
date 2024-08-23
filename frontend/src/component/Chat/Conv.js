@@ -3,13 +3,13 @@ import './Conv.css';
 // import Delete from './icons/delete';
 
 const Conv = ({ data, userData, selectedConvId }) => {
-  const date = new Date(data.last_message_time);
-  const [last_message_time, setLast_message_time] = useState(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
+  const [last_message_time, setLast_message_time] = useState('');
 
   useEffect(() => {
+    const date = new Date(data.last_message_time);
     setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
-  }, []);
-  
+    // setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
+  }, [data]);
   return (
     <div className={`conv ${selectedConvId === data.id ? 'selected' : ''}`}>
       {data.uid1_info.username === userData.username ? (

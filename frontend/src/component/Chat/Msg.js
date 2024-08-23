@@ -46,9 +46,8 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
         if (!socket) return;
     
         socket.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          console.log('Message from WebSocket1:', data);
-          const data1 = JSON.parse(event.data);
+         const  message1 = JSON.parse(event.data);
+          const data1 = JSON.parse(message1.message);
           setData(data => [...data, data1]);
         };
     
@@ -60,8 +59,6 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
       }, [socket]);
     
 
-    // console.log('conversationdata:', conversationdata);
-    // console.log('data:', userData);
     useEffect(() => {
         fetchData();
     }, [convid]);

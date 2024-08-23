@@ -39,28 +39,38 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   };
 
 
+  // console.log('conv:', conv);
+
   useEffect(() => {
     console.log('socket:', socket);
     if (!socket) return;
 
     
     const handleMessage = (e) => {
-      console.log('Message from WebSocket:', e.data);
+        const data = JSON.parse(e.data);
+        const existcon = conv.filter((user) => {
+          return user.id === data.data.id;
+        });
+        if (existcon.length === 0) {
+          setConv((conv) => [...conv, data.data]);
+        }
+        else {
+          setConv((conv) => conv.map((user) => {
+            if (user.id === data.data.id) {
+              return data.data;
+            }
+            return user;
+          }
+          ));
+        }
     };
 
     socket.addEventListener('message', handleMessage);
 
-    // socket.onmessage = (event) => {
-    //   const data = JSON.parse(event.data);
-    //   console.log('Message from WebSocket2:', data);
-    // };
-
-    // Clean up
-
     return () => {
       socket.removeEventListener('message', handleMessage);
     };
-  }, [socket]);
+  }, [socket , conv]);
 
   useEffect(() => {
     fetchData();
@@ -80,7 +90,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   }, [selectedConvId]);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  // if (error) return <div>Error: {error.message}</div>;
 
   const handleClickAdd = () => {
     setOn(false);
@@ -97,11 +107,9 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     }
     if (e) {
       const searchQuery = e.toLowerCase();
-      // console.log(searchQuery);
       const result = conv.filter((user) => {
         return user && user.uid2_info.username && user.uid2_info.username.toLowerCase().includes(searchQuery);
       });
-      // console.log(result);
       setTmp(result);
     } else {
       setTmp([]);
