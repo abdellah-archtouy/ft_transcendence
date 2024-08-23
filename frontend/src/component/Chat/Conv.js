@@ -20,7 +20,7 @@ const Conv = ({ data, userData, selectedConvId }) => {
               <h3>{data.uid2_info.username}</h3>
               <div className='online'></div>
             </div>
-            <p>{`${data.last_message.substring(0, 20)} ${data.last_message.length > 20 ? '...' : ''}`}</p>
+            <p>{`${data.last_message.substring(0, 10)} ${data.last_message.length > 10 ? '...' : ''}`}</p>
           </div>
             <p className='timee'>{last_message_time}</p>
         </>
@@ -33,7 +33,7 @@ const Conv = ({ data, userData, selectedConvId }) => {
               <div className='online'></div>
             </div>
 
-            <p>{`${data.last_message.substring(0, 20)}`}</p>
+            <p>{`${data.last_message.substring(0, 10)} ${data.last_message.length > 10 ? '...' : ''}`}</p>
           </div>
             <p className='timee'>{last_message_time}</p>
         </>

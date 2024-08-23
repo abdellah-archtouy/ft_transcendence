@@ -149,7 +149,7 @@
 .chat_container{
   display: grid;
   gap: 40px;
-  height: calc(100vh - 128px);
+  flex: 1;
   width: 100%;
   grid-template-columns: 28% 2fr;
   background-color: rgba(0, 0, 0, 0.3);
@@ -158,19 +158,18 @@
 
 @media screen and (max-width: 1024px){
   .chat_container{
-    height: calc(100vh - 77px);
+    flex: 1;
   }
   .chat_container.null {
     grid-template-columns: 1fr;
   }
   .chat_container.null .conv_bar{
-    height: calc(100vh - 77px);
     background-color: black;
-    padding-left: 20px;
+    /* padding-left: 20px; */
   }
   .conv {
       background-color: transparent !important;
-      border: 1px solid #565656;
+      /* border: 1px solid #565656; */
   }
   .Backbutton{
     display: flex;

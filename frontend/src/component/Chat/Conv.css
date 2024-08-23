@@ -2,20 +2,23 @@
     position: relative;
     height: 80px;
     width: 90%;
-    margin: 10px;
-    margin-left: 10px;
-    border-radius: 20px;
+    border-radius: clamp(0.625rem, 1.25vw + 0.125rem, 1.25rem);
     display: flex;
-    align-items: center;
+    gap: 15px;
+    align-items: start;
+    padding: 15px;
     background-color: #222222;
     font-family: 'URW Geometric';
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
 }
 
 .conv h3{
-    margin: 10px;
     color: #B0B0B0;
     font-weight: 700;
-    line-height: 17px;
+    line-height: 1;
+    font-size: clamp(1.125rem, 0.75vw + 0.825rem, 1.5rem);
 }
 .delete{
     position: absolute;
@@ -25,8 +28,9 @@
     border-radius: 80px;
     border: 3px solid #636262;
     background-size: cover;
-    margin: 10px;
     height: 60px;
+    align-self: center;
+    width: 60px;
 }
   
 .conv.selected {
@@ -34,18 +38,23 @@
 }
 
 .user_lastmsg p{
-    margin-left: 10px;
+    font-size: clamp(0.688rem, 0.625vw + 0.438rem, 1rem);
+    line-height: 1;
+    /* margin-left: 10px; */
 }
 .user_lastmsg{
     display: flex;
     flex-direction: column;
     justify-content: start;
+    gap: 10px;
+    align-self: center;
     align-items: start;
 }
 
 .avatar_on{
     display: flex;
     flex-direction: row;
+    gap: 10px;
     justify-content: center;
     align-items: center;
 }
@@ -56,13 +65,12 @@
     height: 10px;
     width: 10px;
     border-radius: 50%;
-    background-color: #00FF00;
+    background-color: #62A460;
 }
 
 .timee{
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    color: #B0B0B0;
-    font-size: 10px;
+    margin-left: auto;
+    color: #7B7B7B;
+    font-size: clamp(0.625rem, 0.625vw + 0.375rem, 0.938rem);
+    font-weight: 400;
 }
