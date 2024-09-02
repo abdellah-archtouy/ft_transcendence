@@ -504,7 +504,7 @@ svg {
   }
 
   .matches-list-item-user p {
-    font-size: 0.9em;
+    font-size: 1.3em;
     padding-top: 0.2rem;
     margin-left: 10%;
     margin-right: 10%;
@@ -514,9 +514,8 @@ svg {
     margin-bottom: 0.5em;
   }
 
-
   .matches-list-item-score {
-    font-size: 1em;
+    font-size: 1.3em;
     padding-top: 0.2rem;
   }
 
