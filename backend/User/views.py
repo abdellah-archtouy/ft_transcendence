@@ -1,34 +1,53 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import User  # Import your custom User model
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import UserSerializer
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+from .models import UserOTP
+from django.contrib.auth import authenticate
 
-# Create your views here.
-def user(request):
-    if request.method == 'GET':
-        try:
-            # For demonstration, let's get the first user in the database
-            user_instance = User.objects.filter(stat=False).first()
-            
-            print(user_instance.username)
-            if user_instance:
-                user_instance.stat = True
-                user_instance.save()
-                user_data = {
-                    'uid': user_instance.id,  # UID is the primary key 'id'
-                    'username': user_instance.username,
-                    'email': user_instance.email,
-                    'password': user_instance.password,  # Be cautious about sending passwords
-                    'avatar': user_instance.avatar.url if user_instance.avatar else None,
-                    'cover': user_instance.cover.url if user_instance.cover else None,
-                    'bio': user_instance.bio,
-                    'win': user_instance.win,
-                    'lose': user_instance.lose,
-                    'score': user_instance.score,
-                    'rank': user_instance.rank,
-                    'stat': user_instance.stat,
-                }
-                return JsonResponse(user_data)
-            else:
-                return JsonResponse({'error': 'User not found'}, status=404)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(["POST"])
+def register_user(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {"message": "User registered successfully!"}, status=status.HTTP_201_CREATED
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def login_user(request):
+    print("login_user")
+    email = request.data.get("email")
+    password = request.data.get("password")
+
+    # Authenticate the user
+    user = authenticate(username=email, password=password)
+    if user is not None:
+        # Generate OTP
+        otp = get_random_string(length=6, allowed_chars="0123456789")
+        UserOTP.objects.create(user=user, otp=otp)
+
+        # Send OTP via email
+        send_mail(
+            "Your OTP Code",
+            f"Your OTP code is {otp}",
+            "pingpong.game.1337@gmail.com",
+            [user.email],
+            fail_silently=False,
+        )
+
+        return Response(
+            {"message": "OTP sent to your email address."}, status=status.HTTP_200_OK
+        )
+    else:
+        return Response(
+            {"error": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST
+        )

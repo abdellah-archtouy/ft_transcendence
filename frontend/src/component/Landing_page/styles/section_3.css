@@ -78,6 +78,14 @@ form button {
 .login_form {
     height: 100%;
     margin-top: 5%;
+    transition: all 0.5s ease;
+}
+
+.otp-form .login_form-username,
+.otp-form .login_form-password,
+.otp-form .login_form-42-login,
+.otp-form .login_form-signup {
+    display: none;
 }
 
 

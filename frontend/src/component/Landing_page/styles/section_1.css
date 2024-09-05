@@ -221,6 +221,28 @@
     align-items: center;
 }
 
+.popup {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000000;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #D1D1D1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.popup.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+
 @media (min-width: 1440px) and (max-width: 1919px) {}
 
 @media (min-width: 1024px) and (max-width: 1439px) {}
@@ -243,3 +265,6 @@
     }
 
 }
+
+
+

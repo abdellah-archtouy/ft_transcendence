@@ -25,6 +25,7 @@ import play_station from "./images/play_station.svg";
 const Landing_page = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [showScrollButton, setShowScrollButton] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -35,9 +36,9 @@ const Landing_page = () => {
         }
     }, [menuOpen]);
 
+
     useEffect(() => {
         const handleScroll = () => {
-            // Show the scroll button when the user scrolls down 100px
             if (window.scrollY > 100) {
                 setShowScrollButton(true);
             } else {
@@ -67,6 +68,9 @@ const Landing_page = () => {
 
     return (
         <div className="page-container">
+            <div className={`popup ${showPopup ? 'show' : ''}`}>
+                <p className='popup-p'>Account created successfully!</p>
+            </div>
             <div className='menu-top-bar'>
                 <a href="#" className='logo-link'><img src={logo} alt="" className="logo" /></a>
                 {menuOpen && <div className="overlay"></div>}
@@ -193,7 +197,7 @@ const Landing_page = () => {
                 </div>
                 <div className='landing_section_3-container'>
                     <div className='landing_section_3-container-form'>
-                        <AuthForm />
+                        <AuthForm setShowPopup={setShowPopup} />
                     </div>
                     <div className='landing_section_3-container-table-animation'>
                         <img src={table} alt="" className='table' />

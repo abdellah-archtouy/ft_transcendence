@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import logo_42 from "./images/42_logo.svg";
+import axios from 'axios';
 
-const AuthForm = () => {
+const AuthForm = ({setShowPopup}) => {
     const [isSignUp, setIsSignUp] = useState(false);
+    const [isOtpRequired, setIsOtpRequired] = useState(false);
+    const [otp, setOtp] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,6 +20,7 @@ const AuthForm = () => {
         event.preventDefault();
         setIsSignUp(!isSignUp);
         setErrors({});
+        setShowPopup(false);
     };
 
     const validateForm = () => {
@@ -54,13 +58,59 @@ const AuthForm = () => {
         return newErrors;
     };
 
-    const handleSubmit = (event) => {
+    const handleLoginOrSignup = async (event) => {
         event.preventDefault();
         const formErrors = validateForm();
         if (Object.keys(formErrors).length === 0) {
-            // Submit the form (e.g., send the data to the server)
+
+            const data = isSignUp ? { username, email, password } : { email, password };
+            const url = isSignUp ? 'http://localhost:8000/api/users/signup/' : 'http://localhost:8000/api/users/login/';
+            
+            try {
+                const response = await axios.post(url, data);
+                if (!isSignUp) {
+                    // Assuming the backend responds with an OTP required status
+                    setIsOtpRequired(true); // Show OTP form
+                } else {
+                    setShowPopup(true);
+                    setTimeout(() => {
+                        setIsSignUp(false);
+                        setShowPopup(false);
+                    }, 2000);
+                }
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    const newErrors = {};
+                    if (error.response.data.username) {
+                        newErrors.username = 'Already in use';
+                        setUsername(''); // Clear the username field
+                    }
+                    if (error.response.data.email) {
+                        newErrors.email = 'Already in use';
+                        setEmail(''); // Clear the email field
+                    }
+                    if (error.response.data.password) {
+                        newErrors.password = error.response.data.password; // Use specific password error
+                        setPassword(''); // Clear the password field
+                    }
+                    setErrors(newErrors);
+                }
+            }
         } else {
             setErrors(formErrors);
+        }
+    };
+
+    const handleOtpSubmit = async (event) => {
+        event.preventDefault();
+        // Send OTP to the backend for verification
+        try {
+            const response = await axios.post('http://localhost:8000/api/users/verify-otp/', { otp, email });
+            console.log('OTP verified successfully');
+            // Handle successful OTP verification
+        } catch (error) {
+            console.error('OTP verification failed:', error);
+            // Handle OTP verification failure
         }
     };
 
@@ -71,57 +121,78 @@ const AuthForm = () => {
 
     return (
         <>
-            <form action="" className='login_form' onSubmit={handleSubmit}>
+            <form action="" className={`login_form ${isOtpRequired ? 'otp-form' : ''}`} onSubmit={isOtpRequired ? handleOtpSubmit : handleLoginOrSignup}>
                 <div className='login-form-div1'>
-                    <p className='login_form-p1'>{isSignUp ? 'Sign up' : 'Login'}</p>
-                    <h1 className='login_form-h1'>{isSignUp ? 'Welcome' : 'Welcome back'}</h1>
-                    <p className='login_form-p2'>{isSignUp ? 'Create an account to get started' : 'Please enter your details'}</p>
+                    <p className='login_form-p1'>{isOtpRequired ? 'OTP Verification' : (isSignUp ? 'Sign up' : 'Login')}</p>
+                    <h1 className='login_form-h1'>{isOtpRequired ? 'Enter OTP' : (isSignUp ? 'Welcome' : 'Welcome back')}</h1>
+                    <p className='login_form-p2'>{isOtpRequired ? 'Check your email for the OTP' : (isSignUp ? 'Create an account to get started' : 'Please enter your details')}</p>
                 </div>
-                {isSignUp && (
+
+                {!isOtpRequired ? (
+                    <>
+                        {isSignUp && (
+                            <input
+                                className={`login_form-username ${errors.username ? 'input-error' : ''}`}
+                                type="text"
+                                name="username"
+                                placeholder={errors.username || "Username"}
+                                value={username}
+                                onChange={handleChange(setUsername)}
+                            />
+                        )}
+                        <input
+                            className={`login_form-email ${errors.email ? 'input-error' : ''}`}
+                            type="email"
+                            name="email"
+                            placeholder={errors.email || "Email"}
+                            value={email}
+                            onChange={handleChange(setEmail)}
+                        />
+                        <div className='password-container'>
+                            <input
+                                className={`login_form-password ${errors.password ? 'input-error' : ''}`}
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                placeholder={errors.password || "Password"}
+                                value={password}
+                                onChange={handleChange(setPassword)}
+                            />
+                            <button type="button" className='show-password-button' onClick={toggleShowPassword}>
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
+                        </div>
+                    </>
+                ) : (
                     <input
-                        className={`login_form-username ${errors.username ? 'input-error' : ''}`}
+                        className={`login_form-otp ${errors.otp ? 'input-error' : ''}`}
                         type="text"
-                        name="username"
-                        placeholder={errors.username || "Username"}
-                        value={username}
-                        onChange={handleChange(setUsername)}
+                        name="otp"
+                        placeholder="Enter OTP"
+                        value={otp}
+                        onChange={handleChange(setOtp)}
                     />
                 )}
-                <input
-                    className={`login_form-email ${errors.email ? 'input-error' : ''}`}
-                    type="email"
-                    name="email"
-                    placeholder={errors.email || "Email"}
-                    value={email}
-                    onChange={handleChange(setEmail)}
-                />
-                <div className='password-container'>
-                    <input
-                        className={`login_form-password ${errors.password ? 'input-error' : ''}`}
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        placeholder={errors.password || "Password"}
-                        value={password}
-                        onChange={handleChange(setPassword)}
-                    />
-                    <button type="button" className='show-password-button' onClick={toggleShowPassword}>
-                        {showPassword ? "Hide" : "Show"}
-                    </button>
-                </div>
-                <a className='login_form-forget-password' href="">Forgot Password?</a>
+
+                {!isOtpRequired && <a className='login_form-forget-password' href="">Forgot Password?</a>}
+                
                 <button className='login_form-submit button-design' type="submit">
-                    {isSignUp ? 'Sign Up' : 'Login'}
+                    {isOtpRequired ? 'Verify OTP' : (isSignUp ? 'Sign Up' : 'Login')}
                 </button>
-                <button className='login_form-42-login button-design'>
-                    <img src={logo_42} alt="42 Logo" className='login_form-42-login-image' />
-                    <p className='login_form-42-login-p'>Login with 42</p>
-                </button>
-                <p className='login_form-signup'>
-                    {isSignUp ? "Already have an account? " : "Don't have an account? "}
-                    <a href="" onClick={handleToggleForm}>
-                        {isSignUp ? 'Login' : 'Sign up now'}
-                    </a>
-                </p>
+
+                {!isOtpRequired && (
+                    <>
+                        <button className='login_form-42-login button-design'>
+                            <img src={logo_42} alt="42 Logo" className='login_form-42-login-image' />
+                            <p className='login_form-42-login-p'>Login with 42</p>
+                        </button>
+                        <p className='login_form-signup'>
+                            {isSignUp ? "Already have an account? " : "Don't have an account? "}
+                            <a href="" onClick={handleToggleForm}>
+                                {isSignUp ? 'Login' : 'Sign up now'}
+                            </a>
+                        </p>
+                    </>
+                )}
             </form>
         </>
     );
