@@ -167,12 +167,19 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
+# Make sure these are not present in settings.py
+EMAIL_SSL_CERTFILE = None
+EMAIL_SSL_KEYFILE = None
+
 
 # settings.py
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = (
+    "django.core.mail.backends.smtp.EmailBackend"  # Change from console to smtp
+)
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
+EMAIL_PORT = 465  # Keep this for SSL
 EMAIL_HOST_USER = "pingpong.game.1337@gmail.com"
-EMAIL_HOST_PASSWORD = "zgmeutwjjrcstome"
+EMAIL_HOST_PASSWORD = "zgmeutwjjrcstome"  # Make sure this is the correct app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False  # False when using SSL
+EMAIL_USE_SSL = True  # True for SSL (since you're using port 465)

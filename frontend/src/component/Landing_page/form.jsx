@@ -93,6 +93,12 @@ const AuthForm = ({setShowPopup}) => {
                         newErrors.password = error.response.data.password; // Use specific password error
                         setPassword(''); // Clear the password field
                     }
+                    if (error.response.data) {
+                        newErrors.email = 'Invalid';
+                        newErrors.password = 'Invalid';
+                        setEmail(''); // Clear the email field
+                        setPassword(''); // Clear the password field
+                    }
                     setErrors(newErrors);
                 }
             }
@@ -103,14 +109,21 @@ const AuthForm = ({setShowPopup}) => {
 
     const handleOtpSubmit = async (event) => {
         event.preventDefault();
-        // Send OTP to the backend for verification
+        
         try {
             const response = await axios.post('http://localhost:8000/api/users/verify-otp/', { otp, email });
             console.log('OTP verified successfully');
-            // Handle successful OTP verification
+            // Handle successful OTP verification, e.g., redirect or show a success message
         } catch (error) {
-            console.error('OTP verification failed:', error);
-            // Handle OTP verification failure
+            if (error.response && error.response.data) {
+                const newErrors = {};
+                newErrors.otp = 'Invalid OTP';
+                setErrors(newErrors);
+                console.log(errors.otp);
+            } else {
+                // Handle unexpected errors
+                setErrors({ general: 'An unexpected error occurred. Please try again.' });
+            }
         }
     };
 
@@ -167,7 +180,7 @@ const AuthForm = ({setShowPopup}) => {
                         className={`login_form-otp ${errors.otp ? 'input-error' : ''}`}
                         type="text"
                         name="otp"
-                        placeholder="Enter OTP"
+                        placeholder={errors.otp || "Enter OTP"}
                         value={otp}
                         onChange={handleChange(setOtp)}
                     />

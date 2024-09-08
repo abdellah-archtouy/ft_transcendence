@@ -24,7 +24,6 @@ def register_user(request):
 
 @api_view(["POST"])
 def login_user(request):
-    print("login_user")
     email = request.data.get("email")
     password = request.data.get("password")
 
@@ -51,3 +50,28 @@ def login_user(request):
         return Response(
             {"error": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(["POST"])
+def verify_otp(request):
+    email = request.data.get("email")
+    otp = request.data.get("otp")
+
+    if not email or not otp:
+        return Response(
+            {"error": "Email and OTP are required."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        user_otp = UserOTP.objects.get(user__email=email, otp=otp)
+    except UserOTP.DoesNotExist:
+        return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if user_otp.is_expired():
+        user_otp.delete()
+        return Response({"error": "OTP expired"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user_otp.delete()  # Delete the OTP after successful verification
+    return Response(
+        {"message": "OTP verified successfully."}, status=status.HTTP_200_OK
+    )
