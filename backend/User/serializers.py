@@ -25,6 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Hash the password before saving
         validated_data["password"] = make_password(validated_data["password"])
+        if "avatar" not in validated_data:
+            validated_data["avatar"] = "avatars/default_avatar.jpg"
         return super().create(validated_data)
 
     def validate(self, data):
@@ -38,3 +40,9 @@ class UserSerializer(serializers.ModelSerializer):
                 {"email": "This email is already in use."}
             )
         return data
+
+    def get_avatar(self, obj):
+        request = self.context.get("request")
+        if obj.avatar:
+            return request.build_absolute_uri(obj.avatar.url)
+        return None  # Or return a default avatar URL

@@ -21,7 +21,12 @@ class User(models.Model):
     username = models.CharField(max_length=50, null=False)
     email = models.EmailField(null=False)
     password = models.CharField(max_length=128, null=False)
-    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    avatar = models.ImageField(
+        upload_to="avatars/",
+        null=True,
+        blank=True,
+        default="avatars/default_avatar.jpg",
+    )
     cover = models.ImageField(upload_to="covers/", null=True, blank=True)
     bio = models.TextField(blank=True)
     win = models.IntegerField(default=0)
@@ -58,6 +63,9 @@ class Friend(models.Model):
     accept = models.BooleanField(default=False)
     block = models.BooleanField(default=False)
     mute = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user1.username} - {self.user2.username}"
 
 
 class Notification(models.Model):

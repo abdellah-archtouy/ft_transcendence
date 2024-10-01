@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os, environ, ssl, certifi
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,7 +36,9 @@ EMAIL_SSL_CERTFILE = certifi.where()
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(zpx@q@o*06i-0_5l0c9e&qir(c0pd5b5dm8f3k&w5x%osu)s2"
+# SECRET_KEY = "django-insecure-(zpx@q@o*06i-0_5l0c9e&qir(c0pd5b5dm8f3k&w5x%osu)s2"
+
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -58,6 +62,7 @@ INSTALLED_APPS = [
     "Game",
     "Chat",
     "rest_framework",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -146,6 +151,13 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGGING = {
@@ -176,10 +188,25 @@ EMAIL_SSL_KEYFILE = None
 EMAIL_BACKEND = (
     "django.core.mail.backends.smtp.EmailBackend"  # Change from console to smtp
 )
+
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 465  # Keep this for SSL
+EMAIL_PORT = 587  # Keep this for SSL
 EMAIL_HOST_USER = "pingpong.game.1337@gmail.com"
 EMAIL_HOST_PASSWORD = "zgmeutwjjrcstome"  # Make sure this is the correct app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_USE_TLS = False  # False when using SSL
-EMAIL_USE_SSL = True  # True for SSL (since you're using port 465)
+EMAIL_USE_TLS = True  # False when using SSL
+EMAIL_USE_SSL = False  # True for SSL (since you're using port 465)
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # Token expiration time
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Refresh token expiration time
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_USE": True,
+}
+
+
+# media url
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")

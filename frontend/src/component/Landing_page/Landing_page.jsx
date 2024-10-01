@@ -22,7 +22,7 @@ import stack from "./images/stack.svg";
 import play_station from "./images/play_station.svg";
 
 
-const Landing_page = () => {
+const Landing_page = ({ setAuth }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -197,7 +197,7 @@ const Landing_page = () => {
                 </div>
                 <div className='landing_section_3-container'>
                     <div className='landing_section_3-container-form'>
-                        <AuthForm setShowPopup={setShowPopup} />
+                        <AuthForm setShowPopup={setShowPopup} handleLogin={setAuth} />
                     </div>
                     <div className='landing_section_3-container-table-animation'>
                         <img src={table} alt="" className='table' />

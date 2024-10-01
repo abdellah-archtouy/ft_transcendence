@@ -58,9 +58,13 @@ function Carousel({ friends, handleAddFriend }) {
 
     return (
         <Slider {...settings}>
-            {friends.map((friend) => (
-                <Card friends={friend} handleAddFriend={handleAddFriend} key={friend.id} />
-            ))}
+            {friends.length > 0 ? (
+                friends.map(friend => (
+                    <Card friends={friend} handleAddFriend={handleAddFriend} key={friend.id} />
+                ))
+            ) : (
+                <div>No friends available</div>
+            )}
         </Slider>
     );
 }

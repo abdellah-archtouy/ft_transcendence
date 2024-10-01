@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo_42 from "./images/42_logo.svg";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const AuthForm = ({setShowPopup}) => {
+const AuthForm = ({setShowPopup , handleLogin}) => {
     const [isSignUp, setIsSignUp] = useState(false);
     const [isOtpRequired, setIsOtpRequired] = useState(false);
     const [otp, setOtp] = useState('');
@@ -11,6 +12,7 @@ const AuthForm = ({setShowPopup}) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -65,7 +67,7 @@ const AuthForm = ({setShowPopup}) => {
 
             const data = isSignUp ? { username, email, password } : { email, password };
             const url = isSignUp ? 'http://localhost:8000/api/users/signup/' : 'http://localhost:8000/api/users/login/';
-            
+
             try {
                 const response = await axios.post(url, data);
                 if (!isSignUp) {
@@ -109,11 +111,17 @@ const AuthForm = ({setShowPopup}) => {
 
     const handleOtpSubmit = async (event) => {
         event.preventDefault();
-        
+
         try {
             const response = await axios.post('http://localhost:8000/api/users/verify-otp/', { otp, email });
             console.log('OTP verified successfully');
-            // Handle successful OTP verification, e.g., redirect or show a success message
+            const { access, refresh } = response.data;
+            console.log('Access Token:', access);
+            console.log('Refresh Token:', refresh);
+            localStorage.setItem('access', access);
+            localStorage.setItem('refresh', refresh);
+            handleLogin(access);
+            navigate('/');
         } catch (error) {
             if (error.response && error.response.data) {
                 const newErrors = {};
@@ -131,6 +139,16 @@ const AuthForm = ({setShowPopup}) => {
         setter(event.target.value);
         setErrors(prevErrors => ({ ...prevErrors, [event.target.name]: '' })); // Clear the error for this field
     };
+
+    const handle42Login = () => {
+        // Redirect to 42 authorization page
+        const clientId = 'u-s4t2ud-ec33d59c683704986dda31fd1812c016474dd371e1bea3233a32976cf6b14b5c'; // Replace with your 42 app's client ID
+        const redirectUri = encodeURIComponent('http://localhost:8000/api/auth/callback'); // Replace with your app's callback URL
+        const scope = 'public'; // Add scopes as needed
+        const authUrl = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+        window.location.href = authUrl;
+    };
+    
 
     return (
         <>
@@ -187,14 +205,14 @@ const AuthForm = ({setShowPopup}) => {
                 )}
 
                 {!isOtpRequired && <a className='login_form-forget-password' href="">Forgot Password?</a>}
-                
+
                 <button className='login_form-submit button-design' type="submit">
                     {isOtpRequired ? 'Verify OTP' : (isSignUp ? 'Sign Up' : 'Login')}
                 </button>
 
                 {!isOtpRequired && (
                     <>
-                        <button className='login_form-42-login button-design'>
+                        <button className='login_form-42-login button-design' onClick={handle42Login}>
                             <img src={logo_42} alt="42 Logo" className='login_form-42-login-image' />
                             <p className='login_form-42-login-p'>Login with 42</p>
                         </button>
