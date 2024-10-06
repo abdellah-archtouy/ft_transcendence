@@ -16,7 +16,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [data, setData] = useState([]);  
     const [loading, setLoading] = useState(true);  
     // const [error, setError] = useState(null);  
-    const [daton, setDaton] = useState(false);
+    // const [daton, setDaton] = useState(false);
     const [clicked, setClicked] = useState(false);
     const [imogiclicked, setImogiclicked] = useState(false);
     const messagesEndRef = useRef(null);
@@ -31,12 +31,12 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
             const response = await axios.get(`http://${window.location.hostname}:8000/api/msg/${convid}/`);
             setData(response.data);
             // console.log('data:', response.data);
-            setDaton(true);
+            // setDaton(true);
         } catch (error) {  
             // setError(error);
             console.log(error);
             setData([]);
-            setDaton(false);
+            // setDaton(false);
         } finally {  
             setLoading(false);  
         }  
@@ -47,6 +47,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     
         socket.onmessage = (event) => {
          const  message1 = JSON.parse(event.data);
+         if (message1.conversation !== convid) return;
           const data1 = JSON.parse(message1.message);
           setData(data => [...data, data1]);
         };
@@ -56,11 +57,11 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
         // return () => {
         //   socket.onmessage = null;
         // };
-      }, [socket]);
+      }, [socket, convid]);
     
 
     useEffect(() => {
-        fetchData();
+        fetchData();    
     }, [convid]);
 
 
@@ -143,12 +144,12 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
                             </button>
                             {conversationdata.uid1_info.username === userData.username ? (
                                 <>
-                                    <img src={conversationdata.uid2_info.avatar} />
+                                    <img src={conversationdata.uid2_info.avatar} alt='avatr' />
                                     <h3>{conversationdata.uid2_info.username}</h3>
                                 </>
                             ) : (
                                 <>
-                                <img src={conversationdata.uid1_info.avatar}/>
+                                <img src={conversationdata.uid1_info.avatar} alt='avatar'/>
                                 <h3>{conversationdata.uid1_info.username}</h3>
                                 </>
                             )}
