@@ -6,6 +6,7 @@ from .views import (
     get_user_data,
     suggest_friends,
     handle_42_callback,
+    validate_token,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -22,5 +23,6 @@ urlpatterns = [
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("users/profile/", get_user_data, name="get_user_data"),
     path("users/suggest_friends/", suggest_friends, name="suggest_friends"),
-    path("auth/callback/", handle_42_callback, name="handle_42_callback"),  # Add this
+    path("auth/callback/", handle_42_callback, name="handle_42_callback"),
+    path("users/validate/", validate_token, name="validate_token"),
 ]

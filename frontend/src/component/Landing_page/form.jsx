@@ -116,8 +116,6 @@ const AuthForm = ({setShowPopup , handleLogin}) => {
             const response = await axios.post('http://localhost:8000/api/users/verify-otp/', { otp, email });
             console.log('OTP verified successfully');
             const { access, refresh } = response.data;
-            console.log('Access Token:', access);
-            console.log('Refresh Token:', refresh);
             localStorage.setItem('access', access);
             localStorage.setItem('refresh', refresh);
             handleLogin(access);
@@ -140,15 +138,42 @@ const AuthForm = ({setShowPopup , handleLogin}) => {
         setErrors(prevErrors => ({ ...prevErrors, [event.target.name]: '' })); // Clear the error for this field
     };
 
-    const handle42Login = () => {
-        // Redirect to 42 authorization page
-        const clientId = 'u-s4t2ud-ec33d59c683704986dda31fd1812c016474dd371e1bea3233a32976cf6b14b5c'; // Replace with your 42 app's client ID
-        const redirectUri = encodeURIComponent('http://localhost:8000/api/auth/callback'); // Replace with your app's callback URL
-        const scope = 'public'; // Add scopes as needed
-        const authUrl = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
-        window.location.href = authUrl;
-    };
+    const handle42Login = async () => {
+        console.log("42 login function called");
     
+        const redirectUri = encodeURIComponent('http://localhost:3000/api/auth/callback/');
+        const clientId = 'u-s4t2ud-ec33d59c683704986dda31fd1812c016474dd371e1bea3233a32976cf6b14b5c'; // Replace with your actual client ID
+        const url = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+    
+        // Redirect user to 42 login page
+        window.location.href = url;
+    };
+
+    useEffect(() => {
+        console.log("this part has beeen trigered");
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            // Call the backend to exchange the code for tokens
+            const fetchTokens = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8000/api/auth/callback/?code=${code}`);
+                    const { access, refresh } = response.data;
+
+                    // Save tokens in local storage
+                    localStorage.setItem('access', access);
+                    localStorage.setItem('refresh', refresh);
+                    handleLogin(access);  // Call handleLogin with the access token
+                    // navigate('/'); // Navigate to the home page or desired page
+                    console.log("these tokens has been catched successfuly : ", access, refresh);
+                } catch (error) {
+                    console.error("Error fetching tokens: ", error);
+                }
+            };
+            fetchTokens();
+        }
+    }, [handleLogin]);
 
     return (
         <>

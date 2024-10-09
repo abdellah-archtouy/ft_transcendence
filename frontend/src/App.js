@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
 import LandingPage from "./component/Landing_page/Landing_page";
+import axios from 'axios';
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem('jwt'));
@@ -23,12 +24,34 @@ function App() {
 
   const souldApplyMargin = location.pathname !== "/chat";
 
+
+  const validateTokenWithServer = async (token) => {
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/api/users/validate/',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.status === 200;
+    } catch (error) {
+      return false;
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     if (token) {
       setAuth(true);
+      // Check with the server if the token is valid
+      // validateTokenWithServer(token).then(isValid => {
+      //   setAuth(isValid); // Set auth based on server response
+      // });
     } else {
-      setAuth(false);
+      setAuth(false); // No token found, user is not authenticated
     }
   }, []);
 
