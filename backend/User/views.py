@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import User, Friend  # Import your custom User model
+from .models import User, Friend, UserOTP  # Import your custom User model
 from .serializers import UserSerializer
 from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
-from .models import UserOTP
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.response import Response
@@ -20,6 +19,9 @@ from django.shortcuts import redirect
 import requests
 import string
 import random
+
+
+User = get_user_model()
 
 
 def generate_random_password(length=8):
@@ -166,13 +168,47 @@ def generate_strong_password(length=12):
 
 
 # Login user and generate OTP
+# @api_view(["POST"])
+# def login_user(request):
+#     email = request.data.get("email")
+#     password = request.data.get("password")
+#     user = authenticate(username=email, password=password)
+#     print("this user is trying to login: ", user, email)
+
+#     if user is not None:
+#         otp = get_random_string(length=6, allowed_chars="0123456789")
+#         UserOTP.objects.create(user=user, otp=otp)
+#         send_mail(
+#             "Your OTP Code",
+#             f"Your OTP code is {otp}",
+#             "your_email@example.com",
+#             [user.email],
+#             fail_silently=False,
+#         )
+#         return Response(
+#             {"message": "OTP sent to your email address."}, status=status.HTTP_200_OK
+#         )
+#     else:
+#         return Response(
+#             {"error": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST
+#         )
+
+
 @api_view(["POST"])
 def login_user(request):
     email = request.data.get("email")
     password = request.data.get("password")
-    user = authenticate(request, username=email, password=password)
 
-    if user is not None:
+    try:
+        # Get the user by email
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(
+            {"error": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Authenticate using the user's password
+    if user.check_password(password):
         otp = get_random_string(length=6, allowed_chars="0123456789")
         UserOTP.objects.create(user=user, otp=otp)
         send_mail(

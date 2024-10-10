@@ -150,7 +150,6 @@ const AuthForm = ({setShowPopup , handleLogin}) => {
     };
 
     useEffect(() => {
-        console.log("this part has beeen trigered");
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
 
@@ -165,8 +164,7 @@ const AuthForm = ({setShowPopup , handleLogin}) => {
                     localStorage.setItem('access', access);
                     localStorage.setItem('refresh', refresh);
                     handleLogin(access);  // Call handleLogin with the access token
-                    // navigate('/'); // Navigate to the home page or desired page
-                    console.log("these tokens has been catched successfuly : ", access, refresh);
+                    navigate('/'); // Navigate to the home page or desired page
                 } catch (error) {
                     console.error("Error fetching tokens: ", error);
                 }

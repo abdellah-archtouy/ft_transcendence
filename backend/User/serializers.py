@@ -9,6 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            "id",
             "username",
             "email",
             "password",
@@ -26,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
         # Hash the password before saving
         validated_data["password"] = make_password(validated_data["password"])
         if "avatar" not in validated_data:
-            validated_data["avatar"] = "avatars/default_avatar.jpg"
+            validated_data["avatar"] = "avatars/default_avatar.png"
         return super().create(validated_data)
 
     def validate(self, data):
