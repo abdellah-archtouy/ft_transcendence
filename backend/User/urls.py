@@ -26,3 +26,7 @@ urlpatterns = [
     path("auth/callback/", handle_42_callback, name="handle_42_callback"),
     path("users/validate/", validate_token, name="validate_token"),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -16,9 +16,10 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import redirect
-import requests
-import string
-import random
+from django.core.files.base import ContentFile
+from uuid import uuid4
+import requests, os, string, random
+from django.conf import settings
 
 
 User = get_user_model()
@@ -86,6 +87,10 @@ def handle_42_callback(request):
         user_info = user_info_response.json()
         email = user_info.get("email")
         username = user_info.get("login")
+        avatar_url = user_info.get("image")
+        avatar_url_link = avatar_url.get("link")
+
+        print(avatar_url_link)
 
         # Check if user exists
         existing_user = User.objects.filter(email=email).first()
@@ -100,6 +105,9 @@ def handle_42_callback(request):
             # Generate a strong password
             password = generate_strong_password()
 
+            # Download the avatar and pass it as a file-like object
+            avatar_file = download_and_save_avatar(avatar_url_link, username)
+
             # Create a new user
             user_data = {
                 "username": username,
@@ -107,21 +115,36 @@ def handle_42_callback(request):
                 "password": password,
             }
             serializer = UserSerializer(data=user_data)
-            print(
-                "this user has been created using the 42 login: ",
-                username,
-                " with this email: ",
-                email,
-            )
+
             if serializer.is_valid():
                 user = serializer.save()
+
+                if avatar_file:
+                    user.avatar.save(
+                        avatar_file.name, avatar_file
+                    )  # Save the avatar to the model
+
+                print(
+                    "User created with 42 login:",
+                    username,
+                    "and avatar:",
+                    avatar_url_link,
+                )
             else:
                 return JsonResponse({"error": serializer.errors}, status=400)
         else:
-            user = existing_user
+            # Update existing user's avatar
+            avatar_file = download_and_save_avatar(
+                avatar_url_link, existing_user.username
+            )
+            if avatar_file:
+                existing_user.avatar.save(avatar_file.name, avatar_file)
+            existing_user.save()
+
+            print("Existing user updated with new avatar:", avatar_url_link)
 
         # Generate JWT tokens
-        refresh = RefreshToken.for_user(user)
+        refresh = RefreshToken.for_user(existing_user if existing_user else user)
         return JsonResponse(
             {
                 "message": "Login successful.",
@@ -132,6 +155,24 @@ def handle_42_callback(request):
         )
 
     return JsonResponse({"error": "No access token received."}, status=400)
+
+
+def download_and_save_avatar(avatar_url, username):
+    # Download the avatar image
+    response = requests.get(avatar_url)
+
+    if response.status_code == 200:
+        # Generate a unique filename for the avatar
+        avatar_extension = avatar_url.split(".")[-1]  # e.g., jpg or png
+        avatar_filename = f"{username}_{uuid4()}.{avatar_extension}"
+
+        # Create a ContentFile object from the image content
+        avatar_file = ContentFile(response.content, avatar_filename)
+
+        return avatar_file  # Return the ContentFile object for saving in the model
+
+    # If the download fails, return None or a default avatar
+    return None
 
 
 def generate_random_suffix(length=5):
