@@ -57,19 +57,17 @@ const Navbar = () => {
     window.pathname = location.pathname;
     let Index = array.find(findIndex);
     if (Index === undefined) Index = array.find(findElement);
-    setActiveElement(Index.activeElement);
-    const coloredDiv = document.querySelector(".items");
-    const navItems = document.querySelectorAll(".nav ul li");
-    const itemOffsetLeft = navItems[Index.index].offsetLeft;
-    const itemOffsetTop = navItems[Index.index].offsetTop;
-    coloredDiv.style.setProperty(
-      "--transformX",
-      `${itemOffsetLeft - coloredDiv.offsetLeft}px`
-    );
-    coloredDiv.style.setProperty(
-      "--transformY",
-      `${itemOffsetTop - coloredDiv.offsetTop}px`
-    );
+    if (Index !== undefined && Index.index !== undefined) {
+      setActiveElement(Index.activeElement);
+      localStorage.setItem("activeElement", Index.activeElement);
+      const navItems = document.querySelectorAll(".nav ul li");
+      const itemOffsetLeft = navItems[Index.index].offsetLeft;
+      const itemOffsetTop = navItems[Index.index].offsetTop;
+      const coloredDiv = document.querySelector(".items");
+      coloredDiv.style.transform = `translateX(${
+        itemOffsetLeft - coloredDiv.offsetLeft
+      }px) translateY(${itemOffsetTop - coloredDiv.offsetTop}px)`;
+    }
   }, [location.pathname]);
 
   const navigate = useNavigate();
@@ -101,8 +99,8 @@ const Navbar = () => {
         </div>
         <div className={navDisplay ? "navigation"  : "activated navigation"}>
           <div className={"nav"}>
-            <ul>
               <div className="items"></div>
+            <ul>
               <li className={activeElement === "Home" ? "active" : ""}>
                 <Link
                   to="/"
@@ -110,7 +108,7 @@ const Navbar = () => {
                     setSearch(false);
                     handleClick("Home", 0);
                   }}
-                >
+                  >
                   <Icon.Home />
                   <span>Home</span>
                 </Link>
@@ -157,6 +155,7 @@ const Navbar = () => {
                   onClick={() => {
                     setSearch(false);
                     handleClick("Setting", 4);
+                    navigate("/setting");
                   }}
                 >
                   <Icon.Setting />

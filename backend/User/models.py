@@ -1,10 +1,12 @@
 from django.db import models
+# from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-class User(models.Model):
-    username = models.CharField(max_length=50, null=False)
-    email = models.EmailField(null=False)
-    password = models.CharField(max_length=50, null=False)
+class User(AbstractUser):
+    # username = models.CharField(max_length=50, null=False)
+    # email = models.EmailField(null=False)
+    # password = models.CharField(max_length=50, null=False)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     cover = models.ImageField(upload_to='covers/', null=True, blank=True)
     bio = models.TextField(blank=True)
@@ -16,6 +18,16 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
+
+# class User(AbstractUser):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     bio = models.TextField(null=True, blank=True)
+#     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+
+#     def __str__(self):
+#         return self.user.username
+
     
 class Achievement(models.Model):  # Renamed to PascalCase
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Renamed uid to user for clarity
