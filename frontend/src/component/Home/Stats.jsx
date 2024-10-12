@@ -11,10 +11,9 @@ import dash from './styles/dash.svg';
 
 function Stats() {
     let stats = [
-        { user1: 'Talal', user2: 'John Doe', user1_img: profile5, user2_img: profile1, use1_score: 5, user2_score: 3 },
-        { user1: 'Talal', user2: 'John Doe', user1_img: profile6, user2_img: profile2, use1_score: 5, user2_score: 3 },
-        { user1: 'Talal', user2: 'John Doe', user1_img: profile7, user2_img: profile3, use1_score: 5, user2_score: 3 },
-        { user1: 'Talal', user2: 'John Doe', user1_img: profile8, user2_img: profile4, use1_score: 5, user2_score: 3 },
+        { user1: 'Talal', user2: 'John', user1_img: profile5, user2_img: profile1, use1_score: 5, user2_score: 3 },
+        { user1: 'Talal', user2: 'John', user1_img: profile6, user2_img: profile2, use1_score: 5, user2_score: 3 },
+        { user1: 'Talal', user2: 'John', user1_img: profile7, user2_img: profile3, use1_score: 5, user2_score: 3 },
     ];
 
     return (

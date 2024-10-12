@@ -189,6 +189,14 @@ const Navbar = () => {
           <button className="navbutton">
             <img src={jarass} alt="" />
           </button>
+          <button className="navbutton" onClick={() => {
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            console.log("you are successfuly loged out");
+            window.location.reload();
+          }}>
+            Sign out
+          </button>
         </div>
       </div>
       {search && <SearchBar onStateChange={handleState} />}

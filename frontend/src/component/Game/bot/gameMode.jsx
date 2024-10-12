@@ -7,9 +7,9 @@ const GameMode = () => {
   function updatevalues(speed, errorRate) {
     let d = [
       {
-        playMode: "bot",
+        Œ: "bot",
         ballSpeed: speed,
-        botSerious: errorRate,
+        Fallibility: errorRate,
       },
     ];
     navigate("/game/bot", { state: { values: d } });

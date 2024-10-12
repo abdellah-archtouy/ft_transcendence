@@ -1,300 +1,315 @@
 .RoomContainer {
-    height: 100%;
-    width: 100%;
-    flex: 1;
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2vh;
+  margin-top: 2vh;
+}
+
+.mobilebuttons {
+  display: none;
+}
+
+.RoomFirst {
+  width: 80%;
+  height: clamp(3.5rem, 10.577vw - 3.269rem, 6.25rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userinfo {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.enemyinfo {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  aspect-ratio: 10 / 10;
+  background-color: rgb(34, 34, 34, 0.8);
+  border-radius: clamp(0.625rem, 2.404vw - 0.913rem, 1.25rem);
+  border: solid #565656 1px;
+  box-shadow: 0px 0px 10px 5px rgb(189, 189, 189, 0.25);
+  z-index: 1;
+}
+
+.image img {
+  width: 60%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: #636262 clamp(0.063rem, 0.25vw - 0.037rem, 0.188rem) solid;
+  box-shadow: 0px 0px 20px 10px rgb(189, 189, 189, 0.25);
+}
+
+.Roominfos {
+  display: flex;
+  align-items: center;
+  height: fit-content;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.923vw - 0.481rem, 1.25rem);
+  /* border: solid red; */
+}
+
+#infosHeader {
+  font-size: clamp(1.25rem, 0.45rem + 2vw, 2.25rem);
+  height: clamp(1rem, 2.163vw - 0.385rem, 1.563rem);
+  line-height: 1;
+  color: #d9d9d9;
+  width: fit-content;
+}
+
+#infostext {
+  font-size: clamp(0.813rem, 1.375vw + 0.263rem, 1.5rem);
+  height: clamp(0.813rem, 1.375vw + 0.263rem, 1.5rem);
+  color: rgb(217, 217, 217, 0.75);
+  width: fit-content;
+  line-height: 1;
+}
+
+.RoomSecond {
+  position: relative;
+  width: clamp(23.438rem, 58.685vw + 9.683rem, 62.5rem);
+  height: clamp(14.625rem, 30.329vw + 7.517rem, 34.813rem);
+  aspect-ratio: 16 / 9;
+}
+
+#Rcanvas {
+  background-color: rgb(34, 34, 34, 0.8);
+  border: solid #565656 2px;
+  backdrop-filter: blur(20px);
+  border-radius: 10px;
+  box-shadow: 0px 0px 100px 5px #565656, 0px 0px 20px 4px rgb(0, 0, 0, 0.25);
+  padding: calc(10px / (16 / 9));
+  transition: all 0.4s;
+  animation: pause 0.4s ease-in;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+}
+
+.pause {
+  height: clamp(1.875rem, 3.75vw + 0.375rem, 3.75rem);
+  width: clamp(1.875rem, 3.75vw + 0.375rem, 3.75rem);
+  border: #707070 solid clamp(0.063rem, 0.125vw + 0.013rem, 0.125rem);
+  background-color: transparent;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s;
+}
+
+.pause:hover {
+  box-shadow: 0px 0px 10px 5px #707070;
+  scale: 1.1;
+}
+
+.pauseIcons {
+  height: 50%;
+  width: auto;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  transition: all 2s;
+}
+
+.pauseDisplay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  font-size: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.4s;
+  animation: pause 0.4s ease-in;
+  backdrop-filter: blur(10px);
+  background-color: #222222ac;
+  border: solid #525252;
+}
+
+.winnerdiplay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  font-size: 48px;
+  font-weight: 700w;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 10px;
+  transition: all 0.4s;
+  animation: pause 0.4s ease-in;
+  backdrop-filter: blur(10px);
+  background-color: #222222ac;
+  border: solid #525252;
+  color: #d6d6d6;
+}
+
+.win {
+  animation: pause 0.4s ease-in;
+}
+
+@keyframes win {
+  0% {
+    opacity: 0;
+    scale: 2;
+  }
+  90% {
+    opacity: 0.8;
+    scale: 1.5;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes pause {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.pauseDisplay p {
+  text-shadow: 0px 0px 10px #b2b2b2;
+  animation: textanimation 4s ease-in infinite;
+}
+
+.winnerdiplay p {
+  text-shadow: 0px 0px 10px #b2b2b2;
+  animation: textanimation 4s ease-in infinite, fade-in 1.5s;
+}
+
+.retry:hover {
+  transition: all 2s ease-out;
+  animation: rotateanimation 2s ease-in;
+  transform: rotate(180deg);
+}
+
+@keyframes rotateanimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+.otherIcons:hover .pauseIcons {
+  transition: all 2s ease-out;
+  animation: vibrate 1s ease-in;
+}
+
+@media (max-width: 1024px) {
+  .RoomContainer {
+    justify-content: space-between;
+  }
+
+  .RoomSecond {
+    max-width: 600px;
+    flex: 0;
+  }
+
+  .mobilebuttons {
     display: flex;
+    order: 3;
+    width: 40%;
+    justify-content: space-between;
+    user-select: none;
+  }
+
+  .mobilebuttons > button {
+    height: 50px;
+    width: 50px;
+    background: none;
+    outline: none;
+    box-shadow: none;
+    border: solid 1px #7c7c7c;
+    border-radius: 4px;
+    user-select: none;
+    box-sizing: border-box;
+    padding: 10px;
+    transform: translateY(-5px) rotate(45deg);
+    display: flex;
+    justify-content: center;
     align-items: center;
-    flex-direction: column;
-    gap: 4vh;
-    margin-top: 2vh;
+    box-shadow: 5px 5px 0px 0px #7c7c7c;
+  }
+
+  .GameMobileButton {
+    transform: rotate(-45deg);
+    height: 80%;
+    width: 80%;
+  }
+
+  .rightPaddle > img {
+    transform: rotate(135deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .RoomSecond {
+    margin-top: auto;
+    order: 3;
+    transform: rotate(-90deg);
+  }
+
+  .RoomSecond > div > p {
+    transform: rotate(90deg);
+  }
+
+  .buttons {
+    order: 0;
   }
   
   .mobilebuttons {
-    display: none;
+    width: 50%;
+    margin-top: auto;
+    /* transform: translateY(-10px); */
   }
   
-  .RoomFirst {
-    width: 80%;
-    height: clamp(3.5rem, 10.577vw - 3.269rem, 6.25rem);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .mobilebuttons > button {
+    height: 50px;
+    width: 50px;
   }
-  
-  .userinfo {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    gap: 25px;
+
+  .rightPaddle > img {
+    transform: rotate(225deg);
   }
-  
-  .enemyinfo {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    gap: 25px;
+
+  .leftPaddle > img {
+    transform: rotate(45deg);
   }
-  
-  .image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    aspect-ratio: 10 / 10;
-    background-color: rgb(34, 34, 34, 0.8);
-    border-radius: clamp(0.625rem, 2.404vw - 0.913rem, 1.25rem);
-    border: solid #565656 1px;
-    box-shadow: 0px 0px 10px 5px rgb(189, 189, 189, 0.25);
-    z-index: 1;
-  }
-  
-  .image img {
-    width: 60%;
-    height: auto;
-    border-radius: 50%;
-    border: #636262 clamp(0.063rem, 0.25vw - 0.037rem, 0.188rem) solid;
-    box-shadow: 0px 0px 20px 10px rgb(189, 189, 189, 0.25);
-  }
-  
-  .Roominfos {
-    display: flex;
-    align-items: center;
-    height: fit-content;
-    flex-direction: column;
-    gap: clamp(0.75rem, 1.923vw - 0.481rem, 1.25rem);
-    /* border: solid red; */
-  }
-  
-  #infosHeader {
-    font-size: clamp(1.25rem, 0.45rem + 2vw, 2.25rem);
-    height: clamp(1rem, 2.163vw - 0.385rem, 1.563rem);
-    line-height: 1;
-    color: #d9d9d9;
-    width: fit-content;
-  }
-  
-  #infostext {
-    font-size: clamp(0.813rem, 1.375vw + 0.263rem, 1.5rem);
-    height: clamp(0.813rem, 1.375vw + 0.263rem, 1.5rem);
-    color: rgb(217, 217, 217, 0.75);
-    width: fit-content;
-    line-height: 1;
-  }
-  
+}
+
+@media (max-width: 550px) and (max-height: 720px) {
   .RoomSecond {
-    position: relative;
-    /* height: clamp(12.5rem, 44.625vw - 5.35rem, 34.813rem); */
-    width: clamp(22.188rem, 80.625vw - 10.063rem, 62.5rem);
-    aspect-ratio: 16 / 9;
+    transform: rotate(-90deg) scale(0.7);
   }
-  
-  #Rcanvas {
-    background-color: rgb(34, 34, 34, 0.8);
-    border: solid #565656 2px;
-    backdrop-filter: blur(20px);
-    border-radius: 10px;
-    box-shadow: 0px 0px 100px 5px #565656, 0px 0px 20px 4px rgb(0, 0, 0, 0.25);
-    padding: calc(10px / (16 / 9));
-    transition: all 0.4s;
-    animation: pause 0.4s ease-in;
-    width: 100%;
-    height: 100%;
-    transform-origin: center;
-  }
-  
-  .pause {
-    height: clamp(1.875rem, 3.75vw + 0.375rem, 3.75rem);
-    width: clamp(1.875rem, 3.75vw + 0.375rem, 3.75rem);
-    border: #707070 solid clamp(0.063rem, 0.125vw + 0.013rem, 0.125rem);
-    background-color: transparent;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.4s;
-  }
-  
-  .pause:hover {
-    box-shadow: 0px 0px 10px 5px #707070;
-    scale: 1.1;
-  }
-  
-  .pauseIcons {
-    height: 50%;
-    width: auto;
-  }
-  
-  .buttons {
-    display: flex;
-    gap: 20px;
-    transition: all 2s;
-  }
-  
-  .pauseDisplay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    display: flex;
-    font-size: 48px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    transition: all 0.4s;
-    animation: pause 0.4s ease-in;
-    backdrop-filter: blur(10px);
-    background-color: #222222ac;
-    border: solid #525252;
-  }
-  
-  .winnerdiplay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    display: flex;
-    font-size: 48px;
-    font-weight: 700w;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 20px;
-    border-radius: 10px;
-    transition: all 0.4s;
-    animation: pause 0.4s ease-in;
-    backdrop-filter: blur(10px);
-    background-color: #222222ac;
-    border: solid #525252;
-    color: #d6d6d6;
-  }
-  
-  .win {
-    animation: pause 0.4s ease-in;
-  }
-  
-  @keyframes win {
-    0% {
-      opacity: 0;
-      scale: 2;
-    }
-    90% {
-      opacity: 0.8;
-      scale: 1.5;
-    }
-    100% {
-      opacity: 1;
-      scale: 1;
-    }
-  }
-  
-  @keyframes pause {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  .pauseDisplay p {
-    text-shadow: 0px 0px 10px #b2b2b2;
-    animation: textanimation 4s ease-in infinite;
-  }
-  
-  .winnerdiplay p {
-    text-shadow: 0px 0px 10px #b2b2b2;
-    animation: textanimation 4s ease-in infinite, win 1s ease-in;
-  }
-  
-  .retry:hover {
-    transition: all 2s ease-out;
-    animation: rotateanimation 2s ease-in;
-    transform: rotate(180deg);
-  }
-  
-  @keyframes rotateanimation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(180deg);
-    }
-  }
-  
-  .otherIcons:hover .pauseIcons {
-    transition: all 2s ease-out;
-    animation: vibrate 1s ease-in;
-  }
-  
-  @media (max-width: 1024px) {
-    .mobilebuttons {
-      display: flex;
-      order: 3;
-      width: 50%;
-      justify-content: space-between;
-      user-select: none;
-      position: absolute;
-      bottom: 20%;
-    }
-  
-    .mobilebuttons > button {
-      height: 80px;
-      width: 80px;
-      background: none;
-      outline: none;
-      box-shadow: none;
-      border: solid 1px #7c7c7c;
-      border-radius: 4px;
-      user-select: none;
-      box-sizing: border-box;
-      padding: 10px;
-      transform: rotate(45deg);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  
-    .GameMobileButton {
-      transform: rotate(-45deg);
-      height: 80%;
-      width: 80%;
-    }
-  
-    .rightPaddle > img {
-      transform: rotate(135deg);
-    }
-  }
-  
-  @media (max-width: 640px) {
-    #Rcanvas {
-      transform: rotate(90deg);
-    }
-  
-    .RoomSecond {
-      margin-top: 2vh;
-      order: 3;
-      transform: scale(0.75);
-    }
-  
-    .buttons {
-      order: 0;
-    }
-  
-    .mobilebuttons {
-      bottom: 15%;
-    }
-  
-    .mobilebuttons > button {
-      height: 50px;
-      width: 50px;
-    }
-  
-    .rightPaddle > img {
-      transform: rotate(225deg);
-    }
-    
-    .leftPaddle > img {
-      transform: rotate(45deg);
-    }
-  }
-  
+}

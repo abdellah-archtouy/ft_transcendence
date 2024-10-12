@@ -1,51 +1,80 @@
+from django.utils import timezone
 from django.db import models
-# from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
+import datetime
+
 
 # Create your models here.
 class User(AbstractUser):
-    # username = models.CharField(max_length=50, null=False)
-    # email = models.EmailField(null=False)
+    # username = models.CharField(max_length=100, unique=True)
+    # email = models.EmailField(unique=True)
     # password = models.CharField(max_length=50, null=False)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    cover = models.ImageField(upload_to='covers/', null=True, blank=True)
-    bio = models.TextField(blank=True)
+    avatar = models.ImageField(
+        upload_to="avatars/",
+        null=True,
+        blank=True,
+        default="avatars/default_avatar.png",
+    )
+    cover = models.ImageField(
+        upload_to="covers/", null=True, blank=True, default="covers/default.jpeg"
+    )
+    bio = models.TextField(blank=True)  # Removed max_length, added blank=True
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)
     score = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
     stat = models.BooleanField(default=False)
 
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = []
     def __str__(self):
         return self.username
 
 
-# class User(AbstractUser):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     bio = models.TextField(null=True, blank=True)
-#     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+class UserOTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         return self.user.username
+    def is_expired(self):
+        return timezone.now() > self.created_at + datetime.timedelta(minutes=5)
 
-    
-class Achievement(models.Model):  # Renamed to PascalCase
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Renamed uid to user for clarity
+    def __str__(self):
+        return f"{self.user.email} - {self.otp}"
+
+
+class Achievement(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE
+    )  # Renamed uid to user for clarity
     maestro = models.BooleanField(default=False)
     downkeeper = models.BooleanField(default=False)
     jocker = models.BooleanField(default=False)
     thunder_strike = models.BooleanField(default=False)
-    the_emperor = models.BooleanField(default=False)  # Changed theEmperor to the_emperor
+    the_emperor = models.BooleanField(
+        default=False
+    )  # Changed theEmperor to the_emperor
+
 
 class Friend(models.Model):
-    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends_sent')
-    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends_received')
+    user1 = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="friends_sent"
+    )
+    user2 = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="friends_received"
+    )
     request = models.BooleanField(default=False)
     accept = models.BooleanField(default=False)
     block = models.BooleanField(default=False)
     mute = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.user1.username} - {self.user2.username}"
+
+
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')  # Fixed related_name
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="notifications"
+    )  # Fixed related_name
     message = models.TextField(blank=True)  # Removed max_length, added blank=True
     time = models.DateTimeField(auto_now_add=True)

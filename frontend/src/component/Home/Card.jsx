@@ -19,13 +19,15 @@ function Card({ friends, handleAddFriend }) {
         };
     }, []);
 
+    const avatarUrl = `http://localhost:8000${friends.avatar}`;
+
     return (
         <div className="card-container">
             <div className="card">
-                <img src={friends.img} alt="Avatar" />
+                <img src={avatarUrl} alt={`${friends.username}'s avatar`} />
                 <div className="container">
                     <div className={`name-container ${isOverflow ? 'overflow' : ''}`} ref={nameRef}>
-                        <span className="name">{friends.name}</span>
+                        <span className="name">{friends.username}</span>
                     </div>
                 </div>
                 <div className="container-btn">

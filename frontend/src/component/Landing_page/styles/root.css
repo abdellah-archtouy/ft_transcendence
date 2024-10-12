@@ -1,15 +1,51 @@
 * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     scroll-behavior: smooth;
 }
 
-.page-container {
-    /* position: relative; */
+body {
     overflow-x: hidden;
+}
+
+.page-container {
+    overflow-x: hidden;
+}
+
+
+.menu-top-bar {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-top: 7px;
 }
 
 .no-scroll {
     overflow: hidden;
 }
+
+.menu-toggle {
+    font-size: 34px;
+    cursor: pointer;
+    font-family: "Georama", sans-serif;
+    font-weight: 300;
+}
+
+.menu-toggle:hover {
+    color: #f1f1f1;
+}
+
+.humburger-menu {
+    display: none;
+    z-index: 1001;
+}
+
 
 .overlay {
     position: fixed;
@@ -21,9 +57,10 @@
     backdrop-filter: blur(5px);
     z-index: 900;
     animation: fade-in 1s ease-in;
+
 }
 
-/* Adjust the menu positioning and ensure it stays on top */
+
 .menu {
     position: fixed;
     min-width: 300px;
@@ -39,11 +76,8 @@
     backdrop-filter: blur(9.1px);
     -webkit-backdrop-filter: blur(9.1px);
     border: 1px solid rgba(37, 37, 37, 0.36);
-    /* super smoth transition slow */
-    /* animation: fade-in 1s ease-in; */
-    transition: all 0.9s;
+    transition: all 0.9s ease-in-out;
 }
-
 
 .menu.open {
     left: 0;
@@ -70,18 +104,6 @@
     color: rgba(255, 255, 255, 0.6);
 }
 
-
-.menu-toggle {
-    position: fixed;
-    top: 20px;
-    right: 34px;
-    z-index: 889;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 2rem;
-    user-select: none;
-}
-
 .menu li:hover {
     transform: scale(1.2);
     cursor: pointer;
@@ -92,7 +114,7 @@
     right: 6%;
     bottom: 1%;
     font-size: 1.7em;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.9s ease-in-out;
     cursor: pointer;
 }
 
@@ -102,7 +124,7 @@
     right: 40px;
     background-color: #000;
     color: #fff;
-    border: 3px solid #606060;
+    border: 4px solid #606060;
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -122,5 +144,225 @@
 }
 
 .scroll-to-top:hover {
-    opacity: 1;
+    opacity: 1.4;
+}
+
+/* .black-hole-circle {
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    box-shadow:
+        0 0 500px 250px rgba(0, 0, 0, 0.1),
+        0 0 400px 200px rgba(255, 255, 255, 0.2),
+        inset 0 0 300px 150px rgba(255, 255, 255, 0.18);
+    z-index: 0;
+    background-color: transparent;
+    border: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+} */
+
+
+
+
+
+@media (min-width: 1440px) and (max-width: 1919px) {}
+
+@media (min-width: 1024px) and (max-width: 1439px) {}
+
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .menu-toggle {
+        display: none;
+    }
+
+    .menu-top-bar {
+        padding: 0;
+        z-index: 1001;
+    }
+
+    .logo {
+        margin-left: 20%;
+    }
+
+    .humburger-menu {
+        display: block;
+        z-index: 9999;
+    }
+
+    .ham {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: transform 400ms;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .hamRotate.active {
+        transform: rotate(45deg);
+    }
+
+    .hamRotate180.active {
+        transform: rotate(180deg);
+    }
+
+    .line {
+        fill: none;
+        transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
+        stroke: #ffffff;
+        stroke-width: 5.5;
+        stroke-linecap: round;
+    }
+
+    .ham1 .top {
+        stroke-dasharray: 40 139;
+    }
+
+    .ham1 .bottom {
+        stroke-dasharray: 40 180;
+    }
+
+    .ham1.active .top {
+        stroke-dashoffset: -98px;
+    }
+
+    .ham1.active .bottom {
+        stroke-dashoffset: -138px;
+    }
+
+    .menu {
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 0;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(9.1px);
+        -webkit-backdrop-filter: blur(9.1px);
+        border: 1px solid rgba(37, 37, 37, 0.36);
+        transition: all 0.9s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        z-index: 1000;
+        align-items: center;
+    }
+
+    .menu ul {
+        margin: 0;
+    }
+
+    .close-menu {
+        display: none;
+    }
+
+    .scroll-to-top {
+        display: none;
+    }
+
+    .overlay {
+        display: none;
+    }
+
+
+
+}
+
+@media (min-width: 320px) and (max-width: 767px) {
+    .menu-toggle {
+        display: none;
+    }
+
+    .menu-top-bar {
+        padding: 0;
+        z-index: 1001;
+    }
+
+    .logo {
+        margin-left: 20%;
+    }
+
+    .humburger-menu {
+        display: block;
+        z-index: 9999;
+    }
+
+    .ham {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: transform 400ms;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .hamRotate.active {
+        transform: rotate(45deg);
+    }
+
+    .hamRotate180.active {
+        transform: rotate(180deg);
+    }
+
+    .line {
+        fill: none;
+        transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
+        stroke: #ffffff;
+        stroke-width: 5.5;
+        stroke-linecap: round;
+    }
+
+    .ham1 .top {
+        stroke-dasharray: 40 139;
+    }
+
+    .ham1 .bottom {
+        stroke-dasharray: 40 180;
+    }
+
+    .ham1.active .top {
+        stroke-dashoffset: -98px;
+    }
+
+    .ham1.active .bottom {
+        stroke-dashoffset: -138px;
+    }
+
+    .menu {
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 0;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(9.1px);
+        -webkit-backdrop-filter: blur(9.1px);
+        border: 1px solid rgba(37, 37, 37, 0.36);
+        transition: all 0.9s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        z-index: 1000;
+        align-items: center;
+    }
+
+    .menu ul {
+        margin: 0;
+    }
+
+    .close-menu {
+        display: none;
+    }
+
+    .scroll-to-top {
+        display: none;
+    }
+
+    .overlay {
+        display: none;
+    }
+
 }

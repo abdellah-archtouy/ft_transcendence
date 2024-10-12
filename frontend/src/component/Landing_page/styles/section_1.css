@@ -1,77 +1,38 @@
 .landing_section_1 {
     height: 100vh;
-    width: 100vw;
-}
-
-.landing_section_1-container {
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 100%;
-    position: relative;
 }
 
 .center_image {
-    height: 50%;
-    width: 50%;
-    z-index: 6;
+    width: 100%;
+    aspect-ratio: 1 / 1;
 }
 
-.logo {
-    position: fixed;
-    z-index: 1001;
-}
-
-.landing_section_1-polygon-div {
+/* .black-hole-circle {
     position: absolute;
-    top: -15%;
-    right: -10%;
-    user-select: none;
-    pointer-events: none;
-}
-
-.landing_section_1-square-div {
-    position: absolute;
-    left: -5%;
-    top: 20%;
-    user-select: none;
-    pointer-events: none;
-}
-
-.landing_section_1-cross-div {
-    position: absolute;
-    right: -10%;
-    top: 60%;
-    overflow: hidden;
-    user-select: none;
-    pointer-events: none;
-}
-
-.landing_section_1-circle-div {
-    position: absolute;
-    left: -5%;
-    top: 80%;
-    overflow: hidden;
-    user-select: none;
-    pointer-events: none;
-}
-
-.scroll-down {
-    position: absolute;
-    left: 4%;
-    bottom: 1%;
-    transform: translateX(-50%);
-    z-index: 2;
-    user-select: none;
-    font-size: 1.5em;
-}
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    box-shadow:
+        0 0 500px 250px rgba(0, 0, 0, 0.1),
+        0 0 400px 200px rgba(255, 255, 255, 0.2),
+        inset 0 0 300px 150px rgba(255, 255, 255, 0.18);
+    z-index: 0;
+    background-color: transparent;
+    border: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+} */
 
 .scroll-arrow {
     position: absolute;
-    bottom: 20px;
+    bottom: 5px;
+    width: 100%;
     /* Adjust the distance from the bottom */
-    left: 50%;
     transform: translateX(-50%);
     animation: breathe 1.5s infinite;
 }
@@ -83,6 +44,7 @@
     fill: #D1D1D1;
     /* Set the arrow color to D1D1D1 */
 }
+
 
 @keyframes breathe {
     0% {
@@ -104,3 +66,205 @@
     font-size: 1em;
     font-weight: 300;
 }
+
+
+.landing_section_1-polygon-div {
+    position: absolute;
+    width: clamp(10.563rem, 16.25vw + 7.313rem, 33.313rem);
+    aspect-ratio: 1 / 1;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+.polygon-1 {
+    /* Increased size: Smoothly transition between a minimum of 30vw and a maximum of 50vw */
+    position: absolute;
+    top: -37%;
+    right: -39%;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+}
+
+
+.landing_section_1-square-div {
+    position: absolute;
+    width: clamp(11rem, 1.116vw + 10.777rem, 12.563rem);
+    aspect-ratio: 1 / 1;
+    top: 20%;
+    left: 0;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+.square-1 {
+    position: absolute;
+    top: 0%;
+    left: -40%;
+    height: 100%;
+    width: 100%;
+    /* border: solid; */
+    /* user-select: none; */
+    pointer-events: none;
+}
+
+.landing_section_1-cross-div {
+    position: absolute;
+    width: clamp(14.688rem, 9.241vw + 12.839rem, 27.625rem);
+    aspect-ratio: 1 / 1;
+    top: 55%;
+    right: 0;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+}
+
+.cross-1 {
+    position: absolute;
+    top: 0%;
+    right: -57%;
+    height: 100%;
+    width: 100%;
+    /* border: solid; */
+    /* user-select: none; */
+    pointer-events: none;
+}
+
+.landing_section_1-circle-div {
+    position: absolute;
+    width: clamp(14.125rem, 13.932vw + 5.208rem, 27.5rem);
+    aspect-ratio: 1 / 1;
+    top: 80%;
+    left: 0%;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+
+}
+
+.circle-1 {
+    position: absolute;
+    top: 0%;
+    left: -30%;
+    height: 100%;
+    width: 100%;
+    /* border: solid; */
+    /* user-select: none; */
+    pointer-events: none;
+}
+
+/* talal's shit */
+
+.section-1-center-div {
+    position: relative;
+    width: clamp(31.25rem, 62.5vw + 6.25rem, 62.5rem);
+    aspect-ratio: 1 / 1;
+    max-width: 700px;
+}
+
+.section-1-center-div>div {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    z-index: 0;
+}
+
+.section-1-center-div>img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    z-index: 0;
+}
+
+.section-1-center-div>img {
+    bottom: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.black-hole-circle {
+    width: 85.654%;
+    aspect-ratio: 10 / 7.094;
+    border-radius: 50%;
+    background-color: black;
+    bottom: -10%;
+    filter: blur(clamp(4.688rem, 5.625vw + 0.938rem, 5.625rem));
+}
+
+.white-hole-circle {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    z-index: 0;
+    filter: blur(clamp(25rem, 50vw + 5rem, 50rem));
+}
+
+.landing_section_1-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000000;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #D1D1D1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.popup.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+
+@media (min-width: 1440px) and (max-width: 1919px) {}
+
+@media (min-width: 1024px) and (max-width: 1439px) {}
+
+@media (min-width: 768px) and (max-width: 1023px) {}
+
+@media (min-width: 320px) and (max-width: 767px) {
+    .landing_section_1 {
+        height: 100vh;
+        width: 100vw;
+    }
+
+    .center_image {
+        width: 80%;
+        aspect-ratio: 1 / 1;
+    }
+
+    .landing_section_1-square-div {
+        top: 10%;
+    }
+
+}
+
+
+

@@ -10,20 +10,36 @@ function Carousel({ friends, handleAddFriend }) {
         slidesToShow: 5,
         slidesToScroll: 1,
         initialSlide: 0,
+        arrows: true,
     });
 
     useEffect(() => {
         // Function to update the settings based on the viewport width
         const updateSettings = () => {
-            if (window.innerWidth < 1919) {
+            if (window.innerWidth < 480) {
+                setSettings(prevSettings => ({
+                    ...prevSettings,
+                    slidesToShow: 2,
+                    arrows: false,
+                }));
+            }
+            else if (window.innerWidth < 769) {
                 setSettings(prevSettings => ({
                     ...prevSettings,
                     slidesToShow: 4,
+                    arrows: false,
+                }));
+            } else if (window.innerWidth < 1919) {
+                setSettings(prevSettings => ({
+                    ...prevSettings,
+                    slidesToShow: 4,
+                    arrows: true,
                 }));
             } else {
                 setSettings(prevSettings => ({
                     ...prevSettings,
                     slidesToShow: 5,
+                    arrows: true,
                 }));
             }
         };
@@ -42,9 +58,13 @@ function Carousel({ friends, handleAddFriend }) {
 
     return (
         <Slider {...settings}>
-            {friends.map((friend) => (
-                <Card friends={friend} handleAddFriend={handleAddFriend} key={friend.id} />
-            ))}
+            {friends.length > 0 ? (
+                friends.map(friend => (
+                    <Card friends={friend} handleAddFriend={handleAddFriend} key={friend.id} />
+                ))
+            ) : (
+                <div>No friends available</div>
+            )}
         </Slider>
     );
 }

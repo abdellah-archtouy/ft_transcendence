@@ -9,3 +9,20 @@ class Game(models.Model):
     loser_score = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # Call the original save method to store the game first
+        super().save(*args, **kwargs)
+
+        # Update the winner's score by adding the winner_score
+        self.winner.score += (self.winner_score - self.loser_score) * 20
+        self.winner.save()
+        self.reset_ranks()
+
+    @staticmethod
+    def reset_ranks():
+        users = User.objects.all()
+        sorted_users_by_score = users.filter(score__gt=0).order_by("-score")
+        for rank, user in enumerate(sorted_users_by_score, start=1):
+            user.rank = rank
+            user.save()

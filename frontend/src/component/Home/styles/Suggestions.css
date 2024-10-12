@@ -1,7 +1,6 @@
 .suggestions {
-    height: 30vh;
+    height: 400px;
     width: 50vw;
-    /* From https://css.glass */
     background: rgba(34, 34, 34, 0.46);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -173,7 +172,7 @@
 
 @media (min-width: 1440px) and (max-width: 1919px) {
     .suggestions {
-        height: 30vh;
+        height: 350px;
         width: 65vw;
     }
 
@@ -188,7 +187,46 @@
 
 @media (min-width: 1024px) and (max-width: 1439px) {
     .suggestions {
-        height: 30vh;
+        height: 350px;
         width: 80vw;
+    }
+
+    .card-btn {
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .suggestions {
+        height: 300px;
+        width: 90vw;
+    }
+
+    .card-btn {
+        font-size: 0.6rem;
+    }
+
+    .card img {
+        border: 2px solid #636262;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 767px) {
+    .suggestions {
+        height: 300px;
+        width: 95vw;
+    }
+
+    .card-btn {
+        font-size: 0.6rem;
+    }
+
+    .card img {
+        border: 2px solid #636262;
+    }
+
+    element {
+        display: none;
+        border: solid;
     }
 }
