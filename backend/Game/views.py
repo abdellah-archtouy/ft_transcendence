@@ -6,17 +6,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from User.models import User
 from User.serializers import UserSerializer
-from django.db.models import Count
-from django.db.models import F
+from django.db.models import Count, F
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def top5(request):
     try:
         # my_sorted_list = User.objects.all().filter(score__gt=0).order_by("-score")[:5].values("id", "avatar", "username", "rank", "score")
-        my_sorted_list = User.objects.filter(score__gt=0).annotate(matches_won=Count('user1_game'),
-                                                                matches_lost=Count('user2_game'),
-                                                                total_matches=Count('user1_game') + Count('user2_game')).order_by("-score")[:5].values(
+        my_sorted_list = User.objects.annotate(matches_won=Count('user1_game', distinct=True),
+                                                                matches_lost=Count('user2_game', distinct=True),
+                                                                total_matches=Count('user1_game', distinct=True) + Count('user2_game', distinct=True)).order_by("rank")[:5].values(
                                                                     "avatar",
                                                                     "username",
                                                                     "rank",

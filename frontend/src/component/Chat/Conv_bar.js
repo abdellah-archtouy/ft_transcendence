@@ -119,9 +119,9 @@ const Conv_bar = () => {
         </div>
       </div>
       <div className='center'>
-        <div class="search-container">
+        <div className="search-container">
         <Vector_1/>
-        <input type="text" onClick={handleChange} placeholder="Search..." name="search" class="search-input"></input>
+        <input type="text" onClick={handleChange} placeholder="Search..." name="search" className="search-input"></input>
         </div>
       </div>
       <div className='scrol'>

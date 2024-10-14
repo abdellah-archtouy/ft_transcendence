@@ -4,6 +4,7 @@ import logo from "../../icons/logo.svg";
 import jarass from "../../icons/jarass.svg";
 import searchicon from "../../icons/search.svg";
 import burgerMenu from "../../icons/navicons/burgerMenu.svg";
+import logoutSvg from "../../icons/logout.svg";
 import React, { useEffect, useState } from "react";
 import "./navbar.css";
 import SearchBar from "./searchBar";
@@ -195,7 +196,7 @@ const Navbar = () => {
             console.log("you are successfuly loged out");
             window.location.reload();
           }}>
-            Sign out
+            <img src={logoutSvg} alt="" className="logoutSvg"/>
           </button>
         </div>
       </div>

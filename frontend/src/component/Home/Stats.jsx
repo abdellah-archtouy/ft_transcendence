@@ -8,31 +8,35 @@ import profile7 from './images/profile7.jpg';
 import profile8 from './images/profile8.jpg';
 import dash from './styles/dash.svg';
 
+function avatarUrl(avatar) {
+    return `http://localhost:8000/media/${avatar}`;
+}
 
-function Stats() {
-    let stats = [
-        { user1: 'Talal', user2: 'John', user1_img: profile5, user2_img: profile1, use1_score: 5, user2_score: 3 },
-        { user1: 'Talal', user2: 'John', user1_img: profile6, user2_img: profile2, use1_score: 5, user2_score: 3 },
-        { user1: 'Talal', user2: 'John', user1_img: profile7, user2_img: profile3, use1_score: 5, user2_score: 3 },
-    ];
-
+function Stats({data}) {
+    // let stats = [
+    //     { winner_username: 'Talal', loser_username: 'John', winner_avatar: profile5, loser_avatar: profile1, winner_goals: 5, loser_goals: 3 },
+    //     { winner_username: 'Talal', loser_username: 'John', winner_avatar: profile6, loser_avatar: profile2, winner_goals: 5, loser_goals: 3 },
+    //     { winner_username: 'Talal', loser_username: 'John', winner_avatar: profile7, loser_avatar: profile3, winner_goals: 5, loser_goals: 3 },
+    // ];
+    
+    let stats = data;
     return (
         <div className="matches-container">
             <ul className="matches-list">
                 {stats.map((stat, index) => (
                     <li key={index} className="matches-list-item">
                         <div className="matches-list-item-user">
-                            <img src={stat.user1_img} alt="user1" />
-                            <p>{stat.user1.toUpperCase()}</p>
+                            <img src={avatarUrl(stat.winner_avatar)} alt="user1" />
+                            <p>{stat.winner_username.toUpperCase()}</p>
                         </div>
                         <div className="matches-list-item-score">
-                            <p>{stat.use1_score}</p>
+                            <p>{stat.winner_goals}</p>
                             <img src={dash} alt="" style={{ width: "30%" }} />
-                            <p>{stat.user2_score}</p>
+                            <p>{stat.loser_goals}</p>
                         </div>
                         <div className="matches-list-item-user">
-                            <img src={stat.user2_img} alt="user2" />
-                            <p>{stat.user2.toUpperCase()}</p>
+                            <img src={avatarUrl(stat.loser_avatar)} alt="user2" />
+                            <p>{stat.loser_username.toUpperCase()}</p>
                         </div>
                     </li>
                 ))}

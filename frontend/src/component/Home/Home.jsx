@@ -16,6 +16,8 @@ const Home = () => {
   const [user, setUser] = useState(null);
   const [errors, setErrors] = useState({});
   const [friends, setFriends] = useState([]);
+  const [top5, setTop5] = useState([]);
+  const [history, setHistory] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchUserData = async () => {
@@ -27,7 +29,6 @@ const Home = () => {
             Authorization: `Bearer ${access}`,
           },
         });
-        console.log(response.data);
         setUser(response.data);
         fetchSuggestedFriends(); // Fetch friends after getting user data
 
@@ -53,6 +54,29 @@ const Home = () => {
       }
     };
 
+    const fetchTop5 = async () => {
+      try {
+        const access = localStorage.getItem('access');
+
+        const response = await axios.get('http://localhost:8000/game/top5', {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        setTop5(response.data); // Set the top 5
+        
+        const response1 = await axios.get('http://localhost:8000/game/history', {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        setHistory(response1.data); // Set the top 5
+
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
     const handleFetchError = (error) => {
       if (error.response) {
         if (error.response.status === 401) {
@@ -66,8 +90,8 @@ const Home = () => {
                 fetchUserData(); // Retry fetching user data
               })
               .catch(refreshError => {
-                localStorage.removeItem('access');
-                localStorage.removeItem('refresh');
+                // localStorage.removeItem('access');
+                // localStorage.removeItem('refresh');
                 console.log("you have captured the error");
                 setErrors({ general: 'Session expired. Please log in again.' });
               });
@@ -82,6 +106,7 @@ const Home = () => {
       }
     };
 
+    fetchTop5();
     fetchUserData(); // Initial fetch for user data
   }, []);
 
@@ -112,7 +137,7 @@ const Home = () => {
           <Carousel friends={friends} handleAddFriend={handleAddFriend} />
         </div>
       </div>
-      {/* <div className="stats">
+      <div className="stats">
         <div className="last-matches">
           <div className='last-matches-header'>
             <h2>Last Three matches</h2>
@@ -121,7 +146,7 @@ const Home = () => {
             </div>
           </div>
           <div className="last-matches-stats">
-            <Stats />
+            <Stats data={history}/>
           </div>
         </div>
         <div className="top-5">
@@ -132,10 +157,10 @@ const Home = () => {
             </div>
           </div>
           <div className="top-5-stats">
-            <Top_5 />
+            <Top_5 data={top5}/>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

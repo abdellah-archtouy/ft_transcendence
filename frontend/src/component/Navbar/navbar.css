@@ -91,7 +91,7 @@
   height: 72px;
   width: 60px;
   position: absolute;
-  margin-top: 3px;
+  margin-top: 5px;
 }
 
 .nav li.active .icons {
@@ -130,9 +130,10 @@
   content: "";
   position: absolute;
   width: 50px;
-  height: 42px;
-  bottom: 1px;
+  height: 38px;
+  bottom: 0px;
   z-index: -2;
+  backface-visibility: hidden;
 }
 
 .nav .items::before {
@@ -250,4 +251,10 @@
   .button {
     right: clamp(1.25rem, 3.646vw - 0.208rem, 2.125rem);
   }
+}
+.logoutSvg {
+  height: clamp(0.625rem, 1.625vw - 0.025rem, 1.438rem);
+  width: auto;
+  /* color: #B2B2B2; */
+  transform: scale(-1);
 }

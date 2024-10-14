@@ -3,9 +3,11 @@ from datetime import datetime, timedelta
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
 from User.models import User
+from .models import Game
 from User.serializers import UserSerializer
 import traceback
 from .common_functions import start, join_room
+from django.db.models import Count, Sum
 from .room import Room
 
 boardWidth = 1000
@@ -33,6 +35,14 @@ class RoomManager():
             room_name = join_room(instance, self.rooms)
             return room_name
         
+    async def delete_user_room(self, instance):
+        lock = await self.get_lock()
+        async with lock:
+            room = self.rooms.get(instance.room_group_name)
+            if room:
+                room.set_user(instance.user_id, None)
+
+
     async def remove_user_room(self, instance):
         lock = await self.get_lock()
         async with lock:
@@ -53,7 +63,7 @@ class RoomManager():
         room = self.rooms.get(instance.room_group_name)
         user = await User.objects.aget(id=room.uid1)
         self.user1 = UserSerializer(user).data
-        self.user1["goals"] = 5;
+        self.user1["goals"] = 0;
         if instance.gamemode == "bot":
             self.user2 = {
                 "username": "Bot",
@@ -74,7 +84,7 @@ class RoomManager():
         else:
             user = await User.objects.aget(id=room.uid2)
             self.user2 = UserSerializer(user).data
-            self.user2["goals"] = 5;
+            self.user2["goals"] = 0;
 
     async def start_periodic_updates(self, instance):
         room = self.rooms.get(instance.room_group_name)
@@ -117,7 +127,7 @@ class RoomManager():
         room = self.rooms.get(instance.room_group_name)
         while self.keep_updating:
             if room:
-                await start(room, self.user1, self.user2, instance)
+                await start(room, self.user1, self.user2)
                 await instance.channel_layer.group_send(
                     instance.room_group_name,
                     {
@@ -131,11 +141,42 @@ class RoomManager():
                         'room_paused': room.room_paused
                     }
                 )
+                if room.winner:
+                    await self.store_gamein_db(room)
+                    break
                 await asyncio.sleep(0.02)
             else:
                 self.keep_updating = False
-        if room and room.type == "Remote":
+        if room and room.type == "Remote" and not room.winner:
             await self.check_time(instance)
+        
+    async def store_gamein_db(self, room):
+        loser = None
+        winner = None
+        if room.winner == self.user1:
+            winner = room.uid1
+            loser = room.uid2
+            loser_score = self.user2["goals"]
+        else:
+            winner = room.uid2
+            loser = room.uid1
+            loser_score = self.user1["goals"]
+        room.end = datetime.now()
+        if room.type == "Remote":
+            game = Game(
+                winner= await User.objects.aget(id=winner),
+                loser= await User.objects.aget(id=loser),
+                loser_score=loser_score,
+                winner_score=6,
+                created_at=room.created_at,
+                end=room.end,
+            )
+            await game.asave()
+            self.assign_achievement(room)
+        
+    def assign_achievement(self, room):
+        i = Game.objects.filter(winner=room.winner).aggregate(total_loser_score=Sum('loser_score'))["total_loser_score"]
+        print("i = ", i)
 
 room_manager = RoomManager()
         

@@ -44,8 +44,8 @@ const Chat = ({ data }) => {
                 {/* <Add1/> */}
                 <Imoji />
                 <Play_inv />
-                <div class="search-container">
-                    <input type="text" placeholder="Enter your message" name="search" class="search-input"></input>
+                <div className="search-container">
+                    <input type="text" placeholder="Enter your message" name="search" className="search-input"></input>
                 </div>
                 <Sent />
             </div>

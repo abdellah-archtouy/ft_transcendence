@@ -1,9 +1,7 @@
 import math
 from .room import Room
 from datetime import datetime, timedelta
-from .models import Game
-from User.models import User
-from asgiref.sync import sync_to_async
+from User.models import User, Achievement
 
 boardWidth = 1000
 boardHeight = 550
@@ -12,27 +10,28 @@ def resetballPosition(ball):
     ball.set_attribute('x', ((boardWidth / 2) - 10))
     ball.set_attribute('y', ((boardHeight / 2) - 10))
 
-async def store_gamein_db(room, user1, user2):
-    loser = None
-    if room.winner == user1:
-        winner = room.uid1
-        loser = room.uid2
-        loser_score = user2["goals"]
-    else:
-        loser = room.uid2
-        loser = room.uid1
-        loser_score = user1["goals"]
-    room.end = datetime.now()
-    if room.type == "Remote":
-        game = Game(
-            winner= await User.objects.aget(id=winner),
-            loser= await User.objects.aget(id=loser),
-            loser_score=loser_score, #hado khasshom it7ssbo
-            winner_score=6, #hado khasshom it7ssbo
-            created_at=room.created_at,
-            end=room.end,
-        )
-        await game.asave()
+# async def store_gamein_db(room, user1, user2):
+#     loser = None
+#     winner = None
+#     if room.winner == user1:
+#         winner = room.uid1
+#         loser = room.uid2
+#         loser_score = user2["goals"]
+#     else:
+#         loser = room.uid2
+#         loser = room.uid1
+#         loser_score = user1["goals"]
+#     room.end = datetime.now()
+#     if room.type == "Remote":
+#         game = Game(
+#             winner= await User.objects.aget(id=winner),
+#             loser= await User.objects.aget(id=loser),
+#             loser_score=loser_score,
+#             winner_score=6,
+#             created_at=room.created_at,
+#             end=room.end,
+#         )
+#         await game.asave()
 
 async def update(room, user1, user2):
     ballx = room.ball.get_attribute('x')
@@ -51,7 +50,6 @@ async def update(room, user1, user2):
         if user1["goals"] == 6 or user2["goals"] == 6:
             room.room_pause()
             room.winner = user1 if user1["goals"] == 6 else user2
-            await store_gamein_db(room, user1, user2)
             room.room_paused = True
 
 def collision(a, b):
@@ -104,7 +102,7 @@ def changePaddlePosition(room):
     except Exception as e:
         print(f"Error in changePaddlePosition: {e}")
 
-async def start(room, user1, user2, instance):
+async def start(room, user1, user2):
     try:
         speed = room.ball.get_attribute('speed')
         y = room.ball.get_attribute('y') + room.ball.get_attribute('velocityY')

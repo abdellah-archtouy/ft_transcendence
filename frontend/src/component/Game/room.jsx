@@ -415,7 +415,7 @@ const Room = ({ data }) => {
             <img src={ima} alt="" className="pauseIcons" />
           </button>
         )}
-        {pause && (
+        {pause && gamemode !== "Remote" && (
           <button
             className="pause"
             title="pause"

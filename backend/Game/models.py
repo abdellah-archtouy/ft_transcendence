@@ -22,7 +22,12 @@ class Game(models.Model):
     @staticmethod
     def reset_ranks():
         users = User.objects.all()
-        sorted_users_by_score = users.filter(score__gt=0).order_by("-score")
+        sorted_users_by_score = users.order_by("-score")
         for rank, user in enumerate(sorted_users_by_score, start=1):
             user.rank = rank
             user.save()
+
+    # def set_achievement(self):
+    #     # setting Downkeeper
+    #     get_all_matchs = self.winner.user1_game.loser_score
+            
