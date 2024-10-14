@@ -14,6 +14,8 @@ import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
 import LandingPage from "./component/Landing_page/Landing_page";
 import axios from 'axios';
+import { Navigate } from 'react-router-dom';
+
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem('jwt'));
@@ -36,27 +38,32 @@ function App() {
           },
         }
       );
+      console.log("this part has been flaged");
       return response.status === 200;
     } catch (error) {
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('access');
+      // refreh the page
+      window.location.reload();
+      Navigate('/');
       return false;
     }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem('access');
     if (token) {
       setAuth(true);
-      // Check with the server if the token is valid
-      // validateTokenWithServer(token).then(isValid => {
-      //   setAuth(isValid); // Set auth based on server response
-      // });
     } else {
       setAuth(false); // No token found, user is not authenticated
     }
   }, []);
 
-  const handleLogin = (jwt) => {
-    localStorage.setItem('jwt', jwt);
+  const handleLogin = (access, refresh) => {
+    localStorage.setItem('access', access);
+    localStorage.setItem('refresh', refresh);
+
     setAuth(true);
   };
 

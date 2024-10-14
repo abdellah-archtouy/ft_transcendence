@@ -72,13 +72,37 @@
     border-radius: 6px;
     margin-bottom: 10%;
     cursor: pointer;
+    transition: all 0.5s ease;
 }
 
-.card-btn:hover {
-    background-color: black;
-    color: inherit;
-    box-shadow: rgba(170, 170, 170, 0.35) 0px 0px 3px 3px;
+.added {
+    width: 100%;
+    height: 80%;
+    background-color: inherit;
+    color: #7C7C7C;
+    font-size: 0.9em;
+    margin-bottom: 8%;
+    opacity: 1;
+    animation: fade 1s linear;
 }
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+.card-btn:hover {
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.554);
+    /* box-shadow: rgba(255, 255, 255, 0.222) 0px 0px 10px 3px; */
+}
+
 
 .card h4 {
     font-size: 100%;
