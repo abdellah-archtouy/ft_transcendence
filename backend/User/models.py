@@ -3,6 +3,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import datetime
 
+def reset_ranks():
+    users = User.objects.all()
+    sorted_users_by_score = users.order_by("-score")
+    for rank, user in enumerate(sorted_users_by_score, start=1):
+        user.rank = rank
+        user.save()
 
 # Create your models here.
 class User(AbstractUser):
@@ -27,6 +33,7 @@ class User(AbstractUser):
 
     # USERNAME_FIELD = 'email'
     # REQUIRED_FIELDS = []
+
     def __str__(self):
         return self.username
 

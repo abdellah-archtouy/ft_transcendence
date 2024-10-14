@@ -1,66 +1,29 @@
 import { useEffect, useState } from "react";
 import "./searchBar.css";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const SearchBar = ({ onStateChange }) => {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      username: "Talal",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      online: 1,
-    },
-    {
-      id: 2,
-      username: "Bele",
-      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-      online: 0,
-    },
-    {
-      id: 1,
-      username: "ayman",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      online: 1,
-    },
-    {
-      id: 2,
-      username: "mohamed",
-      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-      online: 0,
-    },
-    {
-      id: 1,
-      username: "Jake",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      online: 1,
-    },
-    {
-      id: 2,
-      username: "GUTS",
-      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-      online: 0,
-    },
-    {
-      id: 1,
-      username: "7amid",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      online: 1,
-    },
-  ]);
-
+  function avatarUrl(name) {
+    return `http://${window.location.hostname}:8000/media/` + name;
+  }
+  const [users, setUsers] = useState([]);
+  
   const [userList, setUserList] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [fadeout, setFadeout] = useState(false);
-
+  const navigate = useNavigate();
+  
+  function keypress(e) {
+    if (e.key === "Escape") FadingOut();
+  }
+  
   function FadingOut() {
     setFadeout(true);
     setTimeout(() => {
       onStateChange(false);
     }, 400);
     document.removeEventListener("keydown", keypress);
-  }
-
-  function keypress(e) {
-    if (e.key === "Escape") FadingOut();
   }
 
   useEffect(() => {
@@ -74,8 +37,66 @@ const SearchBar = ({ onStateChange }) => {
   }, [searchTerm, users]);
 
   useEffect(() => {
+    const handleFetchError = (error) => {
+      if (error.response) {
+        if (error.response.status === 401) {
+          const refresh = localStorage.getItem("refresh");
+
+          if (refresh) {
+            axios
+              .post("http://localhost:8000/api/token/refresh/", { refresh })
+              .then((refreshResponse) => {
+                const { access: newAccess } = refreshResponse.data;
+                localStorage.setItem("access", newAccess);
+                fetchUserData(); // Retry fetching user data
+              })
+              .catch((refreshError) => {
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
+                console.log("you have captured the error");
+                navigate("/");
+                // setErrors({ general: 'Session expired. Please log in again.' });
+              });
+          } else {
+            // setErrors({ general: 'No refresh token available. Please log in.' });
+          }
+        } else {
+          // setErrors({ general: 'Error fetching data. Please try again.' });
+        }
+      } else {
+        // setErrors({ general: 'An unexpected error occurred. Please try again.' });
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get(
+          "http://localhost:8000/api/searchbar/",
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setUsers(response.data);
+        // fetchSuggestedFriends(); // Fetch friends after getting user data
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    fetchUserData();
     document.addEventListener("keyup", keypress);
-  });
+    return () => {
+      document.removeEventListener("keyup", keypress);
+    };
+  }, []);
+
+  // useEffect(() => {
+  // }, []);
 
   return (
     <>
@@ -93,7 +114,9 @@ const SearchBar = ({ onStateChange }) => {
               setSearchTerm(input.target.value);
             }}
           />
-          <button className="nav_search_submit"><img src="/search.svg" alt="" /></button>
+          <button className="nav_search_submit">
+            <img src="/search.svg" alt="" />
+          </button>
         </div>
         <div className="search">
           <div className="users">
@@ -102,10 +125,10 @@ const SearchBar = ({ onStateChange }) => {
             )}
             {userList?.map((user, index) => (
               <div className="user" key={index}>
-                <div className="userInfos">
-                  <img src={user.avatar} alt="" className="avatar" />
+                <Link className="userInfos" to={`/user/${user.username}`}>
+                  <img src={avatarUrl(user.avatar)} alt="" className="avatar" />
                   <span>{user.username}</span>
-                </div>
+                </Link>
               </div>
             ))}
           </div>

@@ -7,6 +7,10 @@ from .views import (
     suggest_friends,
     handle_42_callback,
     validate_token,
+    resend_otp,
+    forgot_password,
+    add_friend,
+    search_bar_list
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -25,6 +29,13 @@ urlpatterns = [
     path("users/suggest_friends/", suggest_friends, name="suggest_friends"),
     path("auth/callback/", handle_42_callback, name="handle_42_callback"),
     path("users/validate/", validate_token, name="validate_token"),
+    # add the resend-otp endpoint
+    path("users/resend-otp/", resend_otp, name="resend_otp"),
+    # add the forgot-password endpoint
+    path("users/forgot-password/", forgot_password, name="forgot_password"),
+    # add the add friend endpoint
+    path("users/add_friend/", add_friend, name="add_friend"),
+    path("searchbar/", search_bar_list, name="search_bar_list"), # return the user list of search bar
 ]
 
 

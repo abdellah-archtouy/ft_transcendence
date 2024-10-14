@@ -177,6 +177,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.5s ease-in-out;
 }
 
 .navbutton img {
@@ -184,8 +185,23 @@
   width: auto;
 }
 
+.logoutSvg {
+  height: clamp(0.625rem, 1.625vw - 0.025rem, 1.438rem);
+  width: auto;
+  fill: #B2B2B2;
+  /* transform: scale(-1); */
+}
+
 .navbutton:hover {
   filter: drop-shadow(0px 0px 5px #ffffffb7);
+}
+
+.navbutton > *:hover {
+  animation: hoverScale 0.4s ease-in-out;
+}
+
+.navbutton:nth-child(2) :hover {
+  animation: vibrate 1s ease-in-out;
 }
 
 .hamburger {
@@ -251,10 +267,4 @@
   .button {
     right: clamp(1.25rem, 3.646vw - 0.208rem, 2.125rem);
   }
-}
-.logoutSvg {
-  height: clamp(0.625rem, 1.625vw - 0.025rem, 1.438rem);
-  width: auto;
-  /* color: #B2B2B2; */
-  transform: scale(-1);
 }

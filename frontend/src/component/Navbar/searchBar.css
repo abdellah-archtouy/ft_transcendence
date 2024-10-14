@@ -111,6 +111,8 @@ input:focus {
 .userInfos {
     display: flex;
     flex-direction: row;
+    text-decoration: none;
+    color: #B2B2B2;
     align-items: center;
     width: 100%;
     height: 30px;

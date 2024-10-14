@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import User, Friend, UserOTP  # Import your custom User model
+from .models import User, Friend, UserOTP, reset_ranks  # Import your custom User model
 from .serializers import UserSerializer
 from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
@@ -20,6 +20,7 @@ from django.core.files.base import ContentFile
 from uuid import uuid4
 import requests, os, string, random
 from django.conf import settings
+from django.db.models import Q
 
 
 User = get_user_model()
@@ -45,6 +46,7 @@ def register_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        reset_ranks() # here i am a doing a loop in the registration of user
         return Response(
             {"message": "User registered successfully!"}, status=status.HTTP_201_CREATED
         )
@@ -145,6 +147,7 @@ def handle_42_callback(request):
 
         # Generate JWT tokens
         refresh = RefreshToken.for_user(existing_user if existing_user else user)
+        reset_ranks() # here i am a doing a loop in the registration of user
         return JsonResponse(
             {
                 "message": "Login successful.",
@@ -162,9 +165,14 @@ def download_and_save_avatar(avatar_url, username):
     response = requests.get(avatar_url)
 
     if response.status_code == 200:
-        # Generate a unique filename for the avatar
+        # Generate the filename for the avatar (always username + file extension)
         avatar_extension = avatar_url.split(".")[-1]  # e.g., jpg or png
-        avatar_filename = f"{username}_{uuid4()}.{avatar_extension}"
+        avatar_filename = f"{username}.{avatar_extension}"
+
+        # Check if the file already exists and remove it (if you want to replace it)
+        avatar_path = f"{settings.MEDIA_ROOT}/avatars/{avatar_filename}"
+        if os.path.exists(avatar_path):
+            os.remove(avatar_path)  # Remove the existing avatar file
 
         # Create a ContentFile object from the image content
         avatar_file = ContentFile(response.content, avatar_filename)
@@ -181,15 +189,15 @@ def generate_random_suffix(length=5):
 
 
 def generate_strong_password(length=12):
-    """Generate a strong password containing upper and lower case letters, digits, and special characters."""
-    if length < 8:  # Ensure the password is at least 8 characters long for security
+    """Generate a strong password that matches front-end complexity rules."""
+    if length < 8:
         length = 8
 
-    # Define the character sets to use in the password
+    # Define the character sets to use in the password (limiting special characters to those allowed on the front-end)
     lower = string.ascii_lowercase
     upper = string.ascii_uppercase
     digits = string.digits
-    special = string.punctuation
+    special = "!@#$%^&*"
 
     # Ensure the password contains at least one character from each set
     password_chars = [
@@ -206,33 +214,6 @@ def generate_strong_password(length=12):
     random.shuffle(password_chars)
 
     return "".join(password_chars)
-
-
-# Login user and generate OTP
-# @api_view(["POST"])
-# def login_user(request):
-#     email = request.data.get("email")
-#     password = request.data.get("password")
-#     user = authenticate(username=email, password=password)
-#     print("this user is trying to login: ", user, email)
-
-#     if user is not None:
-#         otp = get_random_string(length=6, allowed_chars="0123456789")
-#         UserOTP.objects.create(user=user, otp=otp)
-#         send_mail(
-#             "Your OTP Code",
-#             f"Your OTP code is {otp}",
-#             "your_email@example.com",
-#             [user.email],
-#             fail_silently=False,
-#         )
-#         return Response(
-#             {"message": "OTP sent to your email address."}, status=status.HTTP_200_OK
-#         )
-#     else:
-#         return Response(
-#             {"error": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST
-#         )
 
 
 @api_view(["POST"])
@@ -266,6 +247,62 @@ def login_user(request):
         return Response(
             {"error": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+# Resend OTP
+@api_view(["POST"])
+def resend_otp(request):
+    email = request.data.get("email")
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(
+            {"error": "Invalid email address."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    otp = get_random_string(length=6, allowed_chars="0123456789")
+    UserOTP.objects.create(user=user, otp=otp)
+    send_mail(
+        "Your OTP Code",
+        f"Your OTP code is:  {otp}",
+        "your_email@example.com",
+        [user.email],
+        fail_silently=False,
+    )
+    return Response(
+        {"message": "OTP sent to your email address."}, status=status.HTTP_200_OK
+    )
+
+
+# Forgot password
+@api_view(["POST"])
+def forgot_password(request):
+    email = request.data.get("email")
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(
+            {"error": "Invalid email address."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    new_password = generate_strong_password()
+    user.password = make_password(new_password)
+    user.save()
+
+    send_mail(
+        "Your New Password",
+        f"Your new password is {new_password}",
+        "your_email@example.com",
+        [user.email],
+        fail_silently=False,
+    )
+
+    print("New password sent to user:", user.email)
+
+    return Response(
+        {"message": "New password sent to your email address."},
+        status=status.HTTP_200_OK,
+    )
 
 
 # Verify OTP and issue JWT token
@@ -320,20 +357,78 @@ def get_user_data(request):
 
 
 # Suggest friends (protected route)
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def suggest_friends(request):
     try:
         current_user = request.user
-        all_users = User.objects.exclude(id=current_user.id)[:10]
-        if all_users.exists():
-            serializer = UserSerializer(all_users, many=True)
+
+        # Get all users excluding the current user
+        all_users = User.objects.exclude(id=current_user.id)
+
+        # Get users who have a relation with the current user
+        related_users = Friend.objects.filter(
+            Q(user1=current_user) | Q(user2=current_user)
+        )
+
+        # Collect the IDs of users related to the current user
+        related_user_ids = set()
+        for relation in related_users:
+            if relation.user1 != current_user:
+                related_user_ids.add(relation.user1.id)
+            if relation.user2 != current_user:
+                related_user_ids.add(relation.user2.id)
+
+        # Filter out users who have any relation with the current user
+        suggested_users = all_users.exclude(id__in=related_user_ids)[:10]
+
+        if suggested_users.exists():
+            serializer = UserSerializer(suggested_users, many=True)
             return Response(serializer.data)
         else:
             return Response([], status=status.HTTP_204_NO_CONTENT)
+
     except TokenError as e:
         # Catch token-related errors (e.g., expired tokens)
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_friend(request):
+    try:
+        current_user = request.user
+        friend_id = request.data.get("friend_id")
+
+        # Check if friend exists
+        friend = User.objects.get(id=friend_id)
+
+        # Check if friendship already exists
+        if (
+            Friend.objects.filter(user1=current_user, user2=friend).exists()
+            or Friend.objects.filter(user1=friend, user2=current_user).exists()
+        ):
+            return Response(
+                {"message": "Already friends"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Create new friendship
+        Friend.objects.create(user1=current_user, user2=friend, request=True)
+
+        return Response(
+            {"message": "Friend added successfully"}, status=status.HTTP_201_CREATED
+        )
+
+    except User.DoesNotExist:
+        return Response(
+            {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+        )
+    except Exception as e:
+        return Response(
+            {"error": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 # Validate JWT token
@@ -351,3 +446,19 @@ def validate_token(request):
             return Response({"message": "Invalid token"}, status=401)
     else:
         return Response({"message": "No token provided"}, status=400)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["GET"])
+def search_bar_list(request):
+    try:
+        user = request.user
+        user_list = User.objects.all().exclude(id=user.id).values("avatar", "username")
+        return Response (
+            user_list,
+            status=status.HTTP_200_OK
+        )
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
