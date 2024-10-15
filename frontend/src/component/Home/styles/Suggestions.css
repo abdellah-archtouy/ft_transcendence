@@ -150,6 +150,7 @@
     font-size: 1.5em;
     margin-left: 1em;
     margin-bottom: 0;
+    user-select: none;
 }
 
 .slide-elements {

@@ -315,7 +315,7 @@ form button {
 }
 
 .input-error {
-    border-color: red;
+    border-color: red !important;
     animation: shake 0.3s ease;
 }
 
@@ -323,6 +323,8 @@ form button {
     color: red;
     opacity: 1;
     /* Ensures the placeholder is visible */
+    /* the input error should appeare in a smooth way */
+    transition: all 0.3s ease;
 }
 
 @keyframes shake {
@@ -530,6 +532,47 @@ form button {
     width: 12%;
     height: 100%;
     border: none;
-
 }
 
+
+@media (min-width: 1440px) and (max-width: 1919px) {
+    .table-container {
+        width: 50%;
+        border: solid 1px white;
+    }
+
+    .form-container {
+        width: 50%;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .table-container {
+        border: solid 1px red;
+        display: none;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .table-container {
+        display: none;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 767px) {
+    .table-container {
+        display: none;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+}

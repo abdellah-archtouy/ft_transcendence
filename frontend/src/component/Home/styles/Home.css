@@ -75,6 +75,7 @@ svg {
   font-size: 7rem;
   margin-bottom: -0.2em;
   margin-left: 2rem;
+  user-select: none;
 }
 
 .home-dive-welcome p {
@@ -83,6 +84,7 @@ svg {
   margin-left: 3.5%;
   font-weight: 400;
   font-family: 'Josefin Sans';
+  user-select: none;
 }
 
 /* Button styling */
@@ -178,6 +180,16 @@ svg {
   border: 3px solid #636262;
 }
 
+.matches-list-item-user p {
+  /* border: solid 1px white; */
+  width: 6rem;
+  overflow: hidden;  /* Hide any overflowing text */
+  white-space: nowrap;  /* Prevent text from wrapping to a new line */
+  text-overflow: ellipsis;
+}
+
+
+
 .match-item {
   background-color: #f5f5f5;
   padding: 2rem;
@@ -205,6 +217,7 @@ svg {
   margin-bottom: 0;
   height: 20%;
   width: auto;
+  user-select: none;
 }
 
 .last-matches-stats {
@@ -242,6 +255,7 @@ svg {
   color: rgba(255, 255, 255, 0.25);
   font-size: 18px;
 }
+
 
 
 @media (min-width: 1440px) and (max-width: 1919px) {
@@ -520,3 +534,4 @@ svg {
   }
 
 }
+
