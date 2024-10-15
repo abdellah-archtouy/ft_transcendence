@@ -148,12 +148,13 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
       const { access, refresh } = response.data;
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
-      handleLogin(access);
+      handleLogin(access, refresh);
       navigate("/");
     } catch (error) {
       const newErrors = {};
       if (error.response && error.response.data) {
         newErrors.otp = "Invalid OTP";
+        setOtp(new Array(6).fill("")); // Clear OTP fields
         setErrors(newErrors);
       } else {
         setErrors({
@@ -198,6 +199,11 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
     const newOtp = [...otp];
     newOtp[index] = element.value;
     setOtp(newOtp);
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      otp: "", // Clear OTP error
+    }));
 
     // Move to next input if it's not the last one and current input is not empty
     if (element.nextSibling && element.value) {

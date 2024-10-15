@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 function Card({ friends, handleAddFriend }) {
   const nameRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
-  const [friendAdded, setFriendAdded] = useState(false);
 
   useEffect(() => {
     const checkOverflow = () => {
