@@ -91,7 +91,7 @@
   height: 72px;
   width: 60px;
   position: absolute;
-  margin-top: 3px;
+  margin-top: 5px;
 }
 
 .nav li.active .icons {
@@ -130,9 +130,10 @@
   content: "";
   position: absolute;
   width: 50px;
-  height: 42px;
-  bottom: 1px;
+  height: 38px;
+  bottom: 0px;
   z-index: -2;
+  backface-visibility: hidden;
 }
 
 .nav .items::before {
@@ -162,13 +163,13 @@
   height: fit-content;
   width: fit-content;
   display: flex;
-  gap: clamp(0.625rem, -1.042vw + 1.042rem, 0.375rem);
+  gap: clamp(0.375rem, 0.5vw + 0.175rem, 0.625rem);
 }
 
 .navbutton {
-  height: clamp(1.563rem, 2.5vw + 0.563rem, 2.813rem);
-  width: clamp(1.563rem, 2.5vw + 0.563rem, 2.813rem);
-  border-radius: clamp(0.313rem, 1.823vw - 0.417rem, 0.75rem);
+  height: clamp(1.25rem, 2.5vw + 0.25rem, 2.5rem);
+  width: clamp(1.25rem, 2.5vw + 0.25rem, 2.5rem);
+  border-radius: clamp(0.313rem, 0.875vw - 0.037rem, 0.75rem);
   background-color: transparent;
   border: solid clamp(0.063rem, -0.098vw + 0.063rem, 0rem) #565656;
   outline: none;
@@ -176,6 +177,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.5s ease-in-out;
 }
 
 .navbutton img {
@@ -183,8 +185,23 @@
   width: auto;
 }
 
+.logoutSvg {
+  height: clamp(0.625rem, 1.625vw - 0.025rem, 1.438rem);
+  width: auto;
+  fill: #B2B2B2;
+  /* transform: scale(-1); */
+}
+
 .navbutton:hover {
   filter: drop-shadow(0px 0px 5px #ffffffb7);
+}
+
+.navbutton > *:hover {
+  animation: hoverScale 0.4s ease-in-out;
+}
+
+.navbutton:nth-child(2) :hover {
+  animation: vibrate 1s ease-in-out;
 }
 
 .hamburger {

@@ -136,9 +136,14 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
       </div>
       <div className='center'>
         <div className="search-container">
+<<<<<<< HEAD
           <Vector />
           <input type="text" placeholder="Search..." name="search" className="search-input"
             value={search} onChange={(e) => handleChange(e.target.value)} />
+=======
+        <Vector_1/>
+        <input type="text" onClick={handleChange} placeholder="Search..." name="search" className="search-input"></input>
+>>>>>>> origin/talal
         </div>
       </div>
       {isEmptyObject === false ? (

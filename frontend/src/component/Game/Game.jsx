@@ -13,14 +13,15 @@ const Game = () => {
   const history = useNavigate();
 
   const hoverPlay = () => {
-    audio.volume = 0.3;
-    audio.play().catch((error) => {
-      console.error("Autoplay failed:", error.message);
-    });
-  };
-
-  const unhoverPlay = () => {
-    audio.pause();
+    if (audio)
+      {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = 0.3;
+        audio.play().catch((error) => {
+          console.error("Autoplay failed:", error.message);
+        });
+      }
   };
 
   const handleClick = (event, route) => {
@@ -52,7 +53,6 @@ const Game = () => {
           <Link
             className={`game_Tournament ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
             onMouseEnter={hoverPlay}
-            onMouseLeave={unhoverPlay}
             onClick={(event) => handleClick(event, '/game/tournament')}
           >
             <h1>Tournament</h1>
@@ -63,7 +63,6 @@ const Game = () => {
           <Link
             className={`game_bot ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
             onMouseEnter={hoverPlay}
-            onMouseLeave={unhoverPlay}
             onClick={(event) => handleClick(event, '/game/gamemode')}
           >
             <h1>Bot</h1>
@@ -72,7 +71,6 @@ const Game = () => {
           <Link
             className={`game_friend ${fade ? "fade-in" : ""} ${fadeout ? "fade-out" : ""}`}
             onMouseEnter={hoverPlay}
-            onMouseLeave={unhoverPlay}
             onClick={(event) => handleClick(event, '/game/friend')}
           >
             <h1>Friends</h1>

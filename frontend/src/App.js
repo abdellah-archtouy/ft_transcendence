@@ -9,20 +9,62 @@ import Setting from "./component/Setting/Setting";
 import Chat from "./component/Chat/Chat";
 import Leaderboard from "./component/Leaderboard/Leaderboard";
 import Home from "./component/Home/Home";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
-// import LandingPage from "./component/Landing_page/Landing_page";
-import Landing from "./component/landtest/land";
+import LandingPage from "./component/Landing_page/Landing_page";
+import axios from 'axios';
+import { Navigate } from 'react-router-dom';
+
 
 function App() {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(!!localStorage.getItem('jwt'));
   const location = useLocation();
   const bgImage = auth && {
     background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
   };
 
   const souldApplyMargin = location.pathname !== "/chat";
+
+
+  const validateTokenWithServer = async (token) => {
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/api/users/validate/',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("this part has been flaged");
+      return response.status === 200;
+    } catch (error) {
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('access');
+      // refreh the page
+      window.location.reload();
+      Navigate('/');
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      setAuth(true);
+    } else {
+      setAuth(() => false); // No token found, user is not authenticated
+    }
+  }, []);
+
+  const handleLogin = (access, refresh) => {
+    localStorage.setItem('access', access);
+    localStorage.setItem('refresh', refresh);
+    setAuth(true);
+  };
 
   return (
     <div className="App" style={{ ...bgImage }}>
@@ -31,7 +73,7 @@ function App() {
       {auth ? (
         <>
           <Navbar />
-          <div className="main" style={{marginBottom: souldApplyMargin ? "200px" : "0px"}}>
+          <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/game/*" element={<GameRouting />} />
@@ -39,15 +81,12 @@ function App() {
               <Route exact path="/leaderboard" element={<Leaderboard />} />
               <Route exact path="/setting" element={<Setting />} />
               <Route exact path="/profile" element={<Profile />} />
-              <Route exact path="/user/:userId" element={<OthersProfile />} />
+              <Route exact path="/user/:username" element={<OthersProfile />} />
             </Routes>
           </div>
         </>
       ) : (
-        <>
-            {/* write your code here ===> landingPage <=== */}
-            <Landing setAuth={setAuth} auth={auth} />
-        </>
+        <LandingPage setAuth={handleLogin} />
       )}
     </div>
   );

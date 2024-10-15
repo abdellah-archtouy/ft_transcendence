@@ -1,51 +1,182 @@
-import React from 'react';
-import Carousel from './Carousel.jsx';
-import Stats from './Stats.jsx';
-import Top_5 from './Top-5.jsx';
-import './styles/Home.css';
-import './styles/Top-5.css';
-import './styles/Suggestions.css';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-
-//this is just for the demo obviously the data will be fetched from the server in real world scenario !!
-import profile1 from './images/profile1.jpg';
-import profile2 from './images/profile2.jpg';
-import profile3 from './images/profile3.jpg';
-import profile4 from './images/profile4.jpg';
-import profile5 from './images/profile5.jpg';
-import profile6 from './images/profile6.jpg';
-import profile7 from './images/profile7.jpg';
-import profile8 from './images/profile8.jpg';
-
+import React, { useState, useEffect } from "react";
+import Carousel from "./Carousel.jsx";
+import Stats from "./Stats.jsx";
+import Top_5 from "./Top-5.jsx";
+import "./styles/Home.css";
+import "./styles/Top-5.css";
+import "./styles/Suggestions.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  console.log('profile1', profile1);
-  const friends = [
-    { name: 'John Does shmoew pipipopo', online: true, id: 1, img: profile1 },
-    { name: 'Jane Doe', online: false, id: 2, img: profile2 },
-    { name: 'Jill Doe', online: true, id: 3, img: profile3 },
-    { name: 'Jack Doe', online: false, id: 4, img: profile4 },
-    { name: 'Jim Doe', online: true, id: 5, img: profile5 },
-    { name: 'Jenny Doe', online: false, id: 6, img: profile6 },
-    { name: 'Jen Doe', online: true, id: 7, img: profile7 },
-    { name: 'Jenifer Doe', online: false, id: 8, img: profile8 },
-  ];
+  const [user, setUser] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [friends, setFriends] = useState([]);
+  const [top5, setTop5] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [showAll, setShowAll] = useState(false);
+  const navigate = useNavigate();
 
-  let handleAddFriend = () => {
-    console.log('Friend added');
-  }
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get(
+          "http://localhost:8000/api/users/profile/",
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        );
+
+        setUser(response.data);
+        fetchSuggestedFriends(); // Fetch friends after getting user data
+        fetchTop5();
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    const fetchSuggestedFriends = async () => {
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get(
+          "http://localhost:8000/api/users/suggest_friends/",
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        );
+
+        setFriends(response.data); // Set the suggested friends
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    const fetchTop5 = async () => {
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get("http://localhost:8000/game/top5", {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        setTop5(response.data); // Set the top 5
+
+        const response1 = await axios.get(
+          "http://localhost:8000/game/history",
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        );
+        setHistory(response1.data); // Set the top 5
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    const handleFetchError = (error) => {
+      if (error.response) {
+        if (error.response.status === 401) {
+          const refresh = localStorage.getItem("refresh");
+
+          if (refresh) {
+            axios
+              .post("http://localhost:8000/api/token/refresh/", { refresh })
+              .then((refreshResponse) => {
+                const { access: newAccess } = refreshResponse.data;
+                localStorage.setItem("access", newAccess);
+                fetchUserData(); // Retry fetching user data
+              })
+              .catch((refreshError) => {
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
+                console.log("you have captured the error");
+                setErrors({ general: "Session expired. Please log in again." });
+                // refreh the page
+                window.location.reload();
+                navigate("/");
+              });
+          } else {
+            setErrors({
+              general: "No refresh token available. Please log in.",
+            });
+          }
+        } else {
+          setErrors({ general: "Error fetching data. Please try again." });
+        }
+      } else {
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    };
+    fetchUserData(); // Initial fetch for user data
+  }, []);
+
+  const handleAddFriend = async (friendId) => {
+    try {
+      const access = localStorage.getItem("access");
+      await axios.post(
+        `http://localhost:8000/api/users/add_friend/`,
+        { friend_id: friendId },
+        { headers: { Authorization: `Bearer ${access}` } }
+      );
+      setFriends(
+        friends.map((friend) =>
+          friend.id === friendId ? { ...friend, added: true } : friend
+        )
+      ); // Mark friend as added
+    } catch (error) {
+      // handleFetchError(error);
+      console.error("Error adding friend:", error);
+      setErrors({ general: "Error adding friend. Please try again." });
+    }
+  };
+
+  const handleSeeMore = (e) => {
+    e.preventDefault();
+    setShowAll(!showAll);
+  };
+
+  const matchesToDisplay = showAll ? history : history.slice(0, 3);
 
   return (
-    <div className='home-div'>
+    <div className="home-div">
       <div className="home-dive-welcome">
-        <h2>Hello, Talal</h2>
-        <p>Welcome back to our game</p>
-        <button className='home-dive-welcome-btn'>Play now</button>
+        {user ? (
+          <>
+            <h2>
+              Hello,{" "}
+              {user.username.length > 9
+                ? `${user.username.substring(0, 9)}...`
+                : user.username}
+            </h2>
+            <p>Welcome back to our game</p>
+          </>
+        ) : (
+          <p>Loading...</p>
+        )}
+        <button
+          className="home-dive-welcome-btn"
+          onClick={() => navigate("/game")}
+        >
+          Play now
+        </button>
       </div>
       <div className="suggestions">
-        <div className='header_element'>
-          <h3>Suggested for you</h3>
+        <div className="header_element">
+          <h2>Suggested for you</h2>
         </div>
         <div className="slide-elements">
           <Carousel friends={friends} handleAddFriend={handleAddFriend} />
@@ -53,31 +184,39 @@ const Home = () => {
       </div>
       <div className="stats">
         <div className="last-matches">
-          <div className='last-matches-header'>
+          <div className="last-matches-header">
             <h2>Last matches</h2>
             <div>
-              <a href="">see more</a>
+              <a href="#" onClick={handleSeeMore} className="see-more">
+                {showAll ? "see less" : "see more"}
+              </a>
             </div>
           </div>
           <div className="last-matches-stats">
-            <Stats />
+            <Stats data={matchesToDisplay} />
           </div>
         </div>
         <div className="top-5">
-          <div className='top-5-header'>
+          <div className="top-5-header">
             <h2>Top 5</h2>
             <div>
-              <a href="">see more</a>
+              <a
+                href="#"
+                onClick={() => {
+                  navigate("/leaderboard");
+                }}
+              >
+                see more
+              </a>
             </div>
           </div>
           <div className="top-5-stats">
-            <Top_5 />
+            <Top_5 data={top5} />
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Home;
-
