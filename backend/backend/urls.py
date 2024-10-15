@@ -23,16 +23,9 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-<<<<<<< HEAD
-    path('admin/', admin.site.urls),
-    path('hi/', hello),
-    path('api/', include('api.urls')),
-    path('', root),
-=======
     path("admin/", admin.site.urls),
     path("api/", include("User.urls")),
     path("game/", include("Game.urls")),
->>>>>>> origin/talal
 ]
 
 if settings.DEBUG:

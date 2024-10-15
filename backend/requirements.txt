@@ -20,16 +20,6 @@ idna==3.8
 incremental==24.7.2
 pillow==10.4.0
 psycopg2-binary==2.9.9
-<<<<<<< HEAD:backend/requirements.txt
-sqlparse==0.5.0
-typing-extensions==4.12.1
-virtualenv==20.26.2
-daphne==3.1.2
-channels==3.0.4
-rest_framework==3.13.1
-channels_redis==3.3.1
-rest_framework_simplejwt==5.0.0
-=======
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycparser==2.22
@@ -45,4 +35,3 @@ txaio==23.1.1
 typing_extensions==4.12.2
 urllib3==2.2.3
 zope.interface==7.0.3
->>>>>>> origin/talal:requirements.txt

@@ -11,22 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-<<<<<<< HEAD
-import os
-from datetime import timedelta
-=======
 import os, environ, ssl, certifi
 from datetime import timedelta
 
->>>>>>> origin/talal
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-<<<<<<< HEAD
-MEDIA_ROOT = '../frontend/public/'  # Change this to your desired path  
-# MEDIA_URL = 
-=======
 env = environ.Env()
 
 # Get the path to the root directory where .env is located
@@ -40,7 +31,6 @@ environ.Env.read_env(env_file=env_file_path)
 
 
 EMAIL_SSL_CERTFILE = certifi.where()
->>>>>>> origin/talal
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -55,13 +45,8 @@ ASGI_APPLICATION = 'backend.asgi.application'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-<<<<<<< HEAD
-# ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['*']
-=======
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
->>>>>>> origin/talal
 
 CHANNEL_LAYERS = {
     'default': {
@@ -71,23 +56,6 @@ CHANNEL_LAYERS = {
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
-    'channels',
-    'daphne',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'corsheaders',
-    'api',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'User',
-    'Game',
-    'Chat',
-=======
     "daphne",
     "channels",
     "django.contrib.admin",
@@ -102,7 +70,6 @@ INSTALLED_APPS = [
     "Chat",
     "rest_framework",
     "rest_framework_simplejwt",
->>>>>>> origin/talal
 ]
 
 REST_FRAMEWORK = {
@@ -131,18 +98,6 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
-<<<<<<< HEAD
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-=======
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -151,7 +106,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
->>>>>>> origin/talal
 ]
 
 # CORS_ALLOWED_ORIGINS = [
@@ -166,12 +120,7 @@ CSRF_COOKIE_HTTPONLY = False  # Si vous avez besoin d'accéder au cookie CSRF vi
 # ]
 CORS_ALLOWED_ORIGINS = ['http://0.0.0.0']
 
-<<<<<<< HEAD
-CORS_ORIGIN_ALLOW_ALL=True
-CORS_ALLOW_CREDENTIALS = True
-=======
 CORS_ORIGIN_ALLOW_ALL = True
->>>>>>> origin/talal
 
 CORS_ALLOW_METHODS = ("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 CORS_ALLOW_HEADERS = ("Content-Type", "Authorization")
@@ -216,10 +165,6 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'User.User'
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/talal
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

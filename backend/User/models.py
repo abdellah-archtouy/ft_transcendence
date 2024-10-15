@@ -1,8 +1,6 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-<<<<<<< HEAD
-=======
 import datetime
 
 def reset_ranks():
@@ -11,17 +9,12 @@ def reset_ranks():
     for rank, user in enumerate(sorted_users_by_score, start=1):
         user.rank = rank
         user.save()
->>>>>>> origin/talal
 
 # Create your models here.
 class User(AbstractUser):
     # username = models.CharField(max_length=100, unique=True)
     # email = models.EmailField(unique=True)
     # password = models.CharField(max_length=50, null=False)
-<<<<<<< HEAD
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default.png')
-    cover = models.ImageField(upload_to='covers/', null=True, blank=True, default='covers/default.jpeg')
-=======
     avatar = models.ImageField(
         upload_to="avatars/",
         null=True,
@@ -31,7 +24,6 @@ class User(AbstractUser):
     cover = models.ImageField(
         upload_to="covers/", null=True, blank=True, default="covers/default.jpeg"
     )
->>>>>>> origin/talal
     bio = models.TextField(blank=True)  # Removed max_length, added blank=True
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)
@@ -41,10 +33,6 @@ class User(AbstractUser):
 
     # USERNAME_FIELD = 'email'
     # REQUIRED_FIELDS = []
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/talal
     def __str__(self):
         return self.username
 
