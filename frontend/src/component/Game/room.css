@@ -244,6 +244,11 @@
     user-select: none;
   }
 
+  .mobilebuttons > button.active {
+    transform: translateY(0px) rotate(45deg);
+    box-shadow: 5px 5px 0px 0px #7c7c7c;
+  }
+
   .mobilebuttons > button {
     height: 50px;
     width: 50px;
@@ -255,6 +260,7 @@
     user-select: none;
     box-sizing: border-box;
     padding: 10px;
+    transition: all 0.4s ease-in-out;
     transform: translateY(-5px) rotate(45deg);
     display: flex;
     justify-content: center;

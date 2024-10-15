@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./searchBar.css";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,19 +8,29 @@ const SearchBar = ({ onStateChange }) => {
     return `http://${window.location.hostname}:8000/media/` + name;
   }
   const [users, setUsers] = useState([]);
-  
+
   const [userList, setUserList] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [fadeout, setFadeout] = useState(false);
   const navigate = useNavigate();
-  
+  const inputRef = useRef(null);
+
   function keypress(e) {
     if (e.key === "Escape") FadingOut();
   }
-  
+
   function FadingOut() {
     setFadeout(true);
     setTimeout(() => {
+      onStateChange(false);
+    }, 400);
+    document.removeEventListener("keydown", keypress);
+  }
+  
+  function redirecUser(username) {
+    setFadeout(true);
+    setTimeout(() => {
+      navigate(`/user/${username}`)
       onStateChange(false);
     }, 400);
     document.removeEventListener("keydown", keypress);
@@ -55,16 +65,22 @@ const SearchBar = ({ onStateChange }) => {
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
                 navigate("/");
-                // setErrors({ general: 'Session expired. Please log in again.' });
+                console.log({
+                  general: "Session expired. Please log in again.",
+                });
               });
           } else {
-            // setErrors({ general: 'No refresh token available. Please log in.' });
+            console.log({
+              general: "No refresh token available. Please log in.",
+            });
           }
         } else {
-          // setErrors({ general: 'Error fetching data. Please try again.' });
+          console.log({ general: "Error fetching data. Please try again." });
         }
       } else {
-        // setErrors({ general: 'An unexpected error occurred. Please try again.' });
+        console.log({
+          general: "An unexpected error occurred. Please try again.",
+        });
       }
     };
 
@@ -80,23 +96,18 @@ const SearchBar = ({ onStateChange }) => {
             },
           }
         );
-        console.log(response.data);
         setUsers(response.data);
-        // fetchSuggestedFriends(); // Fetch friends after getting user data
       } catch (error) {
         handleFetchError(error);
       }
     };
-
+    inputRef.current.focus();
     fetchUserData();
     document.addEventListener("keyup", keypress);
     return () => {
       document.removeEventListener("keyup", keypress);
     };
   }, []);
-
-  // useEffect(() => {
-  // }, []);
 
   return (
     <>
@@ -110,6 +121,7 @@ const SearchBar = ({ onStateChange }) => {
             type="text"
             className="input"
             placeholder="search"
+            ref={inputRef}
             onChange={(input) => {
               setSearchTerm(input.target.value);
             }}
@@ -125,7 +137,14 @@ const SearchBar = ({ onStateChange }) => {
             )}
             {userList?.map((user, index) => (
               <div className="user" key={index}>
-                <Link className="userInfos" to={`/user/${user.username}`}>
+                <Link
+                  className="userInfos"
+                  to={`/user/${user.username}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    redirecUser(user.username)
+                  }}
+                >
                   <img src={avatarUrl(user.avatar)} alt="" className="avatar" />
                   <span>{user.username}</span>
                 </Link>

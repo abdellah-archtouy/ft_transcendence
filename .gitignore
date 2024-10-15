@@ -2,3 +2,5 @@ frontend/node_modules
 **/__pycache__/
 database
 django-env
+/backend/media/avatar/*
+!/backend/media/avatar/default_avatar.png

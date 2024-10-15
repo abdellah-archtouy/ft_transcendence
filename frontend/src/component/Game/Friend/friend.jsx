@@ -24,7 +24,6 @@ const Friend = () => {
         </div>
       </div>
     </>
-    // <Room data={user} />
   );
 };
 

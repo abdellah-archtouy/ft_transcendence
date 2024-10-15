@@ -10,6 +10,7 @@ class Room():
         self.rightPaddle = RightPaddle(boardWidth, boardHeight)
         self.leftPaddle = LeftPaddle(boardWidth, boardHeight)
         self.room_paused = False
+        self.fallibility = 1
         self.uid1 = user1
         self.uid2 = user2
         self.winner = None
@@ -89,6 +90,7 @@ class Ball():
 # right paddle classe
 class RightPaddle():
     def __init__(self, bWidth, bHeight):
+        self.speed = 1
         self.attributes = {
             'x':  bWidth - 20,
             'y':  bHeight / 2 - 50,
@@ -104,6 +106,7 @@ class RightPaddle():
 # Left paddle classe
 class LeftPaddle():
     def __init__(self, bWidth, bHeight):
+        self.speed = 1
         self.attributes = {
             'x':  0,
             'y':  bHeight / 2 - 50,

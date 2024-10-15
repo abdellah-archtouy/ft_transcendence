@@ -9,11 +9,25 @@ import traceback
 from .common_functions import start, join_room
 from django.db.models import Count, Sum
 from .room import Room
+import math
 
 boardWidth = 1000
 boardHeight = 550
 
 rooms = {}
+
+def bot_room_infos_set(room, instance):
+    if instance.botmode == "easy":
+        room.ball.set_attribute("speed", 5)
+        room.fallibility = 0.08
+    if instance.botmode == "medium":
+        room.ball.set_attribute("speed", 7)
+        room.fallibility = 0.2
+    if instance.botmode == "hard":
+        room.ball.set_attribute("speed", 9)
+        room.fallibility = 0.5
+    speed = room.ball.get_attribute('speed')
+    room.ball.set_attribute("velocityY", speed * math.sin(((3 * math.pi) / 4) * 0.4))
 
 class RoomManager():
     def __init__(self):
@@ -33,6 +47,8 @@ class RoomManager():
         lock = await self.get_lock()
         async with lock:
             room_name = join_room(instance, self.rooms)
+            if instance.gamemode == "bot":
+                bot_room_infos_set(self.rooms[room_name], instance)
             return room_name
         
     async def delete_user_room(self, instance):
@@ -186,6 +202,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         try:
             self.user_id = self.scope['url_route']['kwargs'].get('uid')
             self.gamemode = self.scope['url_route']['kwargs'].get('gamemode')
+            if self.gamemode == "bot":
+                self.botmode = self.scope['url_route']['kwargs'].get('botmode')
             self.channel_name = self.channel_name
             self.room_group_name = await room_manager.join_or_create_room(self)
             await room_manager.start_periodic_updates(self)
@@ -208,10 +226,11 @@ class GameConsumer(AsyncWebsocketConsumer):
         paddle = None
         if room.type == "Remote" or room.type == "bot":
             paddle = room.get_paddle_by_user(self.user_id)
+            speed = paddle.speed
             if key == "KeyW" or key == "ArrowUp":
-                paddle.set_Player_attribute("velocityY", -5)
+                paddle.set_Player_attribute("velocityY", -5 * speed)
             if key == "KeyS" or key == "ArrowDown":
-                paddle.set_Player_attribute("velocityY", 5)
+                paddle.set_Player_attribute("velocityY", 5 * speed)
         else:
             if key == "KeyW":
                 room.leftPaddle.set_Player_attribute("velocityY", -5)

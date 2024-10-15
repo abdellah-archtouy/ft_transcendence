@@ -10,29 +10,6 @@ def resetballPosition(ball):
     ball.set_attribute('x', ((boardWidth / 2) - 10))
     ball.set_attribute('y', ((boardHeight / 2) - 10))
 
-# async def store_gamein_db(room, user1, user2):
-#     loser = None
-#     winner = None
-#     if room.winner == user1:
-#         winner = room.uid1
-#         loser = room.uid2
-#         loser_score = user2["goals"]
-#     else:
-#         loser = room.uid2
-#         loser = room.uid1
-#         loser_score = user1["goals"]
-#     room.end = datetime.now()
-#     if room.type == "Remote":
-#         game = Game(
-#             winner= await User.objects.aget(id=winner),
-#             loser= await User.objects.aget(id=loser),
-#             loser_score=loser_score,
-#             winner_score=6,
-#             created_at=room.created_at,
-#             end=room.end,
-#         )
-#         await game.asave()
-
 async def update(room, user1, user2):
     ballx = room.ball.get_attribute('x')
     speed =  room.ball.get_attribute("speed")
@@ -60,12 +37,11 @@ def collision(a, b):
         a.get_attribute('y') + a.get_attribute('height') > b.get_Player_attribute('y')
     )
 
-def calculate_new_velocity(ball, paddle, angle_multiplier):
+def calculate_new_velocity(room, ball, paddle, angle_multiplier):
     bally = ball.get_attribute('y')
     playery = paddle.get_Player_attribute('y')
     playerh = paddle.get_Player_attribute('height')
     ball_speed = ball.get_attribute("speed")
-
     collisionPoint = (bally - (playery + playerh / 2)) / (playerh / 2)
     angle = collisionPoint * angle_multiplier
     ballx = ball.get_attribute('x')
@@ -74,14 +50,17 @@ def calculate_new_velocity(ball, paddle, angle_multiplier):
     velocityY = ball_speed * math.sin(angle) * direction
     ball.set_attribute("velocityX", velocityX)
     ball.set_attribute("velocityY", velocityY)
+    if room.rightPaddle.speed < 1.59 and room.leftPaddle.speed < 1.6:
+        room.rightPaddle.speed += 0.2
+        room.leftPaddle.speed += 0.2
 
 def velocityChange(room):
     speed = room.ball.get_attribute("speed")
     if collision(room.ball, room.rightPaddle):
-        calculate_new_velocity(room.ball, room.rightPaddle, -math.pi / 4)
+        calculate_new_velocity(room, room.ball, room.rightPaddle, -math.pi / 4)
         speed += 0.2
     if collision(room.ball, room.leftPaddle):
-        calculate_new_velocity(room.ball, room.leftPaddle, math.pi / 4)
+        calculate_new_velocity(room, room.ball, room.leftPaddle, math.pi / 4)
         speed += 0.2
     if speed < 10:
         room.ball.set_attribute("speed", speed)
@@ -95,7 +74,7 @@ def changePaddlePosition(room):
             velocityY = paddle.get_Player_attribute("velocityY")
             PlayerHeight = paddle.get_Player_attribute("height")
             if paddle == room.rightPaddle and room.type == "bot":
-                velocityY = (bally - (y + PlayerHeight / 2)) * 0.1
+                velocityY = (bally - (y + PlayerHeight / 2)) * room.fallibility
             newPosition = y + velocityY
             if 0 < newPosition < boardHeight - PlayerHeight:
                 paddle.set_Player_attribute("y", newPosition)
@@ -104,7 +83,6 @@ def changePaddlePosition(room):
 
 async def start(room, user1, user2):
     try:
-        speed = room.ball.get_attribute('speed')
         y = room.ball.get_attribute('y') + room.ball.get_attribute('velocityY')
         x = room.ball.get_attribute('x') + room.ball.get_attribute('velocityX')
         room.ball.set_attribute('y', y)

@@ -4,15 +4,11 @@ import "./gamemode.css";
 const GameMode = () => {
   const navigate = useNavigate();
 
-  function updatevalues(speed, errorRate) {
-    let d = [
-      {
-        Œ: "bot",
-        ballSpeed: speed,
-        Fallibility: errorRate,
-      },
-    ];
-    navigate("/game/bot", { state: { values: d } });
+  function updatevalues(mode) {
+    let d = {
+        mode: mode,
+      };
+    navigate("/game/bot", { state: { values:d } });
   }
 
   return (
@@ -23,7 +19,8 @@ const GameMode = () => {
           <button
             className="botmode-button easy"
             onClick={() => {
-              updatevalues(5, 0.1);
+              // updatevalues(5, 0.01);
+              updatevalues("easy");
             }}
             style={{ backgroundImage: 'url("/easy.png")' }}
             >
@@ -32,7 +29,8 @@ const GameMode = () => {
           <button
             className="botmode-button medium"
             onClick={() => {
-              updatevalues(7, 0.3);
+              // updatevalues(7, 0.05);
+              updatevalues("medium");
             }}
             style={{ backgroundImage: 'url("/medium.png")' }}
             >
@@ -41,7 +39,8 @@ const GameMode = () => {
           <button
             className="botmode-button Hard"
             onClick={() => {
-              updatevalues(9, 0.5);
+              // updatevalues(9, 0.1);
+              updatevalues("hard");
             }}
             style={{ backgroundImage: 'url("/hard.png")' }}
           >

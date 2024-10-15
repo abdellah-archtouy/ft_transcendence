@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import LoadingPage from "../loadingPage/loadingPage";
 import axios from "axios";
 import "./room.css";
@@ -32,9 +32,10 @@ let ball = {
 };
 
 let WSocket;
-let gamemode;
+let gamemode = null;
+let botmode = null;
 
-const Room = ({ data }) => {
+const Room = ({ data, mode }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [roomData, setRoomData] = useState(null);
@@ -45,7 +46,9 @@ const Room = ({ data }) => {
   const animationRef = useRef(null);
   const navigate = useNavigate();
 
-  gamemode = data;
+  if (mode) gamemode = mode;
+
+  if (data) botmode = data;
 
   const drawRoundedRect = (ctx, x, y, width, height, radius, opacity) => {
     const scaleX = Board.width / boardWidth;
@@ -69,6 +72,36 @@ const Room = ({ data }) => {
     ctx.globalAlpha = opacity;
     ctx.fill();
   };
+
+  function buttonMovement(event) {
+    if (event == "KeyW")
+      {
+        WSocket?.send(
+          JSON.stringify({
+            type: "keypress",
+            key: "KeyW",
+          })
+        );
+      }
+    if (event == "KeyS")
+      {
+        WSocket?.send(
+          JSON.stringify({
+            type: "keypress",
+            key: "KeyS",
+          })
+        );
+      }
+    if (event == "Down")
+      {
+        WSocket?.send(
+          JSON.stringify({
+            type: "keydown",
+            key: "KeyS",
+          })
+        );
+      }
+  }
 
   function movePlayer(e) {
     if (e.code === "KeyW") {
@@ -129,7 +162,7 @@ const Room = ({ data }) => {
       })
     );
   }
-  
+
   function pauseGame(e) {
     if (e.key === " " && !winner) {
       handlePause();
@@ -180,9 +213,42 @@ const Room = ({ data }) => {
     Board.width = boardWidth;
   }
 
+  let leftPaddleRef = useRef()
+  let rightPaddleRef = useRef()
+
+  const handleLeftPaddleMouseDown = () => {
+    if (leftPaddleRef.current && !pause && !winner) {
+      leftPaddleRef.current.classList.add('active');
+      buttonMovement("KeyW")
+    }
+  };
+  
+  const handleLeftPaddleMouseUp = () => {
+    if (leftPaddleRef.current && !pause && !winner) {
+      leftPaddleRef.current.classList.remove('active');
+      buttonMovement("Down")
+    }
+  };
+
+  const handleRightPaddleMouseDown = () => {
+    if (rightPaddleRef.current && !pause && !winner) {
+      rightPaddleRef.current.classList.add('active');
+      buttonMovement("KeyS")
+    }
+  };
+  
+  const handleRightPaddleMouseUp = () => {
+    if (rightPaddleRef.current && !pause && !winner) {
+      rightPaddleRef.current.classList.remove('active');
+      buttonMovement("Down")
+    }
+  };
+
   useEffect(() => {
     if (!userData) return;
-    const url = `ws://${window.location.hostname}:8000/ws/game/${gamemode}/${userData.id}`;
+    const url = !botmode 
+        ?`ws://${window.location.hostname}:8000/ws/game/${gamemode}/${userData.id}`
+        : `ws://${window.location.hostname}:8000/ws/game/${gamemode}/${botmode}/${userData.id}`;
     WSocket = new WebSocket(url);
 
     WSocket.onopen = () => {
@@ -254,18 +320,19 @@ const Room = ({ data }) => {
     const handleFetchError = (error) => {
       if (error.response) {
         if (error.response.status === 401) {
-          const refresh = localStorage.getItem('refresh');
+          const refresh = localStorage.getItem("refresh");
 
           if (refresh) {
-            axios.post('http://localhost:8000/api/token/refresh/', { refresh })
-              .then(refreshResponse => {
+            axios
+              .post("http://localhost:8000/api/token/refresh/", { refresh })
+              .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
-                localStorage.setItem('access', newAccess);
+                localStorage.setItem("access", newAccess);
                 fetchUserData(); // Retry fetching user data
               })
-              .catch(refreshError => {
-                localStorage.removeItem('access');
-                localStorage.removeItem('refresh');
+              .catch((refreshError) => {
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
                 console.log("you have captured the error");
                 navigate("/");
                 // setErrors({ general: 'Session expired. Please log in again.' });
@@ -283,21 +350,22 @@ const Room = ({ data }) => {
 
     const fetchUserData = async () => {
       try {
-        const access = localStorage.getItem('access');
+        const access = localStorage.getItem("access");
 
-        const response = await axios.get('http://localhost:8000/api/users/profile/', {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
-        console.log(response.data);
+        const response = await axios.get(
+          "http://localhost:8000/api/users/profile/",
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        );
         setUserData(response.data);
         // fetchSuggestedFriends(); // Fetch friends after getting user data
-
       } catch (error) {
         handleFetchError(error);
       }
-    }
+    };
 
     fetchUserData();
   }, []);
@@ -364,7 +432,11 @@ const Room = ({ data }) => {
       <div className="RoomFirst">
         <div className="userinfo">
           <div className="image">
-            <img src={image_renaming(user?.[0]?.avatar)} className="avatar" alt="" />
+            <img
+              src={image_renaming(user?.[0]?.avatar)}
+              className="avatar"
+              alt=""
+            />
           </div>
           <div className="Roominfos">
             <span id="infosHeader">{user?.[0]?.username}</span>
@@ -377,7 +449,11 @@ const Room = ({ data }) => {
             <span id="infostext">{user?.[1]?.goals}</span>
           </div>
           <div className="image">
-            <img src={image_renaming(user?.[1]?.avatar)} className="avatar" alt="" />
+            <img
+              src={image_renaming(user?.[1]?.avatar)}
+              className="avatar"
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -428,14 +504,28 @@ const Room = ({ data }) => {
         )}
       </div>
       <div className="mobilebuttons">
-        <button className="leftPaddle">
+        <button
+                ref={leftPaddleRef}
+                className="leftPaddle"
+                onTouchStart={handleLeftPaddleMouseDown}
+                onTouchEnd={handleLeftPaddleMouseUp}
+                onMouseDown={handleLeftPaddleMouseDown}
+                onMouseUp={handleLeftPaddleMouseUp}
+                >
           <img
             src="/GameMobileButton.svg"
             alt=""
             className="GameMobileButton"
-          />
+            />
         </button>
-        <button className="rightPaddle">
+        <button
+                ref={rightPaddleRef}
+                className="rightPaddle"
+                onTouchStart={handleRightPaddleMouseDown}
+                onTouchEnd={handleRightPaddleMouseUp}
+                onMouseDown={handleRightPaddleMouseDown}
+                onMouseUp={handleRightPaddleMouseUp}
+                >
           <img
             src="/GameMobileButton.svg"
             alt=""

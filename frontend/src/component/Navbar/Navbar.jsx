@@ -38,14 +38,19 @@ const Navbar = () => {
   };
 
   function findIndex(element) {
-    if (element.path === window.location.pathname) return element;
+    if (element.path === `/${window.location.pathname.split("/")[1]}`) {
+      const active = document.querySelector(".items");
+      active.style.display = "block";
+      return element;
+    }
     return undefined;
   }
 
-  function findElement(element) {
-    if (element.activeElement === localStorage.getItem("activeElement"))
-      return element;
-    return undefined;
+  function vanish() {
+    const active = document.querySelector(".items");
+    const activeElement = document.querySelector("li.active");
+    if (active) active.style.display = "none";
+    if (activeElement) activeElement.classList.remove("active");
   }
 
   function handleState(state) {
@@ -55,13 +60,14 @@ const Navbar = () => {
   useEffect(() => {
     window.pathname = location.pathname;
     let Index = array.find(findIndex);
-    if (Index === undefined) Index = array.find(findElement);
+    if (Index === undefined) vanish();
     if (Index !== undefined && Index.index !== undefined) {
       setActiveElement(Index.activeElement);
       localStorage.setItem("activeElement", Index.activeElement);
       const navItems = document.querySelectorAll(".nav ul li");
       const itemOffsetLeft = navItems[Index.index].offsetLeft;
       const itemOffsetTop = navItems[Index.index].offsetTop;
+      navItems[Index.index].classList.add("active")
       const coloredDiv = document.querySelector(".items");
       coloredDiv.style.transform = `translateX(${
         itemOffsetLeft - coloredDiv.offsetLeft

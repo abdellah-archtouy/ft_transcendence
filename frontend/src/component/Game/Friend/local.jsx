@@ -7,7 +7,7 @@ const Remote = () => {
   if (!roomData) return <LoadingPage />
   return (
     <div>
-      <Room data={roomData}/>
+      <Room mode={roomData}/>
     </div>
   );
 };
