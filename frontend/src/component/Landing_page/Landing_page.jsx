@@ -5,7 +5,6 @@ import table from "./images/floating_table.svg";
 
 const Landing_page = ({ setAuth }) => {
     const [showPopup, setShowPopup] = useState(false);
-    console.log(window.location.hostname);
     return (
         <div className="page-container">
             <div className={`popup ${showPopup ? 'show' : ''}`}>

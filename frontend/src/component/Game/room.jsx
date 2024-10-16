@@ -326,7 +326,7 @@ const Room = ({ data, mode }) => {
 
           if (refresh) {
             axios
-              .post(`http://${apiUrl}:8000/api/token/refresh/`, { refresh })
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
@@ -336,8 +336,10 @@ const Room = ({ data, mode }) => {
                 localStorage.removeItem("access");
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
+                console.log({ general: "Session expired. Please log in again." });
+                // refreh the page
+                window.location.reload();
                 navigate("/");
-                console.log({ general: 'Session expired. Please log in again.' });
               });
           } else {
             console.log({ general: 'No refresh token available. Please log in.' });

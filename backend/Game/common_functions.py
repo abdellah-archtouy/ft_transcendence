@@ -50,19 +50,19 @@ def calculate_new_velocity(room, ball, paddle, angle_multiplier):
     velocityY = ball_speed * math.sin(angle) * direction
     ball.set_attribute("velocityX", velocityX)
     ball.set_attribute("velocityY", velocityY)
-    if room.rightPaddle.speed < 1.59 and room.leftPaddle.speed < 1.6:
-        room.rightPaddle.speed += 0.2
-        room.leftPaddle.speed += 0.2
+    if room.rightPaddle.speed < 3 and room.leftPaddle.speed < 3:
+        room.rightPaddle.speed += 0.4
+        room.leftPaddle.speed += 0.4
 
 def velocityChange(room):
     speed = room.ball.get_attribute("speed")
     if collision(room.ball, room.rightPaddle):
         calculate_new_velocity(room, room.ball, room.rightPaddle, -math.pi / 4)
-        speed += 0.2
+        speed += 2
     if collision(room.ball, room.leftPaddle):
         calculate_new_velocity(room, room.ball, room.leftPaddle, math.pi / 4)
-        speed += 0.2
-    if speed < 10:
+        speed += 2
+    if speed < 15:
         room.ball.set_attribute("speed", speed)
 
 def changePaddlePosition(room):

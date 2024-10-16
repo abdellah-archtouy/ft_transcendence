@@ -79,8 +79,8 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
         ? { username, email, password }
         : { email, password };
       const url = isSignUp
-        ? `${apiUrl}/api/users/signup/;`
-        : `${apiUrl}/api/users/login/;`
+        ? `${apiUrl}/api/users/signup/`
+        : `${apiUrl}/api/users/login/`
 
       try {
         const response = await axios.post(url, data);
@@ -95,6 +95,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
           }, 2000);
         }
       } catch (error) {
+        console.log("error catched");
         if (error.response && error.response.data) {
           const newErrors = {};
           if (error.response.data.username) {

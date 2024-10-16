@@ -44,6 +44,41 @@ def top5(request):
     except TokenError as e:
         print(f"top5: {e}")
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def leaderboard(request):
+    try:
+        # my_sorted_list = User.objects.all().filter(score__gt=0).order_by("-score")[:5].values("id", "avatar", "username", "rank", "score")
+        my_sorted_list = (
+            User.objects.annotate(
+                matches_won=Count("user1_game", distinct=True),
+                matches_lost=Count("user2_game", distinct=True),
+                total_matches=Count("user1_game", distinct=True)
+                + Count("user2_game", distinct=True),
+            )
+            .order_by("rank")
+            .values(
+                "avatar",
+                "username",
+                "rank",
+                "score",
+                "matches_won",
+                "matches_lost",
+                "total_matches",
+            )
+        )
+        return Response(
+            my_sorted_list,
+            status=status.HTTP_200_OK,
+        )
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    except TokenError as e:
+        print(f"top5: {e}")
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

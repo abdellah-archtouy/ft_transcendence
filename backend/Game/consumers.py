@@ -157,7 +157,7 @@ class RoomManager():
                         'room_paused': room.room_paused
                     }
                 )
-                if room.winner:
+                if room.winner and room.type == "Remote":
                     await self.store_gamein_db(room)
                     break
                 await asyncio.sleep(0.02)
