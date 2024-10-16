@@ -10,85 +10,103 @@ import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import Back from './icons/back';
 import {WebSocketContext} from './Chat';
+import { useNavigate } from "react-router-dom";
+
 
 const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [message, setMessage] = useState('');
     const [data, setData] = useState([]);  
     const [loading, setLoading] = useState(true);  
-    // const [error, setError] = useState(null);  
-    // const [daton, setDaton] = useState(false);
+    const [error, setError] = useState(null);  
     const [clicked, setClicked] = useState(false);
     const [imogiclicked, setImogiclicked] = useState(false);
     const messagesEndRef = useRef(null);
+    const [errors, setErrors] = useState({});
     const [ws, setWs] = useState(null);
+    const navigate = useNavigate();
 
 
     const socket = useContext(WebSocketContext);
 
-    const fetchData = async () => {  
-        try {
-            // console.log('convid:', convid);
-            const response = await axios.get(`http://${window.location.hostname}:8000/api/msg/${convid}/`);
-            setData(response.data);
-            // console.log('data:', response.data);
-            // setDaton(true);
-        } catch (error) {  
-            // setError(error);
-            console.log(error);
-            setData([]);
-            // setDaton(false);
-        } finally {  
-            setLoading(false);  
-        }  
-    };  
+    
 
     useEffect(() => {
         if (!socket) return;
-    
         socket.onmessage = (event) => {
          const  message1 = JSON.parse(event.data);
-         if (message1.conversation !== convid) return;
-          const data1 = JSON.parse(message1.message);
-          setData(data => [...data, data1]);
+         
+         const  parsmsg = JSON.parse(message1.message);
+         if (parsmsg.conversation === convid) {
+            const data1 = JSON.parse(message1.message);
+            setData(data => [...data, data1]);
+            }
         };
     
         setWs(socket);
-        // Clean up
-        // return () => {
-        //   socket.onmessage = null;
-        // };
       }, [socket, convid]);
     
-
     useEffect(() => {
+        const fetchData = async () => {  
+            const access = localStorage.getItem("access");
+            try {
+                const response = await axios.get(`http://${window.location.hostname}:8000/chat/msg/${convid}/`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${access}`,
+                    }});
+                setData(response.data);
+            } catch (error) {  
+                setError(error);
+                handleFetchError(error);
+                console.log(error);
+                setData([]);
+            } finally {  
+                setLoading(false);  
+            }  
+        };  
+        
+        const handleFetchError = (error) => {
+            if (error.response) {
+              if (error.response.status === 401) {
+                const refresh = localStorage.getItem("refresh");
+      
+                if (refresh) {
+                  axios
+                    .post("http://localhost:8000/api/token/refresh/", { refresh })
+                    .then((refreshResponse) => {
+                      const { access: newAccess } = refreshResponse.data;
+                      localStorage.setItem("access", newAccess);
+                      fetchData(); // Retry fetching user data
+                    })
+                    .catch((refreshError) => {
+                      localStorage.removeItem("access");
+                      localStorage.removeItem("refresh");
+                      console.log("you have captured the error");
+                      setErrors({ general: "Session expired. Please log in again." });
+                      // refreh the page
+                      window.location.reload();
+                      navigate("/");
+                    });
+                } else {
+                  setErrors({
+                    general: "No refresh token available. Please log in.",
+                  });
+                }
+              } else {
+                setErrors({ general: "Error fetching data. Please try again." });
+              }
+            } else {
+              setErrors({
+                general: "An unexpected error occurred. Please try again.",
+              });
+            }
+          };
+
         fetchData();    
     }, [convid]);
 
 
-    // useEffect(() => {
-    //     const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/msg/${convid}/`);
-    //     socket.onopen = () => {
-    //         console.log('WebSocket connection established');
-    //     };
-
-    //     socket.onmessage = (e) => {
-    //         const data1 = JSON.parse(e.data);
-    //         setData(data => [...data, data1]);
-            
-    //         // console.log('data:', data);
-    //         // console.log('data1:', data1);
-    //     };
-
-    //     socket.onclose = () => {
-    //         console.log('WebSocket connection closed');
-    //     };
-
-    //     setWs(socket);
-
-    //     return () => {
-    //         socket.close();
-    //     };
-    // }, [data, convid]);
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -126,13 +144,14 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
 
     const handelcloseChat = () => {
         setSelectedConvId(0);
-        // console.log('selectedConvId:');
     }
 
     if (loading) return <div>Loading...</div>;
-    // if (error) return <div>Error: {error.message}</div>;
+    if (error) return <div>Error: {error.message}</div>;
     const isEmptyObject = Object.keys(conversationdata).length === 0;
-
+    function avatarUrl(name) {
+        return `http://${window.location.hostname}:8000` + name;
+      }
     return (
         <div className={`Msg `}> 
             {!isEmptyObject ? (
@@ -144,12 +163,12 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
                             </button>
                             {conversationdata.uid1_info.username === userData.username ? (
                                 <>
-                                    <img src={conversationdata.uid2_info.avatar} alt='avatr' />
+                                    <img src={avatarUrl(conversationdata.uid2_info.avatar)} alt='avatr' />
                                     <h3>{conversationdata.uid2_info.username}</h3>
                                 </>
                             ) : (
                                 <>
-                                <img src={conversationdata.uid1_info.avatar} alt='avatar'/>
+                                <img src={avatarUrl(conversationdata.uid1_info.avatar)} alt='avatar'/>
                                 <h3>{conversationdata.uid1_info.username}</h3>
                                 </>
                             )}
@@ -207,3 +226,28 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
 };
 
 export default Msg;
+
+// useEffect(() => {
+    //     const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/msg/${convid}/`);
+    //     socket.onopen = () => {
+    //         console.log('WebSocket connection established');
+    //     };
+
+    //     socket.onmessage = (e) => {
+    //         const data1 = JSON.parse(e.data);
+    //         setData(data => [...data, data1]);
+            
+    //         // console.log('data:', data);
+    //         // console.log('data1:', data1);
+    //     };
+
+    //     socket.onclose = () => {
+    //         console.log('WebSocket connection closed');
+    //     };
+
+    //     setWs(socket);
+
+    //     return () => {
+    //         socket.close();
+    //     };
+    // }, [data, convid]);

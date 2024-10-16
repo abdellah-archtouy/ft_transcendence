@@ -50,8 +50,8 @@ class MsgView(APIView):
         # Return the serialized data as Response  
         return Response(serializer.data)  
 
-def Hi(request):
-    return HttpResponse("hi")
+# def Hi(request):
+#     return HttpResponse("hi")
 
 class UsersView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -73,52 +73,52 @@ def post_message(request):
 
 
 
-class RegisterView(APIView):
-    parser_classes = [JSONParser]
+# class RegisterView(APIView):
+#     parser_classes = [JSONParser]
 
-    def post(self, request):
-        print(request.data)
-        print(request.content_type)
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         print(request.data)
+#         print(request.content_type)
+#         serializer = UserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from django.conf import settings
 
-class LoginView(APIView):
-    permission_classes = [AllowAny]
+# class LoginView(APIView):
+#     permission_classes = [AllowAny]
 
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
+#     def post(self, request):
+#         email = request.data.get('email')
+#         password = request.data.get('password')
 
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({'message': 'Incorrect email'}, status=status.HTTP_400_BAD_REQUEST)
+#         try:
+#             user = User.objects.get(email=email)
+#         except User.DoesNotExist:
+#             return Response({'message': 'Incorrect email'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if user.password != password:
-            return Response({'message': 'Incorrect password'}, status=status.HTTP_400_BAD_REQUEST)
+#         if user.password != password:
+#             return Response({'message': 'Incorrect password'}, status=status.HTTP_400_BAD_REQUEST)
 
-        login(request, user)
-        # refresh = RefreshToken.for_user(user)
-        response = Response()
-        response.set_cookie(
-            key='jwt', 
-            value=AccessToken.for_user(user).__str__(), 
-            httponly=True, 
-            samesite='None',
-            secure=True
-        )
-        response.data = {
-            'token' :AccessToken.for_user(user).__str__(),
-        }
+#         login(request, user)
+#         # refresh = RefreshToken.for_user(user)
+#         response = Response()
+#         response.set_cookie(
+#             key='jwt', 
+#             value=AccessToken.for_user(user).__str__(), 
+#             httponly=True, 
+#             samesite='None',
+#             secure=True
+#         )
+#         response.data = {
+#             'token' :AccessToken.for_user(user).__str__(),
+#         }
         
-        return response
+#         return response
 
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
@@ -126,14 +126,14 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
-class Logout(APIView):
-    def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.data = {
-            'message': 'success'
-        }
-        return response
+# class Logout(APIView):
+#     def post(self, request):
+#         response = Response()
+#         response.delete_cookie('jwt')
+#         response.data = {
+#             'message': 'success'
+#         }
+#         return response
 
 
 User = get_user_model()

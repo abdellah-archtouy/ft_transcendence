@@ -6,23 +6,34 @@ import Add from './icons/Vector';
 import Vector from './icons/Vector_1';
 import './Conv_bar.css';
 import { WebSocketContext } from './Chat';
+import { useNavigate } from "react-router-dom";
+
 
 const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, setConversationdata}) => {
   const [conv, setConv] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const [on, setOn] = useState(true);
   const [search, setSearch] = useState('');
   const [tmp, setTmp] = useState([]);
   const [isEmptyObject, setisEmptyObject] = useState(true);
-
+  const navigate = useNavigate();
   const socket = useContext(WebSocketContext);
 
   // const [selectedConvId, setSelectedConvId] = useState(null);
 
+  useEffect(() => {
+
   const fetchData = async () => {
+    
+    const access = localStorage.getItem("access");
     try {
-      const response = await axios.get(`http://${window.location.hostname}:8000/api/conv/${userData.id}/`);
+      const response = await axios.get(`http://${window.location.hostname}:8000/chat/conv/${userData.id}/`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access}`,
+        }});
       if (response.data && response.data.length > 0) {
         setConv(response.data);
       } else {
@@ -32,12 +43,52 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     } catch (error) {
       setError(error);
       console.log(error);
+      handleFetchError(error);
       setConv([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleFetchError = (error) => {
+    if (error.response) {
+      if (error.response.status === 401) {
+        const refresh = localStorage.getItem("refresh");
+
+        if (refresh) {
+          axios
+            .post("http://localhost:8000/api/token/refresh/", { refresh })
+            .then((refreshResponse) => {
+              const { access: newAccess } = refreshResponse.data;
+              localStorage.setItem("access", newAccess);
+              fetchData(); // Retry fetching user data
+            })
+            .catch((refreshError) => {
+              localStorage.removeItem("access");
+              localStorage.removeItem("refresh");
+              console.log("you have captured the error");
+              setErrors({ general: "Session expired. Please log in again." });
+              // refreh the page
+              window.location.reload();
+              navigate("/");
+            });
+        } else {
+          setErrors({
+            general: "No refresh token available. Please log in.",
+          });
+        }
+      } else {
+        setErrors({ general: "Error fetching data. Please try again." });
+      }
+    } else {
+      setErrors({
+        general: "An unexpected error occurred. Please try again.",
+      });
+    }
+  };
+
+  fetchData();
+}, []);
 
   // console.log('conv:', conv);
 
@@ -72,9 +123,9 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     };
   }, [socket , conv]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   const handleClickconv = (conv) => {
     setSelectedConvId(conv.id);

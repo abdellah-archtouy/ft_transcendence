@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import './AddBar.css'
 import Search from './icons/search'
 import axios from 'axios'
+import { useNavigate } from "react-router-dom";
 
 import PropTypes from 'prop-types';
 
@@ -18,7 +19,9 @@ function AddBar({setconvid , setConversationdata , conv, userData, setSelectedCo
     const [data, setData] = useState([]);
     const [resulte1, setresulte1] = useState([]);
     const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState(null);
+    const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
+  // const [error, setError] = useState(null);
     const [ws, setWs] = useState(null);
 
     const handleKeyDown = (event) => {
@@ -35,6 +38,64 @@ function AddBar({setconvid , setConversationdata , conv, userData, setSelectedCo
     }, []);
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const access = localStorage.getItem("access");
+              const response = await axios.get(`http://${window.location.hostname}:8000/chat/users/`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${access}`,
+                    },
+                });
+                setresulte1(response.data.filter((user) => {
+                    return data && user && user.username.toLowerCase().includes(data.toLowerCase());
+                }));
+            } catch (error) {
+                // setError(error);
+                handleFetchError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+
+    const handleFetchError = (error) => {
+        if (error.response) {
+          if (error.response.status === 401) {
+            const refresh = localStorage.getItem("refresh");
+  
+            if (refresh) {
+              axios
+                .post("http://localhost:8000/api/token/refresh/", { refresh })
+                .then((refreshResponse) => {
+                  const { access: newAccess } = refreshResponse.data;
+                  localStorage.setItem("access", newAccess);
+                  fetchData(); // Retry fetching user data
+                })
+                .catch((refreshError) => {
+                  localStorage.removeItem("access");
+                  localStorage.removeItem("refresh");
+                  console.log("you have captured the error");
+                  setErrors({ general: "Session expired. Please log in again." });
+                  // refreh the page
+                  window.location.reload();
+                  navigate("/");
+                });
+            } else {
+              setErrors({
+                general: "No refresh token available. Please log in.",
+              });
+            }
+          } else {
+            setErrors({ general: "Error fetching data. Please try again." });
+          }
+        } else {
+          setErrors({
+            general: "An unexpected error occurred. Please try again.",
+          });
+        }
+      };
+
         if (data) {
             fetchData();
         } else {
@@ -42,28 +103,16 @@ function AddBar({setconvid , setConversationdata , conv, userData, setSelectedCo
         }
     }, [data]);
     
-    const fetchData = async () => {
-        try {
-            const response = await axios.get(`http://${window.location.hostname}:8000/api/users/`);
-            setresulte1(response.data.filter((user) => {
-                return data && user && user.username.toLowerCase().includes(data.toLowerCase());
-            }));
-        } catch (error) {
-            // setError(error);
-        } finally {
-            setLoading(false);
-        }
-    }
     
 
     const handleChange = (e) => {
         setData(e);
         // fetchData();
     }
-    const handleWebSocketMessage = (e) => {
-        const conv1 = JSON.parse(e.data);
-        setConv(conv => [...conv1, conv]);
-    };
+    // const handleWebSocketMessage = (e) => {
+    //     const conv1 = JSON.parse(e.data);
+    //     setConv(conv => [...conv1, conv]);
+    // };
     
     
     

@@ -5,6 +5,10 @@ import './Conv.css';
 const Conv = ({ data, userData, selectedConvId }) => {
   const [last_message_time, setLast_message_time] = useState('');
 
+  function avatarUrl(name) {
+    return `http://${window.location.hostname}:8000` + name;
+  }
+
   useEffect(() => {
     const date = new Date(data.last_message_time);
     setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
@@ -14,7 +18,7 @@ const Conv = ({ data, userData, selectedConvId }) => {
     <div className={`conv ${selectedConvId === data.id ? 'selected' : ''}`}>
       {data.uid1_info.username === userData.username ? (
         <>
-          <img src={data.uid2_info.avatar} alt='user avatar' />
+          <img src={avatarUrl(data.uid2_info.avatar)} alt='user avatar' />
           <div className='user_lastmsg'>
             <div className='avatar_on'>
               <h3>{data.uid2_info.username}</h3>
@@ -26,7 +30,7 @@ const Conv = ({ data, userData, selectedConvId }) => {
         </>
       ) : (
         <>
-          <img src={data.uid1_info.avatar} alt='user avatar'/>
+          <img src={avatarUrl(data.uid1_info.avatar)} alt='user avatar'/>
           <div>
             <div className='avatar_on'>
               <h3>{data.uid1_info.username}</h3>
