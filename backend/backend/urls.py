@@ -21,9 +21,11 @@ from backend.views import hello, root
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("User.urls")),
+    path("chat/", include("Chat.urls")),
     path("game/", include("Game.urls")),
 ]
 

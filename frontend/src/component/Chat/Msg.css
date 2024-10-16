@@ -10,17 +10,42 @@
     font-weight: bold;
 }
 
+.empty-conv{
+    color: #FFFFFF50;
+    display: flex;
+    text-align: center;
+    height: calc(100vh - 275px);
+    align-items: end;
+    justify-content: center;
+    margin-top: 110px;
+    margin-bottom: 40px;
+}
+
+.Msg  .empty{
+    color: #FFFFFF50;
+    display: flex;
+    text-align: center;
+    height: calc(100vh - 275px);
+    align-items: center;
+    justify-content: center;
+    margin-top: 110px;
+}
+.hide{
+    display: none;
+}
+
 .chat_top_bar .icon_name h3{
     color: #B0B0B0;
     font-weight: 700;
     font-size: 20px;
     padding: 0;
-    margin-top: 6px;
+    line-height: 1;
 }
 
 
 .chat_top_bar .icon_name img{
-    height: 60px;
+    height: clamp(2.5rem, 2.5vw + 1.5rem, 3.75rem);
+    aspect-ratio: 9 / 9;
     width: auto;
     border: 3px solid #636262;
     background-size: cover;
@@ -34,7 +59,65 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: clamp(0.625rem, 1.25vw + 0.125rem, 1.25rem);
+}
+
+.chat_top_bar button:hover {
+    box-sizing: border-box;
+    filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.75));
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.chat_top_bar button.Backbutton > svg{
+    height: clamp(0.875rem, 1vw + 0.475rem, 1.375rem);
+}
+.chat_top_bar button{
+    transition: filter 0.3s ease;
+    position: absolute;
+    color: #222222;
+    background-color: #222222;
+    all: unset;
+    display: inline-flex;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.4s ease-in-out;
+
+}
+
+.picker{
+    position: absolute;
+    bottom: 70px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+.chat_top_bar .set_dropdown li{
+    list-style-type: none;
+    display: flex;
+    justify-content: start;
+}
+.chat_top_bar .set_dropdown ul{
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: start;
+}
+.chat_top_bar .set_dropdown{
+    position: absolute;
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px black;
+    right: 0px;
+    width: 130px;
+    height: 100px;
+    background-color: #222222;
+    cursor: pointer;
 }
 
 .chat_top_bar .set{
@@ -53,30 +136,69 @@
     align-items: center;
     background-color: #222222;
     box-sizing: border-box;
-    padding: 13px 20px;
+    padding: clamp(0.625rem, 0.375vw + 0.475rem, 0.813rem) clamp(0.938rem, 0.625vw + 0.688rem, 1.25rem);
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px black;
-    height: 86px;
+    height: fit-content;
 }
 
 
 
-.message_bar .search-input{
-    width: 100%;
+.message_bar .search-input1{
+    width: 95.5%;
+    resize: none;
+    height: 40px;
     background-color: transparent;
     border: none;
     padding: 10px;
     outline: none;
     color: #B0B0B0;
-}
-.message_bar .search-container{
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    width: 95%;
     background-color: #1B1B1B;
     border-radius: 10px;
     padding-left: 10px;
+}
+
+.message_bar .search-container1 textarea:focus,
+.message_bar .search-container1 textarea:active{
+      width: 95.5%;
+      outline: none;
+      animation: none !important;  /* Remove any animations */
+      transition: none;
+      /* border-color: #66afe9;  */
+      /* box-shadow: 0 0 5px rgba(102, 175, 233, 0.6); */
+}
+
+.message_bar  button:hover{
+    box-sizing: border-box;
+    filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.75));
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding-top: 5px ;
+}
+.message_bar  button{
+    transition: filter 0.3s ease;
+    display: inline-flex;
+    position: absolute;
+    color: #222222;
+    background-color: #222222;
+    all: unset;
+    box-sizing: border-box;
+    justify-content: center;
+    padding-top: 5px ;
+    align-items: center;
+    transition: all 0.4s ease-in-out;
+
+}
+.message_bar .search-container1{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    animation: none;
+    gap: 14px;
+    /* justify-content: start; */
+    align-items: center;
+    width: 100%;
 }
 
 .message_bar{
@@ -101,16 +223,15 @@
     display: none;
 }
 
-.Msg .conversation{
+.Msg .conversation {
     position: absolute;
     display: flex;
     flex-direction: column;
-    height: 90%;
-    top: 60px;
+    height: 100%;
     width: 100%;
     overflow: scroll;
     overflow-x: hidden;
     gap: 10px;
-    padding-top: 25px;
-    padding-bottom: 20px;
+    padding-top: 100px;
+    padding-bottom: 60px;
 }
