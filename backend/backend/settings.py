@@ -39,11 +39,13 @@ EMAIL_SSL_CERTFILE = certifi.where()
 # SECRET_KEY = "django-insecure-(zpx@q@o*06i-0_5l0c9e&qir(c0pd5b5dm8f3k&w5x%osu)s2"
 
 SECRET_KEY = env("SECRET_KEY")
+CLIENT_SECRET = env("CLIENT_SECRET")
+HOSTNAME = env("HOSTNAME")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -76,11 +78,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+CORS_ALLOWED_ORIGINS = ['http://0.0.0.0']
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = ("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 CORS_ALLOW_HEADERS = ("Content-Type", "Authorization")

@@ -18,6 +18,10 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const client_id = process.env.REACT_APP_CLIENT_ID;
+  const api_callback = process.env.REACT_APP_API_CALLBACK;
+
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -75,8 +79,8 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
         ? { username, email, password }
         : { email, password };
       const url = isSignUp
-        ? "http://localhost:8000/api/users/signup/"
-        : "http://localhost:8000/api/users/login/";
+        ? `${apiUrl}/api/users/signup/;`
+        : `${apiUrl}/api/users/login/;`
 
       try {
         const response = await axios.post(url, data);
@@ -124,7 +128,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
     const formErrors = validateForm();
     if (!formErrors.email) {
       try {
-        await axios.post("http://localhost:8000/api/users/forgot-password/", {
+        await axios.post(`${apiUrl}/api/users/forgot-password/`, {
           email,
         });
         setIsForgotPassword(false);
@@ -142,7 +146,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/users/verify-otp/",
+        `${apiUrl}/api/users/verify-otp/`,
         { otp: otpString, email }
       );
       const { access, refresh } = response.data;
@@ -183,7 +187,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
 
     try {
       // Call API to resend OTP
-      await axios.post("http://localhost:8000/api/users/resend-otp/", {
+      await axios.post(`${apiUrl}/api/users/resend-otp/`, {
         email,
       });
       setCountdown(60); // Restart countdown
@@ -246,10 +250,9 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
     console.log("42 login function called");
 
     const redirectUri = encodeURIComponent(
-      "http://localhost:3000/api/auth/callback/"
+      `${api_callback}/api/auth/callback/`
     );
-    const clientId =
-      "u-s4t2ud-ec33d59c683704986dda31fd1812c016474dd371e1bea3233a32976cf6b14b5c"; // Replace with your actual client ID
+    const clientId = `${client_id}`;
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
 
     // Redirect user to 42 login page
@@ -265,7 +268,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
       const fetchTokens = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:8000/api/auth/callback/?code=${code}`
+            `${apiUrl}/api/auth/callback/?code=${code}`
           );
           const { access, refresh } = response.data;
 

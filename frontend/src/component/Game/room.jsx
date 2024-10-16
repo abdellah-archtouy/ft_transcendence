@@ -50,6 +50,8 @@ const Room = ({ data, mode }) => {
 
   if (data) botmode = data;
 
+  const apiUrl = process.env.REACT_APP_API_HOSTNAME;
+
   const drawRoundedRect = (ctx, x, y, width, height, radius, opacity) => {
     const scaleX = Board.width / boardWidth;
     const scaleY = Board.height / boardHeight;
@@ -247,8 +249,8 @@ const Room = ({ data, mode }) => {
   useEffect(() => {
     if (!userData) return;
     const url = !botmode 
-        ?`ws://${window.location.hostname}:8000/ws/game/${gamemode}/${userData.id}`
-        : `ws://${window.location.hostname}:8000/ws/game/${gamemode}/${botmode}/${userData.id}`;
+        ?`ws://${apiUrl}:8000/ws/game/${gamemode}/${userData.id}`
+        : `ws://${apiUrl}:8000/ws/game/${gamemode}/${botmode}/${userData.id}`;
     WSocket = new WebSocket(url);
 
     WSocket.onopen = () => {
@@ -324,7 +326,7 @@ const Room = ({ data, mode }) => {
 
           if (refresh) {
             axios
-              .post("http://localhost:8000/api/token/refresh/", { refresh })
+              .post(`http://${apiUrl}:8000/api/token/refresh/`, { refresh })
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
@@ -335,16 +337,16 @@ const Room = ({ data, mode }) => {
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
                 navigate("/");
-                // setErrors({ general: 'Session expired. Please log in again.' });
+                console.log({ general: 'Session expired. Please log in again.' });
               });
           } else {
-            // setErrors({ general: 'No refresh token available. Please log in.' });
+            console.log({ general: 'No refresh token available. Please log in.' });
           }
         } else {
-          // setErrors({ general: 'Error fetching data. Please try again.' });
+          console.log({ general: 'Error fetching data. Please try again.' });
         }
       } else {
-        // setErrors({ general: 'An unexpected error occurred. Please try again.' });
+        console.log({ general: 'An unexpected error occurred. Please try again.' });
       }
     };
 
@@ -353,7 +355,7 @@ const Room = ({ data, mode }) => {
         const access = localStorage.getItem("access");
 
         const response = await axios.get(
-          "http://localhost:8000/api/users/profile/",
+          `http://${apiUrl}:8000/api/users/profile/`,
           {
             headers: {
               Authorization: `Bearer ${access}`,
@@ -361,7 +363,6 @@ const Room = ({ data, mode }) => {
           }
         );
         setUserData(response.data);
-        // fetchSuggestedFriends(); // Fetch friends after getting user data
       } catch (error) {
         handleFetchError(error);
       }
@@ -417,7 +418,7 @@ const Room = ({ data, mode }) => {
   }, [canvas]);
 
   function image_renaming(name) {
-    return `http://${window.location.hostname}:8000` + name;
+    return `http://${apiUrl}:8000` + name;
   }
 
   useEffect(() => {

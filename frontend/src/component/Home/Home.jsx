@@ -19,13 +19,15 @@ const Home = () => {
   const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const access = localStorage.getItem("access");
 
         const response = await axios.get(
-          "http://localhost:8000/api/users/profile/",
+          `${apiUrl}/api/users/profile/`,
           {
             headers: {
               Authorization: `Bearer ${access}`,
@@ -46,7 +48,7 @@ const Home = () => {
         const access = localStorage.getItem("access");
 
         const response = await axios.get(
-          "http://localhost:8000/api/users/suggest_friends/",
+          `${apiUrl}/api/users/suggest_friends/`,
           {
             headers: {
               Authorization: `Bearer ${access}`,
@@ -64,7 +66,7 @@ const Home = () => {
       try {
         const access = localStorage.getItem("access");
 
-        const response = await axios.get("http://localhost:8000/game/top5", {
+        const response = await axios.get(`${apiUrl}/game/top5`, {
           headers: {
             Authorization: `Bearer ${access}`,
           },
@@ -72,7 +74,7 @@ const Home = () => {
         setTop5(response.data); // Set the top 5
 
         const response1 = await axios.get(
-          "http://localhost:8000/game/history",
+          `${apiUrl}/game/history`,
           {
             headers: {
               Authorization: `Bearer ${access}`,
@@ -92,7 +94,7 @@ const Home = () => {
 
           if (refresh) {
             axios
-              .post("http://localhost:8000/api/token/refresh/", { refresh })
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
@@ -128,7 +130,7 @@ const Home = () => {
     try {
       const access = localStorage.getItem("access");
       await axios.post(
-        `http://localhost:8000/api/users/add_friend/`,
+        `${apiUrl}/api/users/add_friend/`,
         { friend_id: friendId },
         { headers: { Authorization: `Bearer ${access}` } }
       );

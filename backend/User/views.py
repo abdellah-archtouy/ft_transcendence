@@ -62,13 +62,18 @@ def handle_42_callback(request):
 
     # Exchange the authorization code for an access token
     token_url = "https://api.intra.42.fr/oauth/token"
+    client_secret = settings.CLIENT_SECRET
+    redirect_uri = settings.HOSTNAME
+
     data = {
         "grant_type": "authorization_code",
         "client_id": "u-s4t2ud-ec33d59c683704986dda31fd1812c016474dd371e1bea3233a32976cf6b14b5c",
-        "client_secret": "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",
-        "redirect_uri": "http://localhost:3000/api/auth/callback/",
+        "client_secret": client_secret,
+        "redirect_uri": f"http://{redirect_uri}:3000/api/auth/callback/",
         "code": code,
     }
+
+    # print(data.redirect_uri)
 
     response = requests.post(token_url, data=data)
     response_data = response.json()
