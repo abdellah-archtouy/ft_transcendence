@@ -1,11 +1,3 @@
-import profile1 from "./images/profile1.jpg";
-import profile2 from "./images/profile2.jpg";
-import profile3 from "./images/profile3.jpg";
-import profile4 from "./images/profile4.jpg";
-import profile5 from "./images/profile5.jpg";
-import profile6 from "./images/profile6.jpg";
-import profile7 from "./images/profile7.jpg";
-import profile8 from "./images/profile8.jpg";
 import dash from "./styles/dash.svg";
 
 function avatarUrl(avatar) {

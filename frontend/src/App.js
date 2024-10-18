@@ -66,8 +66,12 @@ function App() {
     setAuth(true);
   };
 
+  const scroll = location.pathname !== "/" && {
+    height: "100%",
+  }
+
   return (
-    <div className="App" style={{ ...bgImage }}>
+    <div className={scroll ? "App" : "App fixed-height"} style={{ ...bgImage, ...scroll }}>
       {" "}
       {/* style={{...bgImage}} */}
       {auth ? (

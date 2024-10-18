@@ -46,7 +46,7 @@ def register_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        reset_ranks() # here i am a doing a loop in the registration of user
+        reset_ranks()  # here i am a doing a loop in the registration of user
         return Response(
             {"message": "User registered successfully!"}, status=status.HTTP_201_CREATED
         )
@@ -152,7 +152,7 @@ def handle_42_callback(request):
 
         # Generate JWT tokens
         refresh = RefreshToken.for_user(existing_user if existing_user else user)
-        reset_ranks() # here i am a doing a loop in the registration of user
+        reset_ranks()  # here i am a doing a loop in the registration of user
         return JsonResponse(
             {
                 "message": "Login successful.",
@@ -343,8 +343,12 @@ def verify_otp(request):
 def get_user_data(request):
     try:
         user = request.user
-        avatar_url = user.avatar.url if user.avatar else None  # Return the URL of the avatar
-        cover_url = user.cover.url if user.cover else None  # Return the URL of the cover
+        avatar_url = (
+            user.avatar.url if user.avatar else None
+        )  # Return the URL of the avatar
+        cover_url = (
+            user.cover.url if user.cover else None
+        )  # Return the URL of the cover
         return Response(
             {
                 "id": user.id,
@@ -352,6 +356,7 @@ def get_user_data(request):
                 "email": user.email,
                 "avatar": avatar_url,  # Provide the URL to the frontend
                 "cover": cover_url,  # Provide the URL to the frontend
+                "bio": user.bio,
             },
             status=status.HTTP_200_OK,
         )
@@ -459,10 +464,7 @@ def search_bar_list(request):
     try:
         user = request.user
         user_list = User.objects.all().exclude(id=user.id).values("avatar", "username")
-        return Response (
-            user_list,
-            status=status.HTTP_200_OK
-        )
+        return Response(user_list, status=status.HTTP_200_OK)
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
