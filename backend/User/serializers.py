@@ -28,6 +28,8 @@ class UserSerializer(serializers.ModelSerializer):
         validated_data["password"] = make_password(validated_data["password"])
         if "avatar" not in validated_data:
             validated_data["avatar"] = "avatars/default_avatar.png"
+        if "cover" not in validated_data:
+            validated_data["cover"] = "covers/default_cover.png"
         return super().create(validated_data)
 
     def validate(self, data):
@@ -47,3 +49,9 @@ class UserSerializer(serializers.ModelSerializer):
         if obj.avatar:
             return request.build_absolute_uri(obj.avatar.url)
         return None  # Or return a default avatar URL
+
+    def get_cover(self, obj):
+        request = self.context.get("request")
+        if obj.cover:
+            return request.build_absolute_uri(obj.cover.url)
+        return None  # Or return a default cover URL

@@ -1,0 +1,336 @@
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 900px;
+    border-radius: 45px;
+    background-color: rgba(34, 34, 34, 0.8);
+    flex-direction: column;
+    backdrop-filter: blur(15px);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 5px 5px;
+}
+
+.settings-cover {
+    width: 100%;
+    height: 40%;
+    border-radius: 45px 45px 0 0;
+    background-color: black;
+    display: flex;
+    position: relative;
+
+}
+
+.user-cover {
+    width: 100%;
+    height: auto;
+    border-radius: 45px 45px 0 0;
+    background-color: black;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.cover-change_btn {
+    position: absolute;
+    right: 1%;
+    bottom: 4%;
+    width: 10%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    background-color: #C4C4C4;
+    border: none;
+    cursor: pointer;
+}
+
+.user-avatar-container {
+    position: absolute;
+    width: 290px;
+    height: 290px;
+    border-radius: 50%;
+    border: solid 1px white;
+    top: 60%;
+    left: 7%;
+    border: solid 5px #636262;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.user-avatar-btn {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background-color: #C4C4C4;
+    top: 35%;
+    left: 35%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px);
+    border: none;
+    cursor: pointer;
+}
+
+.user-avatar-btn-icon {
+    fill: rgba(196, 196, 196, 1);
+    width: 50%;
+    height: 50%;
+    stroke-width: 2;
+}
+
+/* when hover over .user-avatar-btn this .user-avatar-btn-icon should change color */
+.user-avatar-btn:hover .user-avatar-btn-icon {
+    fill: rgb(255, 255, 255);
+}
+
+
+.cover-change_btn:hover {
+    background-color: #A4A4A4;
+}
+
+.cover-change_icon {
+    color: rgba(0, 0, 0, 0.7);
+    width: 30%;
+    height: 60%;
+    stroke-width: 2;
+}
+
+.cover-change_p {
+    color: rgba(0, 0, 0, 0.7);
+    width: 70%;
+    height: 70%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1rem;
+}
+
+/* the part with the info change */
+
+.settings-forms {
+    height: 60%;
+    width: 100%;
+    border-radius: 0 0 45px 45px;
+    display: flex;
+    flex-direction: row;
+    gap: 2.5%;
+}
+
+.settings-forms-btn-container {
+    margin-left: 2.5%;
+    width: 25%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+    align-items: center;
+}
+
+.settings-forms-btn {
+    margin-left: 5%;
+    width: 32%;
+    height: 8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #8D8D8D;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.5s;
+}
+
+.settings-forms-btn:hover {
+    background-color: #2F2F2F;
+}
+
+.active-btn {
+    background-color: #2F2F2F;
+}
+
+
+.settings-form-seperator {
+    margin-top: 2%;
+    height: 80%;
+    width: 1px;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+}
+
+.settings-forms-container {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5%;
+    padding: 2.5%;
+}
+
+.form-general {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: flex-start;
+    align-items: flex-start;
+    gap: 5%;
+    position: relative;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+.form-security {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: flex-start;
+    align-items: flex-start;
+    gap: 5%;
+    position: relative;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+.form-security .form-group {
+    width: 40%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8%;
+}
+
+.form-group {
+    width: 40%;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.form-group label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 3rem;
+    margin-bottom: 4%;
+}
+
+.form-security label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 3rem;
+    margin-bottom: 0;
+}
+
+.form-security .form-input {
+    width: 100%;
+    height: 40%;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 2%;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 5%;
+
+}
+
+.form-input {
+    width: 100%;
+    height: 40%;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 2%;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 5%;
+}
+
+.form-input-bio {
+    width: 100%;
+    height: 45%;
+    color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 3%;
+    padding-left: 5%;
+    font-size: 1.2rem;
+    resize: none;
+    overflow: hidden;
+}
+
+.form-input-bio:focus {
+    outline: none;
+}
+
+
+.form-submit-btn {
+    position: absolute;
+    bottom: 2%;
+    right: 2%;
+    width: 9%;
+    height: 9%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    background-color: transparent;
+    color: #C4C4C4;
+    border: none;
+    cursor: pointer;
+    font-size: 1.4rem;
+    transition: background-color 0.5s;
+}
+
+.form-submit-btn:hover {
+    background-color: #565656;
+}
+
+
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in forwards;
+    opacity: 0;
+  }
+  
+.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+    opacity: 1;
+}
+  
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+  
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+  
