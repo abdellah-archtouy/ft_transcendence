@@ -1,14 +1,14 @@
 import json
 from datetime import datetime, timedelta
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 import asyncio
 from User.models import User
 from .models import Game
 from User.serializers import UserSerializer
 import traceback
 from .common_functions import start, join_room
-from django.db.models import Count, Sum
-from .room import Room
+from django.db.models import Sum
 import math
 
 boardWidth = 1000
@@ -115,29 +115,32 @@ class RoomManager():
 
     async def check_time(self, instance):
         room = self.rooms.get(instance.room_group_name)
-        await instance.channel_layer.group_send(
-            instance.room_group_name,
-            {
-                'type': 'chat_message',
-                'stat': "countdown",
-                'value': 10,
-            }
-        )
-        while room and room.howManyUser() == 1:
-            if room:
-                now = datetime.now()
-                time_diff = now - room.disconnected_at  # Calculate time difference since disconnection
-                if time_diff >= timedelta(seconds=10):
-                    room.set_user(instance.user_id, None)
-                    del self.rooms[instance.room_group_name]
-                    await instance.channel_layer.group_send(
-                        instance.room_group_name,
-                        {
-                            'type': 'chat_message',
-                            'stat': "close",
-                        }
-                    )
-            await asyncio.sleep(1)
+        if room:
+            await instance.channel_layer.group_send(
+                instance.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'stat': "countdown",
+                    'value': 10,
+                }
+            )
+            while room:
+                if room:
+                    now = datetime.now()
+                    time_diff = now - room.disconnected_at  # Calculate time difference since disconnection
+                    if time_diff >= timedelta(seconds=10):
+                        room.set_user(instance.user_id, None)
+                        if instance.room_group_name in self.rooms:
+                            del self.rooms[instance.room_group_name]
+                        await instance.channel_layer.group_send(
+                            instance.room_group_name,
+                            {
+                                'type': 'chat_message',
+                                'stat': "close",
+                            }
+                        )
+                        break
+                await asyncio.sleep(1)
 
     async def send_periodic_updates(self, instance):
         room = self.rooms.get(instance.room_group_name)
@@ -188,7 +191,7 @@ class RoomManager():
                 end=room.end,
             )
             await game.asave()
-            self.assign_achievement(room)
+            # self.assign_achievement(room)
         
     def assign_achievement(self, room):
         i = Game.objects.filter(winner=room.winner).aggregate(total_loser_score=Sum('loser_score'))["total_loser_score"]

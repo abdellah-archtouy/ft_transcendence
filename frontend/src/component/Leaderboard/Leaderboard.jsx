@@ -1,9 +1,9 @@
-import React from 'react'
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import "./allusers.css";
-
+import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import searchicon from "../../icons/search.svg";
+import { useNavigate } from "react-router-dom";
+import "./Leaderboard.css";
 
 const Leaderboard = () => {
   const navigate = useNavigate();
@@ -11,7 +11,6 @@ const Leaderboard = () => {
   const [rows, setRows] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-
 
   function avatarUrl(name) {
     // console.log(name);
@@ -40,19 +39,25 @@ const Leaderboard = () => {
                 localStorage.removeItem("access");
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
-                console.log({ general: "Session expired. Please log in again." });
+                console.log({
+                  general: "Session expired. Please log in again.",
+                });
                 // refreh the page
                 window.location.reload();
                 navigate("/");
               });
           } else {
-            console.log({ general: 'No refresh token available. Please log in.' });
+            console.log({
+              general: "No refresh token available. Please log in.",
+            });
           }
         } else {
-          console.log({ general: 'Error fetching data. Please try again.' });
+          console.log({ general: "Error fetching data. Please try again." });
         }
       } else {
-        console.log({ general: 'An unexpected error occurred. Please try again.' });
+        console.log({
+          general: "An unexpected error occurred. Please try again.",
+        });
       }
     };
 
@@ -83,7 +88,9 @@ const Leaderboard = () => {
 
     if (value === "by name") {
       // Sort rows by name
-      const sortedRows = [...rows].sort((a, b) => a.username.localeCompare(b.username));
+      const sortedRows = [...rows].sort((a, b) =>
+        a.username.localeCompare(b.username)
+      );
       setRows(sortedRows);
     } else if (value === "by rank") {
       // Sort rows by rank
@@ -97,91 +104,110 @@ const Leaderboard = () => {
 
   const handleInputChange = (event) => {
     setSearch(event.target.value);
-    console.log(event.target.value);
   };
 
   useEffect(() => {
-    console.log(search);
-  }, [search])
+    let filteredData = [...rows];
+    setRows([]);
+    if (rows && isNaN(search)) {
+      filteredData = data.filter((user) =>
+        user?.username.toLowerCase().startsWith(search.toLowerCase())
+      );
+    }
+    setRows(filteredData);
+    if (!search) setRows(data);
+  }, [search]);
 
   return (
-    <div className="leaderboard-container">
+    <div className="Leaderboard-container">
+      <h1 className="LeaderBoard-header">LeaderBoard</h1>
       <div className="full-board-list">
-      <div className="leaderboard_search">
-        <input type="text" className="Leaderboard-search-bar" onChange={handleInputChange}/>
-        <select className="Leaderboard-sort" onChange={handleSelectClick}>
+        <div className="leaderboard_search">
+          <div className="Leaderboard-search-container">
+            <input
+              type="text"
+              className="Leaderboard-search-bar"
+              onChange={handleInputChange}
+              placeholder="Search"
+            />
+            <img src={searchicon} alt="search" className="searchButton" />
+          </div>
+          <select className="Leaderboard-sort" onChange={handleSelectClick}>
             <option value="">Sort By</option>
-            <option value="by rank" >by rank</option>
-            <option value="by name" >by name</option>
-        </select>
-      </div>
-      <div className="Leaderboard-users-list">
-        <ul className="Leaderboard-list">
-          <li className="Leaderboard-list-item">
-            <div className="Leaderboard-list-item-user">
-              <p>avatar</p>
-            </div>
-            <div className="Leaderboard-list-item-name">
-              <p>name</p>
-            </div>
-            <div className="Leaderboard-list-item-rank">
-              <p>#rank</p>
-            </div>
-            <div className="Leaderboard-list-item-score">
-              <p>score</p>
-            </div>
-            <div className="Leaderboard-list-item-wins">
-              <p>n of wins</p>
-            </div>
-            <div className="Leaderboard-list-item-link">
-              <p></p>
-            </div>
-          </li>
-          <div className="item-container">
-
-          {rows.map((row, index) => (
-            <li key={index} className="Leaderboard-list-item">
+            <option value="by rank">by rank</option>
+            <option value="by name">by name</option>
+          </select>
+        </div>
+        <div className="Leaderboard-users-list">
+          <ul className="Leaderboard-list">
+            <li className="Leaderboard-list-item">
               <div className="Leaderboard-list-item-user">
-                <img src={avatarUrl(row.avatar)} alt="user" />
+                <span>avatar</span>
               </div>
               <div className="Leaderboard-list-item-name">
-                <p>{row.username.substring(0, 9).toUpperCase()}</p>
+                <span>name</span>
               </div>
               <div className="Leaderboard-list-item-rank">
-                <p>#{row.rank}</p>
+                <span>#rank</span>
               </div>
               <div className="Leaderboard-list-item-score">
-                <p>{row.score}xp</p>
+                <span>score</span>
               </div>
               <div className="Leaderboard-list-item-wins">
-                <p>{row.matches_won}</p>
+                <span>n of wins</span>
               </div>
               <div className="Leaderboard-list-item-link">
-                <a href="">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="size-6"
-                    >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                      />
-                  </svg>
-                </a>
+                <span></span>
               </div>
             </li>
-          ))}
-          </div>
-        </ul>
+            <div className="item-container">
+              {rows.map((row, index) => (
+                <li
+                key={row.id}
+                className="Leaderboard-list-item"
+                style={{
+                  animationName: "fade-in",
+                  animationDuration: `${index * 0.5}s`,
+                  animationTimingFunction: "ease-in-out",
+                  animationFillMode: "forwards",
+                }}
+                >
+                  <div className="Leaderboard-list-item-user">
+                    <img src={avatarUrl(row.avatar)} alt="user" />
+                  </div>
+                  <div className="Leaderboard-list-item-name">
+                    <span>{row.username.substring(0, 5).toUpperCase()}</span>
+                  </div>
+                  <div className="Leaderboard-list-item-rank">
+                    <span>#{row.rank}</span>
+                  </div>
+                  <div className="Leaderboard-list-item-score">
+                    <span>{row.score}xp</span>
+                  </div>
+                  <div className="Leaderboard-list-item-wins">
+                    <span>{row.matches_won}</span>
+                  </div>
+                  <div className="Leaderboard-list-item-link">
+                    <a href="">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="LeaderBoard-LinkIcon"
+                      >
+                        <path d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-128c0-17.7-14.3-32-32-32L352 0zM80 32C35.8 32 0 67.8 0 112L0 432c0 44.2 35.8 80 80 80l320 0c44.2 0 80-35.8 80-80l0-112c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 112c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-320c0-8.8 7.2-16 16-16l112 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 32z" />
+                      </svg>
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </div>
+          </ul>
+        </div>
       </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default Leaderboard
+export default Leaderboard;

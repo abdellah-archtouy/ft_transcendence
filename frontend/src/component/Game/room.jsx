@@ -442,13 +442,13 @@ const Room = ({ data, mode }) => {
             />
           </div>
           <div className="Roominfos">
-            <span id="infosHeader">{user?.[0]?.username}</span>
+            <span id="infosHeader">{user?.[0]?.username.substring(0, 9)}</span>
             <span id="infostext">{user?.[0]?.goals}</span>
           </div>
         </div>
         <div className="enemyinfo">
           <div className="Roominfos">
-            <span id="infosHeader">{user?.[1]?.username}</span>
+            <span id="infosHeader">{user?.[1]?.username.substring(0, 9)}</span>
             <span id="infostext">{user?.[1]?.goals}</span>
           </div>
           <div className="image">
@@ -461,7 +461,7 @@ const Room = ({ data, mode }) => {
         </div>
       </div>
       <div className="RoomSecond">
-        {countDown > 0 && <div>{countDown}</div>}
+        {/* {countDown > 0 && <div>{countDown}</div>} */}
         {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>

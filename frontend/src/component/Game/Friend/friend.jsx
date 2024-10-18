@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Friend = () => {
   const navigate = useNavigate();
   return (
-    <>
+    <div>
       <h1 className="Friend-header">1 V 1 <br /> Game</h1>
       <div className="FriendContainer">
         <div className="friend-game-select">{/*style={{width:"fit-content", height:"fit-content", border:"solid"}}>*/}
@@ -23,7 +23,7 @@ const Friend = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

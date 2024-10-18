@@ -19,6 +19,7 @@ import { Navigate } from 'react-router-dom';
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem('jwt'));
+  // const [scroll, setScroll] = useState(false);
   const location = useLocation();
   const bgImage = auth && {
     background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
@@ -66,8 +67,12 @@ function App() {
     setAuth(true);
   };
 
+  const scroll = location.pathname !== "/" && {
+        height: `100%`
+    }
+
   return (
-    <div className="App" style={{ ...bgImage }}>
+    <div className={"App"} style={{ ...bgImage, ...scroll }}>
       {" "}
       {/* style={{...bgImage}} */}
       {auth ? (

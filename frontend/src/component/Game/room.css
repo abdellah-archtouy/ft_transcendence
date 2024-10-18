@@ -66,8 +66,8 @@
 }
 
 #infosHeader {
-  font-size: clamp(1.25rem, 0.45rem + 2vw, 2.25rem);
-  height: clamp(1rem, 2.163vw - 0.385rem, 1.563rem);
+  font-size: clamp(0.938rem, 2.901vw + 0.394rem, 2.25rem);
+  height: clamp(0.938rem, 2.901vw + 0.394rem, 2.25rem);
   line-height: 1;
   color: #d9d9d9;
   width: fit-content;

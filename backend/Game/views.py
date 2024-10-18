@@ -49,6 +49,7 @@ def top5(request):
 def leaderboard(request):
     try:
         # my_sorted_list = User.objects.all().filter(score__gt=0).order_by("-score")[:5].values("id", "avatar", "username", "rank", "score")
+        user = request.user
         my_sorted_list = (
             User.objects.annotate(
                 matches_won=Count("user1_game", distinct=True),
@@ -67,6 +68,9 @@ def leaderboard(request):
                 "total_matches",
             )
         )
+        # for item in my_sorted_list:
+        #     if item["username"] == user.username:
+        #         item["username"] = "Me"
         return Response(
             my_sorted_list,
             status=status.HTTP_200_OK,

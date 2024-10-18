@@ -40,7 +40,7 @@ const SearchBar = ({ onStateChange }) => {
     let filteredData = null;
     if (users && isNaN(searchTerm)) {
       filteredData = users.filter((user) =>
-        user?.username.toLowerCase().includes(searchTerm.toLowerCase())
+        user?.username.toLowerCase().startsWith(searchTerm.toLowerCase())
       );
     }
     setUserList(filteredData);

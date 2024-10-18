@@ -7,12 +7,14 @@ import burgerMenu from "../../icons/navicons/burgerMenu.svg";
 import React, { useEffect, useState } from "react";
 import "./navbar.css";
 import SearchBar from "./searchBar";
+import { useRef } from "react";
 
 const Navbar = () => {
   const [activeElement, setActiveElement] = useState(null);
   const [search, setSearch] = useState(false);
   const [navDisplay, setNavDisplay] = useState(true);
   const location = useLocation();
+  const burgerMenuRef = useRef(null)
 
   const array = [
     { index: 0, path: "/", activeElement: "Home" },
@@ -75,14 +77,28 @@ const Navbar = () => {
     }
   }, [location.pathname]);
 
+  const handleClickOutside = (event) => {
+    if (burgerMenuRef.current && !burgerMenuRef.current.contains(event.target))
+      setNavDisplay(true)
+  }
+
+  useEffect(() => { // to run func on mouseclick that function check if we click outside the burgermenu
+    document.addEventListener("mousedown", handleClickOutside)
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, []);
+
   const navigate = useNavigate();
 
   return (
     <>
       <div className="navContainer">
         <img
+          ref={burgerMenuRef}
           src={burgerMenu}
-          alt=""
+          alt="burgerMenu"
           className="hamburger"
           onClick={() =>
             setNavDisplay((value) => {
