@@ -30,6 +30,7 @@
   padding: 0;
   box-sizing: border-box;
   line-height: calc(1em + .5em);
+  user-select: none;
 }
 
 img,
