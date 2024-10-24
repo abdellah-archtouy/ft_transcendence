@@ -1,0 +1,213 @@
+import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import searchicon from "../../icons/search.svg";
+import { useNavigate } from "react-router-dom";
+import "./Leaderboard.css";
+
+const Leaderboard = () => {
+  const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_HOSTNAME;
+  const [rows, setRows] = useState([]);
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState("");
+
+  function avatarUrl(name) {
+    // console.log(name);
+    return `http://${apiUrl}:8000/media/` + name;
+  }
+
+  useEffect(() => {
+    /**************************************/
+    /*     hna  remote game katbda        */
+    /**************************************/
+
+    const handleFetchError = (error) => {
+      if (error.response) {
+        if (error.response.status === 401) {
+          const refresh = localStorage.getItem("refresh");
+
+          if (refresh) {
+            axios
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
+              .then((refreshResponse) => {
+                const { access: newAccess } = refreshResponse.data;
+                localStorage.setItem("access", newAccess);
+                fetchUserData(); // Retry fetching user data
+              })
+              .catch((refreshError) => {
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
+                console.log("you have captured the error");
+                console.log({
+                  general: "Session expired. Please log in again.",
+                });
+                // refreh the page
+                window.location.reload();
+                navigate("/");
+              });
+          } else {
+            console.log({
+              general: "No refresh token available. Please log in.",
+            });
+          }
+        } else {
+          console.log({ general: "Error fetching data. Please try again." });
+        }
+      } else {
+        console.log({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get(
+          `http://${apiUrl}:8000/game/leaderboard`,
+          {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          }
+        );
+        setData(response.data);
+        setRows(response.data);
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleSelectClick = (event) => {
+    const value = event.target.value;
+
+    if (value === "by name") {
+      // Sort rows by name
+      const sortedRows = [...rows].sort((a, b) =>
+        a.username.localeCompare(b.username)
+      );
+      setRows(sortedRows);
+    } else if (value === "by rank") {
+      // Sort rows by rank
+      const sortedRows = [...rows].sort((a, b) => a.rank - b.rank);
+      setRows(sortedRows);
+    } else {
+      // Default: no sorting
+      setRows(data);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  useEffect(() => {
+    let filteredData = [...rows];
+    setRows([]);
+    if (rows && isNaN(search)) {
+      filteredData = data.filter((user) =>
+        user?.username.toLowerCase().startsWith(search.toLowerCase())
+      );
+    }
+    setRows(filteredData);
+    if (!search) setRows(data);
+  }, [search]);
+
+  return (
+    <div className="Leaderboard-container">
+      <h1 className="LeaderBoard-header">LeaderBoard</h1>
+      <div className="full-board-list">
+        <div className="leaderboard_search">
+          <div className="Leaderboard-search-container">
+            <input
+              type="text"
+              className="Leaderboard-search-bar"
+              onChange={handleInputChange}
+              placeholder="Search"
+            />
+            <img src={searchicon} alt="search" className="searchButton" />
+          </div>
+          <select className="Leaderboard-sort" onChange={handleSelectClick}>
+            <option value="">Sort By</option>
+            <option value="by rank">by rank</option>
+            <option value="by name">by name</option>
+          </select>
+        </div>
+        <div className="Leaderboard-users-list">
+          <ul className="Leaderboard-list">
+            <li className="Leaderboard-list-item">
+              <div className="Leaderboard-list-item-user">
+                <span>avatar</span>
+              </div>
+              <div className="Leaderboard-list-item-name">
+                <span>name</span>
+              </div>
+              <div className="Leaderboard-list-item-rank">
+                <span>#rank</span>
+              </div>
+              <div className="Leaderboard-list-item-score">
+                <span>score</span>
+              </div>
+              <div className="Leaderboard-list-item-wins">
+                <span>n of wins</span>
+              </div>
+              <div className="Leaderboard-list-item-link">
+                <span></span>
+              </div>
+            </li>
+            <div className="item-container">
+              {rows.map((row, index) => (
+                <li
+                key={row.id}
+                className="Leaderboard-list-item"
+                style={{
+                  animationName: "fade-in",
+                  animationDuration: `${index * 0.5}s`,
+                  animationTimingFunction: "ease-in-out",
+                  animationFillMode: "forwards",
+                }}
+                >
+                  <div className="Leaderboard-list-item-user">
+                    <img src={avatarUrl(row.avatar)} alt="user" />
+                  </div>
+                  <div className="Leaderboard-list-item-name">
+                    <span>{row.username.substring(0, 5).toUpperCase()}</span>
+                  </div>
+                  <div className="Leaderboard-list-item-rank">
+                    <span>#{row.rank}</span>
+                  </div>
+                  <div className="Leaderboard-list-item-score">
+                    <span>{row.score}xp</span>
+                  </div>
+                  <div className="Leaderboard-list-item-wins">
+                    <span>{row.matches_won}</span>
+                  </div>
+                  <div className="Leaderboard-list-item-link">
+                    <a href="">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="LeaderBoard-LinkIcon"
+                      >
+                        <path d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-128c0-17.7-14.3-32-32-32L352 0zM80 32C35.8 32 0 67.8 0 112L0 432c0 44.2 35.8 80 80 80l320 0c44.2 0 80-35.8 80-80l0-112c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 112c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-320c0-8.8 7.2-16 16-16l112 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 32z" />
+                      </svg>
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Leaderboard;

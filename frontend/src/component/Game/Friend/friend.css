@@ -1,0 +1,86 @@
+.FriendContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: start;
+    gap: clamp(1.25rem, 10vw - 2.75rem, 6.25rem);
+    padding: 0 4%; /* Padding for the container */
+    user-select: none;
+}
+
+.Friend-header {
+    font-size: clamp(1.5rem, 1.071vw + 1.286rem, 3rem);
+    color: rgb(255, 255, 255, 0.6);
+    line-height: 1em;
+    font-weight: 800;
+    margin-top: 4vh;
+    margin-bottom: 6vh;
+    text-shadow : 0px 0px 14.86px #ffffff80,
+                 0px 0px 29.71px #ffffff80,
+                 0px 0px 104px #ffffff80,
+                 0px 0px 208px #ffffff80,
+                 0px 0px 356.56px #ffffff80;
+    user-select: none;
+}
+
+.friend-game-select > div  {
+    width: clamp(10.625rem, 9.375vw + 6.875rem, 21.875rem);
+    height: clamp(10.625rem, 9.375vw + 6.875rem, 21.875rem);
+    max-width: 450px;
+    max-height: 450px;
+    background-color: rgba(86, 86, 86, 0.8);
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    border-radius: clamp(1.25rem, 1.25vw + 0.75rem, 1.875rem);
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(20px);
+    box-sizing: border-box;
+    padding: 10%;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.friend-game-select > div > p {
+    display: inline-block;
+    vertical-align: bottom;
+    font-size: clamp(1.5rem, 1.51vw + 0.896rem, 3.313rem);
+    font-weight: 700;
+    color: rgba(196, 196, 196, 0.5);
+    width: auto;
+    height: fit-content;
+    line-height: 1em;
+}
+
+.PlayImage {
+    position: absolute;
+    right: -43%;
+    bottom: 0;
+    height: 100%;
+}
+
+.PlayRemote > img {
+    transform: scaleX(-1);
+    left: -43%;
+}
+
+.PlayRemote {
+    justify-content: end;
+}
+
+.PlayLocal:hover, .PlayRemote:hover {
+    animation: hoverScale 0.4s ease-in-out;
+    transform: scale(1.025, 1.025);
+    filter: drop-shadow(0px 0 0 white);
+}
+
+@media (max-width: 640px) {
+    .FriendContainer {
+        justify-content: start;
+        flex-wrap: unset;
+        align-items: center;
+        flex-direction: column;
+    }
+}
