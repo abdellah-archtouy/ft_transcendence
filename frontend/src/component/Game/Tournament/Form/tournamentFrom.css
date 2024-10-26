@@ -1,0 +1,205 @@
+.AddTournament-formatContainer {
+    max-height: 650px;
+    width: 400px;
+    flex: 1;
+    margin-top: 50px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    background-image: linear-gradient(to top, #000000 20%, transparent 80%), url("../asset/lord4.svg");
+    background-size: cover, 100%; /* Ensure both the image and gradient cover the container */
+    background-position: center, center top; /* Adjust positioning */
+    background-repeat: no-repeat;
+    padding: 50px 30px;
+    box-shadow: 0 0 16px 0 rgb(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.AddTournamament-formheader {
+    display: none;
+}
+
+.AddTournament-form {
+    all: unset;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    width: 100%;
+    justify-content: center;
+    gap: 50px;
+}
+
+.input-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 15px;
+}
+
+.input-container > div {
+    text-align: start;
+    text-indent: 5px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 5px;
+}
+
+.input-container > div > label {
+    color: #E9E5DC;
+    font-size: 16px;
+}
+
+.input-container > div > input {
+    width: 100%;
+    height: fit-content;
+    padding: 11px;
+    border: #5A564D 0.81px solid;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    line-height: 1;
+    color: #5A564D;
+    transition: all 0.4s ease;
+}
+
+.input-container > div > input:focus {
+    border-color: #E9E5DC;
+    color: #E9E5DC;
+    box-shadow: 0 0 8px #b3b3b380;
+}
+
+.submitTournament {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    text-align: start;
+    text-indent: 5px;
+    flex-direction: row;
+    line-height: 1;
+    gap: 20px;
+}
+
+#AddTournament-submit {
+    color: #E9E5DC;
+    width: 100px;
+    height: 30px;
+    font-size: 13px;
+    font-weight: 550;
+    justify-self: flex-end;
+    padding: unset;
+    cursor: pointer;
+    background-color: #000000;
+    border: #5A564D 0.81px solid;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.bgcolor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 30px;
+    width: 100px;
+    background-color: #9f9d99;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+#AddTournament-submit:hover {
+    transform: translateX(-4px) translateY(-4px);
+}
+
+#AddTournament-submit:active {
+    transform: translateX(0px) translateY(0px);
+}
+
+#AddTournament-cancel {
+    --background1: linear-gradient(to left, rgb(116, 116, 116), transparent), linear-gradient(to left, transparent 80%, rgb(116, 116, 116));
+    color: #E9E5DC;
+    width: unset;
+    height: unset;
+    font-size: 15px;
+    font-weight: 550;
+    padding: 5px 12px;
+    line-height: 1;
+    border-radius: 15px;
+    border: #5A564D 0.81px solid;
+    mask-image: var(--background1);
+    mask-size: 200px;
+    mask-position: 0px;
+    cursor: pointer;
+    backdrop-filter: blur(20px);
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    transition: mask-position 0.5s ease, all 0.3s ease-in-out;
+}
+
+#AddTournament-cancel:hover {
+    mask-position: 100px;
+}
+
+#AddTournament-cancel:active {
+    background-color: #9f9d99;
+    color: #000000;
+    mask-image: unset;
+}
+
+@media (max-height: 49vw) {
+
+    .AddTournament-formatContainer {
+        margin-top: 30px;
+    }
+
+    .AddTournamament-header {
+        all: unset;
+        display: none;
+    }
+
+    .AddTournamament-formheader {
+        display: block;
+        font-weight: 550;
+        color: #E9E5DC;
+        width: 100%;
+        text-shadow: 0 0 6px #9E857F;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .AddTournament-container {
+        width: 100%;
+        height: 100%;
+    }
+    .AddTournament-formatContainer {
+        max-height: unset;
+        min-height: 100%;
+        height: fit-content;
+        width: 100%;
+        border-radius: unset;
+        box-shadow: unset;
+        margin: unset;
+        justify-content: unset;
+    }
+
+    .AddTournament-form {
+        margin-top: 100%;
+    }
+
+    .input-container > div { /* hadi hiya lform bdatha */
+        width: 100%;
+    }
+
+    .AddTournamament-formheader {
+        display: block;
+        font-weight: 550;
+        color: #E9E5DC;
+        width: 100%;
+        text-shadow: 0 0 6px #9E857F;
+    }
+}

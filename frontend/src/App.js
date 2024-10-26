@@ -22,8 +22,9 @@ function App() {
   // const [scroll, setScroll] = useState(false);
   const location = useLocation();
   const bgImage = auth && {
-    background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
-  };
+    background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1}) repeat`,
+    backgroundSize: `100%, 500px`,
+};
 
   const souldApplyMargin = location.pathname !== "/chat";
 
@@ -67,7 +68,7 @@ function App() {
     setAuth(true);
   };
 
-  const scroll = location.pathname !== "/" && {
+  const scroll = (location.pathname !== "/" && location.pathname !== "/profile") && {
         height: `100%`
     }
 
@@ -78,7 +79,7 @@ function App() {
       {auth ? (
         <>
           <Navbar />
-          <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
+          <div className="main">
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/game/*" element={<GameRouting />} />

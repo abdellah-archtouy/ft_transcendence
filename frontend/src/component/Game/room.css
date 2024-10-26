@@ -83,9 +83,10 @@
 
 .RoomSecond {
   position: relative;
-  width: clamp(23.438rem, 58.685vw + 9.683rem, 62.5rem);
-  height: clamp(14.625rem, 30.329vw + 7.517rem, 34.813rem);
-  aspect-ratio: 16 / 9;
+  /* width: clamp(23.438rem, 58.685vw + 9.683rem, 62.5rem); */
+  /* height: clamp(14.625rem, 30.329vw + 7.517rem, 34.813rem); */
+  height: 40vh;
+  aspect-ratio: 23438 / 14625;
 }
 
 #Rcanvas {

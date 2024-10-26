@@ -122,8 +122,8 @@ def join_remote_room(instance, rooms):
                 if time_diff <= timedelta(seconds=10):
                     room.assign_user(instance.user_id)
                     return room_name
-                else:
-                    return
+                # else:
+                #     return
 
     for room_name, room in rooms.items():
         if room.type == "Remote":
@@ -146,7 +146,8 @@ def join_local_room(instance, rooms):
         new_room_name = f'room_{room_naming(rooms)}'
         new_room = Room()
         new_room.type = instance.gamemode # here i assign the room mode
-        new_room.assign_user(instance.user_id)
+        if instance.gamemode != "Local":
+            new_room.assign_user(instance.user_id)
         rooms[new_room_name] = new_room
         instance.room_group_name = new_room_name
         return new_room_name
@@ -154,7 +155,7 @@ def join_local_room(instance, rooms):
         print(f"Error in join Local or Bot: {e}")
 
 def join_room(gameconsumer, rooms):
-    if gameconsumer.gamemode == "bot" or gameconsumer.gamemode == "Local":
+    if gameconsumer.gamemode != "Remote":
         room_name = join_local_room(gameconsumer, rooms)
     else:
         room_name = join_remote_room(gameconsumer, rooms)

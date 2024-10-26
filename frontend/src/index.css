@@ -38,8 +38,16 @@ body {
 .main {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Ensures it takes up the remaining height */
+  flex: 1;
   width: 100%;
+  margin-bottom: clamp(6.875rem, 4.688vw + 5rem, 12.5rem); 
+  /*
+    i add the margin bottom here because we wanna avoid hard coding in the app.js
+    and to deal with the margin-bottom in your page you must add this rule of css before start styling
+    .main:has(.your-container-name) {
+      margin-bottom = 0; here you override that rule and give it 0
+    }
+  */
 }
 
 .fixed-height {

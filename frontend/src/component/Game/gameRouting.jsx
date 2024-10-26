@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Tournament from "./tournament";
+import Tournament from "./Tournament/tournament";
+import TournamentLocal from "./Tournament/Local/tournamentLocal";
 import Friend from "./Friend/friend";
 import Remote from "./Friend/remote";
 import LocalGame from "./Friend/local"
@@ -15,6 +16,7 @@ function gameRouting() {
         <Route path="bot" element={<Bot />} />
         <Route path="gamemode" element={<GameMode />} />
         <Route path="tournament" element={<Tournament />} />
+        <Route path="tournament/local" element={<TournamentLocal />} />
         <Route path="friend" element={<Friend />} />
         <Route path="friend/remote" element={<Remote />} />
         <Route path="friend/local" element={<LocalGame />} />

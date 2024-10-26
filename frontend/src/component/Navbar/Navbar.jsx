@@ -69,11 +69,14 @@ const Navbar = () => {
       const navItems = document.querySelectorAll(".nav ul li");
       const itemOffsetLeft = navItems[Index.index].offsetLeft;
       const itemOffsetTop = navItems[Index.index].offsetTop;
-      navItems[Index.index].classList.add("active")
+      navItems[Index.index].classList.add("active");
       const coloredDiv = document.querySelector(".items");
+      let colorDivOffsetTop = coloredDiv.offsetTop
+      if (navDisplay)
+        colorDivOffsetTop = itemOffsetTop;
       coloredDiv.style.transform = `translateX(${
         itemOffsetLeft - coloredDiv.offsetLeft
-      }px) translateY(${itemOffsetTop - coloredDiv.offsetTop}px)`;
+      }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
     }
   }, [location.pathname]);
 

@@ -17,6 +17,7 @@ class Room():
         self.type = None
         self.created_at = datetime.now()
         self.end = None
+        self.keep_updating = False
         # reconnection attributes
         self.tmp_uid = None
         self.disconnected_at = None

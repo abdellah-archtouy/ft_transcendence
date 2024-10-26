@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import LoadingPage from "../loadingPage/loadingPage";
 import axios from "axios";
+import LoadingPage from "../loadingPage/loadingPage";
 import "./room.css";
 import { useNavigate } from "react-router-dom";
 
@@ -35,8 +35,7 @@ let WSocket;
 let gamemode = null;
 let modedata = null;
 
-const Room = ({ data, mode }) => {
-
+const TournamentRoom = ({ theWinner, data, mode }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [roomData, setRoomData] = useState(null);
@@ -50,8 +49,7 @@ const Room = ({ data, mode }) => {
 
   if (mode) gamemode = mode;
 
-  if (data)
-      modedata = data;
+  if (data) modedata = data;
 
   const host = process.env.REACT_APP_API_HOSTNAME;
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -80,37 +78,34 @@ const Room = ({ data, mode }) => {
   };
 
   function buttonMovement(event) {
-    if (event === "KeyW")
-      {
-        WSocket?.send(
-          JSON.stringify({
-            type: "keypress",
-            key: "KeyW",
-          })
-        );
-      }
-    if (event === "KeyS")
-      {
-        WSocket?.send(
-          JSON.stringify({
-            type: "keypress",
-            key: "KeyS",
-          })
-        );
-      }
-    if (event === "Down")
-      {
-        WSocket?.send(
-          JSON.stringify({
-            type: "keydown",
-            key: "KeyS",
-          })
-        );
-      }
+    if (event === "KeyW") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keypress",
+          key: "KeyW",
+        })
+      );
+    }
+    if (event === "KeyS") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keypress",
+          key: "KeyS",
+        })
+      );
+    }
+    if (event === "Down") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keydown",
+          key: "KeyS",
+        })
+      );
+    }
   }
 
   function movePlayer(e) {
-    if (e.code === "KeyW" || e.code === "ArrowUp") {
+    if (e.code === "KeyW") {
       WSocket?.send(
         JSON.stringify({
           type: "keypress",
@@ -118,7 +113,23 @@ const Room = ({ data, mode }) => {
         })
       );
     }
-    if (e.code === "KeyS" || e.code === "ArrowDown") {
+    if (e.code === "KeyS") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keypress",
+          key: e.code,
+        })
+      );
+    }
+    if (e.code === "ArrowUp") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keypress",
+          key: e.code,
+        })
+      );
+    }
+    if (e.code === "ArrowDown") {
       WSocket?.send(
         JSON.stringify({
           type: "keypress",
@@ -203,48 +214,50 @@ const Room = ({ data, mode }) => {
     Board.width = boardWidth;
   }
 
-  let leftPaddleRef = useRef()
-  let rightPaddleRef = useRef()
+  let leftPaddleRef = useRef();
+  let rightPaddleRef = useRef();
 
   const handleLeftPaddleMouseDown = () => {
     if (leftPaddleRef.current && !pause && !winner) {
-      leftPaddleRef.current.classList.add('active');
-      buttonMovement("KeyW")
+      leftPaddleRef.current.classList.add("active");
+      buttonMovement("KeyW");
     }
   };
-  
+
   const handleLeftPaddleMouseUp = () => {
     if (leftPaddleRef.current && !pause && !winner) {
-      leftPaddleRef.current.classList.remove('active');
-      buttonMovement("Down")
+      leftPaddleRef.current.classList.remove("active");
+      buttonMovement("Down");
     }
   };
 
   const handleRightPaddleMouseDown = () => {
     if (rightPaddleRef.current && !pause && !winner) {
-      rightPaddleRef.current.classList.add('active');
-      buttonMovement("KeyS")
+      rightPaddleRef.current.classList.add("active");
+      buttonMovement("KeyS");
     }
   };
-  
+
   const handleRightPaddleMouseUp = () => {
     if (rightPaddleRef.current && !pause && !winner) {
-      rightPaddleRef.current.classList.remove('active');
-      buttonMovement("Down")
+      rightPaddleRef.current.classList.remove("active");
+      buttonMovement("Down");
     }
   };
 
   function getWSUrl() {
-    if (!modedata)
-      return  `ws://${host}:8000/ws/game/${gamemode}/${userData.id}`;
-    else
-      return `ws://${host}:8000/ws/game/${gamemode}/${modedata}/${userData.id}`;
+    if (modedata.length === 2) {
+      let username1 = modedata[0];
+      let username2 = modedata[1];
+      return `ws://${host}:8000/ws/game/Local/${username1}/${username2}`;
+    } else return null;
   }
-  
+
   useEffect(() => {
     if (!userData) return;
     const url = getWSUrl();
-    console.log(url)
+    if (!url) return;
+    console.log(url);
     WSocket = new WebSocket(url);
 
     WSocket.onopen = () => {
@@ -284,17 +297,11 @@ const Room = ({ data, mode }) => {
           obj = [{ ...tmp?.user1 }, { ...tmp?.user2 }];
         return obj;
       });
+      if (mode === "TournamentLocal" && tmp?.winner)
+        theWinner(tmp?.winner);
       setWinner(() => {
         return tmp?.winner;
       });
-      if (tmp?.stat === "close") {
-        navigate(-1);
-      }
-      // if (tmp?.stat === "wait")
-      //     console.log("hna hna");
-      tmp?.stat === "countdown"
-        ? setCountDown(tmp?.value)
-        : setCountDown(() => 0);
     };
 
     WSocket.onerror = (error) => {
@@ -314,25 +321,22 @@ const Room = ({ data, mode }) => {
     /**************************************/
     /*     hna  remote game katbda        */
     /**************************************/
-    
+
     const fetchUserData = async () => {
       try {
         const access = localStorage.getItem("access");
-        
-        const response = await axios.get(
-          `${apiUrl}/api/users/profile/`,
-          {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          }
-        );
+
+        const response = await axios.get(`${apiUrl}/api/users/profile/`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
         setUserData(response.data);
       } catch (error) {
         handleFetchError(error);
       }
     };
-    
+
     const handleFetchError = (error) => {
       if (error.response) {
         if (error.response.status === 401) {
@@ -350,7 +354,9 @@ const Room = ({ data, mode }) => {
                 localStorage.removeItem("access");
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
-                console.log({ general: "Session expired. Please log in again." });
+                console.log({
+                  general: "Session expired. Please log in again.",
+                });
                 // refreh the page
                 window.location.reload();
                 navigate("/");
@@ -369,7 +375,7 @@ const Room = ({ data, mode }) => {
         });
       }
     };
-    
+
     fetchUserData();
   }, []);
 
@@ -461,7 +467,6 @@ const Room = ({ data, mode }) => {
         </div>
       </div>
       <div className="RoomSecond">
-        {/* {countDown > 0 && <div>{countDown}</div>} */}
         {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>
@@ -494,7 +499,7 @@ const Room = ({ data, mode }) => {
             <img src={ima} alt="" className="pauseIcons" />
           </button>
         )}
-        {pause && gamemode !== "Remote" && (
+        {pause && (
           <button
             className="pause"
             title="pause"
@@ -508,27 +513,27 @@ const Room = ({ data, mode }) => {
       </div>
       <div className="mobilebuttons">
         <button
-                ref={leftPaddleRef}
-                className="leftPaddle"
-                onTouchStart={handleLeftPaddleMouseDown}
-                onTouchEnd={handleLeftPaddleMouseUp}
-                onMouseDown={handleLeftPaddleMouseDown}
-                onMouseUp={handleLeftPaddleMouseUp}
-                >
+          ref={leftPaddleRef}
+          className="leftPaddle"
+          onTouchStart={handleLeftPaddleMouseDown}
+          onTouchEnd={handleLeftPaddleMouseUp}
+          onMouseDown={handleLeftPaddleMouseDown}
+          onMouseUp={handleLeftPaddleMouseUp}
+        >
           <img
             src="/GameMobileButton.svg"
             alt=""
             className="GameMobileButton"
-            />
+          />
         </button>
         <button
-                ref={rightPaddleRef}
-                className="rightPaddle"
-                onTouchStart={handleRightPaddleMouseDown}
-                onTouchEnd={handleRightPaddleMouseUp}
-                onMouseDown={handleRightPaddleMouseDown}
-                onMouseUp={handleRightPaddleMouseUp}
-                >
+          ref={rightPaddleRef}
+          className="rightPaddle"
+          onTouchStart={handleRightPaddleMouseDown}
+          onTouchEnd={handleRightPaddleMouseUp}
+          onMouseDown={handleRightPaddleMouseDown}
+          onMouseUp={handleRightPaddleMouseUp}
+        >
           <img
             src="/GameMobileButton.svg"
             alt=""
@@ -540,4 +545,4 @@ const Room = ({ data, mode }) => {
   );
 };
 
-export default Room;
+export default TournamentRoom;
