@@ -50,7 +50,7 @@ const Room = ({ data, mode }) => {
 
   if (mode) gamemode = mode;
 
-  if (data)
+  if (data !== undefined)
       modedata = data;
 
   const host = process.env.REACT_APP_API_HOSTNAME;
@@ -235,10 +235,11 @@ const Room = ({ data, mode }) => {
   };
 
   function getWSUrl() {
+    console.log(modedata)
     if (!modedata)
-      return  `ws://${host}:8000/ws/game/${gamemode}/${userData.id}`;
+      return  `ws://${host}:8000/ws/game/Remote/${userData.id}`;
     else
-      return `ws://${host}:8000/ws/game/${gamemode}/${modedata}/${userData.id}`;
+      return `ws://${host}:8000/ws/game/bot/${modedata}/${userData.id}`;
   }
   
   useEffect(() => {
@@ -442,13 +443,13 @@ const Room = ({ data, mode }) => {
             />
           </div>
           <div className="Roominfos">
-            <span id="infosHeader">{user?.[0]?.username.substring(0, 9)}</span>
+            <span id="infosHeader">{user?.[0]?.username?.substring(0, 9)}</span>
             <span id="infostext">{user?.[0]?.goals}</span>
           </div>
         </div>
         <div className="enemyinfo">
           <div className="Roominfos">
-            <span id="infosHeader">{user?.[1]?.username.substring(0, 9)}</span>
+            <span id="infosHeader">{user?.[1]?.username?.substring(0, 9)}</span>
             <span id="infostext">{user?.[1]?.goals}</span>
           </div>
           <div className="image">

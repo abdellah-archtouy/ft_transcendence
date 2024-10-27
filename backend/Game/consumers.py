@@ -64,6 +64,8 @@ class RoomManager():
     def __init__(self):
         self.rooms = {}
         self.lock = None
+        self.user1 = None
+        self.user2 = None
     
     async def get_lock(self):
         if self.lock is None:
@@ -110,15 +112,15 @@ class RoomManager():
                 print(f"remove_user_room: {e}")
 
     async def assign_users_info(self, ConsumerObj):
-        room = self.rooms.get(ConsumerObj.room_group_name)
-        self.user1 = await get_user_from_db(room.uid1)
-        if ConsumerObj.gamemode == "Remote":
-            self.user2 = await get_user_from_db(room.uid2)
-        if ConsumerObj.gamemode == "bot":
-            self.user2 = create_local_info("Bot")
-        if ConsumerObj.gamemode == "Local":
-            self.user1 = create_local_info("Left")
-            self.user2 = create_local_info("Right")
+        try:
+            room = self.rooms.get(ConsumerObj.room_group_name)
+            self.user1 = await get_user_from_db(room.uid1)
+            if ConsumerObj.gamemode == "Remote":
+                self.user2 = await get_user_from_db(room.uid2)
+            else:
+                self.user2 = create_local_info("Bot")
+        except Exception as e:
+            print(f"assign_users_info: {e}")
 
     async def start_periodic_updates(self, ConsumerObj):
         room = self.rooms.get(ConsumerObj.room_group_name)
@@ -126,7 +128,7 @@ class RoomManager():
             await self.assign_users_info(ConsumerObj)
             room.keep_updating = True
             self.update_thread = asyncio.ensure_future(self.send_periodic_updates(ConsumerObj))
-        elif room.type != "Remote":
+        elif room.type == "bot":
             await self.assign_users_info(ConsumerObj)
             room.keep_updating = True
             self.update_thread = asyncio.ensure_future(self.send_periodic_updates(ConsumerObj))
@@ -210,10 +212,17 @@ room_manager = RoomManager()
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         try:
-            self.user_id = self.scope['url_route']['kwargs'].get('uid')
-            self.gamemode = self.scope['url_route']['kwargs'].get('gamemode')
-            if self.gamemode == "bot":
+            path = self.scope['path']
+            if 'ws/game/Remote' in path:
+                self.gamemode = "Remote"
+            elif 'ws/game/bot' in path:
+                self.gamemode = "bot"
                 self.botmode = self.scope['url_route']['kwargs'].get('botmode')
+            else:
+                # Invalid game mode
+                await self.close()
+                return
+            self.user_id = self.scope['url_route']['kwargs']['uid']
             self.channel_name = self.channel_name
             self.room_group_name = await room_manager.join_or_create_room(self)
             await room_manager.start_periodic_updates(self)
@@ -233,26 +242,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         await room_manager.remove_user_room(self)
         self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-    def move_players(self, room, key):
-        paddle = None
-        if room.type == "Remote" or room.type == "bot":
-            paddle = room.get_paddle_by_user(self.user_id)
-            speed = paddle.speed
-            if key == "KeyW" or key == "ArrowUp":
-                paddle.set_Player_attribute("velocityY", -5 * speed)
-            if key == "KeyS" or key == "ArrowDown":
-                paddle.set_Player_attribute("velocityY", 5 * speed)
-        else:
-            if key == "KeyW":
-                room.leftPaddle.set_Player_attribute("velocityY", -5)
-            if key == "KeyS":
-                room.leftPaddle.set_Player_attribute("velocityY", 5)
-            if key == "ArrowUp":
-                room.rightPaddle.set_Player_attribute("velocityY", -5)
-            if key == "ArrowDown":
-                room.rightPaddle.set_Player_attribute("velocityY", 5)
-
-
     async def receive(self, text_data):
         data = json.loads(text_data)
         room = room_manager.get_room(self.room_group_name)
@@ -263,7 +252,12 @@ class GameConsumer(AsyncWebsocketConsumer):
         key = data.get('key')
 
         if action_type == 'keypress':
-            self.move_players(room, key)
+            paddle = room.get_paddle_by_user(self.user_id)
+            speed = paddle.speed
+            if key == "KeyW" or key == "ArrowUp":
+                paddle.set_Player_attribute("velocityY", -5 * speed)
+            if key == "KeyS" or key == "ArrowDown":
+                paddle.set_Player_attribute("velocityY", 5 * speed)
             if key == 'Space':
                 if room.room_paused:
                     room.room_resume()
@@ -276,8 +270,3 @@ class GameConsumer(AsyncWebsocketConsumer):
             if room.type == "Remote" or room.type == "bot":
                 paddle = room.get_paddle_by_user(self.user_id)
                 paddle.set_Player_attribute("velocityY", 0)
-            else:
-                if key == "KeyW" or key == "KeyS":
-                    room.leftPaddle.set_Player_attribute("velocityY", 0)
-                if key == "ArrowUp" or key == "ArrowDown":
-                    room.rightPaddle.set_Player_attribute("velocityY", 0)

@@ -1,12 +1,17 @@
+.main:has(.RoomContainer) {
+  margin-bottom: 0px;
+}
+
 .RoomContainer {
   height: 100%;
   width: 100%;
-  flex: 1;
+  /* flex: 1; */
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 2vh;
-  margin-top: 2vh;
+  /* margin-top: 2vh; */
+  padding: clamp(0.625rem, 6.163vw - 0.82rem, 3.125rem) 0px;
 }
 
 .mobilebuttons {
@@ -85,8 +90,12 @@
   position: relative;
   /* width: clamp(23.438rem, 58.685vw + 9.683rem, 62.5rem); */
   /* height: clamp(14.625rem, 30.329vw + 7.517rem, 34.813rem); */
+  --scale: 1;
+  --rotate: 0deg;
+  transform: rotate(var(--rotate)) scale(var(--scale));
   height: 40vh;
-  aspect-ratio: 23438 / 14625;
+  max-height: 557px;
+  aspect-ratio: 16 / 9;
 }
 
 #Rcanvas {
@@ -227,9 +236,10 @@
   animation: vibrate 1s ease-in;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1024px) and (min-height: 620px) {
   .RoomContainer {
     justify-content: space-between;
+    
   }
 
   .RoomSecond {
@@ -243,11 +253,12 @@
     width: 40%;
     justify-content: space-between;
     user-select: none;
+    padding: 20px 0;
   }
 
-  .mobilebuttons > button.active {
+  .mobilebuttons > button:active {
     transform: translateY(0px) rotate(45deg);
-    box-shadow: 5px 5px 0px 0px #7c7c7c;
+    box-shadow: none;
   }
 
   .mobilebuttons > button {
@@ -281,42 +292,54 @@
 }
 
 @media (max-width: 640px) {
-  .RoomSecond {
-    margin-top: auto;
-    order: 3;
-    transform: rotate(-90deg);
+  .RoomContainer{
+    justify-content: space-around;
+    gap: 30px;
   }
-
+  
+  .RoomSecond {
+    --scale: 0.8;
+    --rotate: -90deg;
+    order: 3;
+    margin: auto 0px;
+  }
+  
   .RoomSecond > div > p {
     transform: rotate(90deg);
   }
-
+  
   .buttons {
     order: 0;
   }
   
   .mobilebuttons {
     width: 50%;
-    margin-top: auto;
-    /* transform: translateY(-10px); */
   }
   
   .mobilebuttons > button {
     height: 50px;
     width: 50px;
   }
-
+  
   .rightPaddle > img {
     transform: rotate(225deg);
   }
-
+  
   .leftPaddle > img {
     transform: rotate(45deg);
   }
 }
 
-@media (max-width: 550px) and (max-height: 720px) {
+@media (max-height: 720px) {
+  
   .RoomSecond {
-    transform: rotate(-90deg) scale(0.7);
+    --scale: 0.7;
+  }
+}
+
+@media (min-height: 880px) and (max-width: 1024px) {
+  
+  .RoomSecond {
+    --scale: 0.9;
   }
 }

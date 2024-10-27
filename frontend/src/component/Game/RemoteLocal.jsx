@@ -20,7 +20,7 @@ const RemoteLocal = ({header, links}) => {
           <div
             className="PlayLocal"
             onClick={() => {
-              navigate(links[0]); //"/game/friend/local"
+              navigate(links[0]);
             }}
           >
             <img src={FriendVector} alt="" className="PlayImage" />
@@ -31,7 +31,7 @@ const RemoteLocal = ({header, links}) => {
           <div
             className="PlayRemote"
             onClick={() => {
-              navigate(links[1]); //"/game/friend/local"
+              navigate(links[1]);
             }}
           >
             <img src={FriendVector} alt="" className="PlayImage" />

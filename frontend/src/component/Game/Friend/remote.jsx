@@ -6,9 +6,9 @@ const Remote = () => {
   const [roomData] = useState("Remote");
   if (!roomData) return <LoadingPage />
   return (
-    <div>
+    <>
       <Room mode={roomData}/>
-    </div>
+    </>
   );
 };
 

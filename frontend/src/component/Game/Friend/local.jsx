@@ -7,9 +7,9 @@ const Remote = () => {
   const [roomData] = useState("Local");
   if (!roomData) return <LoadingPage />
   return (
-    <div>
+    <>
       <LocalRoom data={["Left", "Right"]} mode={roomData}/>
-    </div>
+    </>
   );
 };
 
