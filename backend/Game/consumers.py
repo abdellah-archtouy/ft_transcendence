@@ -137,7 +137,7 @@ class RoomManager():
         try:
             room = self.rooms.get(ConsumerObj.room_group_name)
             if room:
-                broadcast(ConsumerObj, room, "countdown", 10)
+                await broadcast(ConsumerObj, room, "countdown", 10)
                 while room and room.howManyUser() == 1:
                     if room:
                         now = datetime.now()
@@ -150,9 +150,30 @@ class RoomManager():
                     await asyncio.sleep(1)
         except Exception as e:
             print(f"check_time{e}")
+        
+    async def start_game(self, ConsumerObj):
+        room = self.rooms[ConsumerObj.room_group_name]
+        if room.keep_updating:
+            await ConsumerObj.channel_layer.group_send(
+                    ConsumerObj.room_group_name,
+                    {
+                        'type': 'chat_message',
+                        'winner': room.winner,
+                        'user1': self.user1,
+                        'user2': self.user2,
+                        'ballInfo': room.ball.attributes,
+                        'rightPaddle': room.rightPaddle.attributes,
+                        'leftPaddle': room.leftPaddle.attributes,
+                        'room_paused': room.room_paused,
+                        "stat": "countdown",
+                        'value': 3
+                    }
+                )
+        await asyncio.sleep(3)
 
     async def send_periodic_updates(self, ConsumerObj):
         room = self.rooms[ConsumerObj.room_group_name]
+        await self.start_game(ConsumerObj)
         while room and room.keep_updating and not room.winner:
             if room:
                 await start(room, self.user1, self.user2)
@@ -240,7 +261,10 @@ class GameConsumer(AsyncWebsocketConsumer):
     
     async def disconnect(self, code):
         await room_manager.remove_user_room(self)
-        self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
 
     async def receive(self, text_data):
         data = json.loads(text_data)

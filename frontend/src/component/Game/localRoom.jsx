@@ -77,32 +77,32 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
     ctx.fill();
   };
 
-  function buttonMovement(event) {
-    if (event === "KeyW") {
-      WSocket?.send(
-        JSON.stringify({
-          type: "keypress",
-          key: "KeyW",
-        })
-      );
-    }
-    if (event === "KeyS") {
-      WSocket?.send(
-        JSON.stringify({
-          type: "keypress",
-          key: "KeyS",
-        })
-      );
-    }
-    if (event === "Down") {
-      WSocket?.send(
-        JSON.stringify({
-          type: "keydown",
-          key: "KeyS",
-        })
-      );
-    }
-  }
+  // function buttonMovement(event) {
+  //   if (event === "KeyW") {
+  //     WSocket?.send(
+  //       JSON.stringify({
+  //         type: "keypress",
+  //         key: "KeyW",
+  //       })
+  //     );
+  //   }
+  //   if (event === "KeyS") {
+  //     WSocket?.send(
+  //       JSON.stringify({
+  //         type: "keypress",
+  //         key: "KeyS",
+  //       })
+  //     );
+  //   }
+  //   if (event === "Down") {
+  //     WSocket?.send(
+  //       JSON.stringify({
+  //         type: "keydown",
+  //         key: "KeyS",
+  //       })
+  //     );
+  //   }
+  // }
 
   function movePlayer(e) {
     if (e.code === "KeyW") {
@@ -214,36 +214,36 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
     Board.width = boardWidth;
   }
 
-  let leftPaddleRef = useRef();
-  let rightPaddleRef = useRef();
+  // let leftPaddleRef = useRef();
+  // let rightPaddleRef = useRef();
 
-  const handleLeftPaddleMouseDown = () => {
-    if (leftPaddleRef.current && !pause && !winner) {
-      leftPaddleRef.current.classList.add("active");
-      buttonMovement("KeyW");
-    }
-  };
+  // const handleLeftPaddleMouseDown = () => {
+  //   if (leftPaddleRef.current && !pause && !winner) {
+  //     leftPaddleRef.current.classList.add("active");
+  //     buttonMovement("KeyW");
+  //   }
+  // };
 
-  const handleLeftPaddleMouseUp = () => {
-    if (leftPaddleRef.current && !pause && !winner) {
-      leftPaddleRef.current.classList.remove("active");
-      buttonMovement("Down");
-    }
-  };
+  // const handleLeftPaddleMouseUp = () => {
+  //   if (leftPaddleRef.current && !pause && !winner) {
+  //     leftPaddleRef.current.classList.remove("active");
+  //     buttonMovement("Down");
+  //   }
+  // };
 
-  const handleRightPaddleMouseDown = () => {
-    if (rightPaddleRef.current && !pause && !winner) {
-      rightPaddleRef.current.classList.add("active");
-      buttonMovement("KeyS");
-    }
-  };
+  // const handleRightPaddleMouseDown = () => {
+  //   if (rightPaddleRef.current && !pause && !winner) {
+  //     rightPaddleRef.current.classList.add("active");
+  //     buttonMovement("KeyS");
+  //   }
+  // };
 
-  const handleRightPaddleMouseUp = () => {
-    if (rightPaddleRef.current && !pause && !winner) {
-      rightPaddleRef.current.classList.remove("active");
-      buttonMovement("Down");
-    }
-  };
+  // const handleRightPaddleMouseUp = () => {
+  //   if (rightPaddleRef.current && !pause && !winner) {
+  //     rightPaddleRef.current.classList.remove("active");
+  //     buttonMovement("Down");
+  //   }
+  // };
 
   function getWSUrl() {
     if (modedata.length === 2) {
@@ -254,11 +254,10 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
   }
 
   useEffect(() => {
-    if (!userData) return;
     const url = getWSUrl();
     if (!url) return;
-    console.log(url);
     WSocket = new WebSocket(url);
+    console.log(WSocket)
 
     WSocket.onopen = () => {
       console.log("WebSocket connection established");
@@ -316,68 +315,6 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
       WSocket.close();
     };
   }, [userData, navigate]);
-
-  useEffect(() => {
-    /**************************************/
-    /*     hna  remote game katbda        */
-    /**************************************/
-
-    const fetchUserData = async () => {
-      try {
-        const access = localStorage.getItem("access");
-
-        const response = await axios.get(`${apiUrl}/api/users/profile/`, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
-        setUserData(response.data);
-      } catch (error) {
-        handleFetchError(error);
-      }
-    };
-
-    const handleFetchError = (error) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          const refresh = localStorage.getItem("refresh");
-
-          if (refresh) {
-            axios
-              .post(`${apiUrl}/api/token/refresh/`, { refresh })
-              .then((refreshResponse) => {
-                const { access: newAccess } = refreshResponse.data;
-                localStorage.setItem("access", newAccess);
-                fetchUserData(); // Retry fetching user data
-              })
-              .catch((refreshError) => {
-                localStorage.removeItem("access");
-                localStorage.removeItem("refresh");
-                console.log("you have captured the error");
-                console.log({
-                  general: "Session expired. Please log in again.",
-                });
-                // refreh the page
-                window.location.reload();
-                navigate("/");
-              });
-          } else {
-            console.log({
-              general: "No refresh token available. Please log in.",
-            });
-          }
-        } else {
-          console.log({ general: "Error fetching data. Please try again." });
-        }
-      } else {
-        console.log({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    };
-
-    fetchUserData();
-  }, []);
 
   useEffect(() => {
     if (!pause) {
@@ -511,7 +448,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
           </button>
         )}
       </div>
-      <div className="mobilebuttons">
+      {/* <div className="mobilebuttons">
         <button
           ref={leftPaddleRef}
           className="leftPaddle"
@@ -540,7 +477,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
             className="GameMobileButton"
           />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

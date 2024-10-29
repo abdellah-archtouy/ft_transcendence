@@ -39,7 +39,6 @@ const Room = ({ data, mode }) => {
 
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [roomData, setRoomData] = useState(null);
   const [canvas, setCanvas] = useState(false);
   const [countDown, setCountDown] = useState(0);
   const [vsDisplay, setVsDisplay] = useState([]);
@@ -52,6 +51,8 @@ const Room = ({ data, mode }) => {
 
   if (data !== undefined)
       modedata = data;
+    else
+      modedata = null;
 
   const host = process.env.REACT_APP_API_HOSTNAME;
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -235,8 +236,7 @@ const Room = ({ data, mode }) => {
   };
 
   function getWSUrl() {
-    console.log(modedata)
-    if (!modedata)
+    if (gamemode === "Remote")
       return  `ws://${host}:8000/ws/game/Remote/${userData.id}`;
     else
       return `ws://${host}:8000/ws/game/bot/${modedata}/${userData.id}`;
@@ -245,9 +245,8 @@ const Room = ({ data, mode }) => {
   useEffect(() => {
     if (!userData) return;
     const url = getWSUrl();
-    console.log(url)
     WSocket = new WebSocket(url);
-
+    
     WSocket.onopen = () => {
       console.log("WebSocket connection established");
     };
@@ -268,9 +267,6 @@ const Room = ({ data, mode }) => {
       if (compaireObjects(tmp?.leftPaddle, player1)) player1 = tmp?.leftPaddle;
       if (compaireObjects(tmp?.rightPaddle, player2))
         player2 = tmp?.rightPaddle;
-      setRoomData(() => {
-        return tmp;
-      });
       setPause(() => {
         return tmp?.room_paused;
       });
@@ -282,7 +278,9 @@ const Room = ({ data, mode }) => {
             (compaireObjects(tmp?.user1, obj[0]) ||
               compaireObjects(tmp?.user2, obj[1])))
         )
+        {
           obj = [{ ...tmp?.user1 }, { ...tmp?.user2 }];
+        }
         return obj;
       });
       setWinner(() => {
@@ -291,8 +289,6 @@ const Room = ({ data, mode }) => {
       if (tmp?.stat === "close") {
         navigate(-1);
       }
-      // if (tmp?.stat === "wait")
-      //     console.log("hna hna");
       tmp?.stat === "countdown"
         ? setCountDown(tmp?.value)
         : setCountDown(() => 0);
@@ -430,7 +426,7 @@ const Room = ({ data, mode }) => {
     }, 1000);
   }, [countDown]);
 
-  if (!roomData) return <LoadingPage />;
+  if (!user || !user?.[0]) return <LoadingPage />;
   return (
     <div className="RoomContainer">
       <div className="RoomFirst">
@@ -462,7 +458,7 @@ const Room = ({ data, mode }) => {
         </div>
       </div>
       <div className="RoomSecond">
-        {/* {countDown > 0 && <div>{countDown}</div>} */}
+        {countDown > 0 && <div className="RoomCountDown">{countDown}</div>}
         {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>

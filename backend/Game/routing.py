@@ -1,6 +1,5 @@
 from django.urls import re_path, path
-from . import consumers
-from . import local_consumer
+from . import consumers, local_consumer
 
 websocket_urlpatterns = [
     re_path(r'ws/game/Local/(?P<username1>[\w\-\.]+)/(?P<username2>[\w\-\.]+)/?$', local_consumer.LocalConsumer.as_asgi()),

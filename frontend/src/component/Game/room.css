@@ -152,7 +152,7 @@
   justify-content: center;
   border-radius: 10px;
   transition: all 0.4s;
-  animation: pause 0.4s ease-in;
+  animation: fade-in 0.4s ease-in;
   backdrop-filter: blur(10px);
   background-color: #222222ac;
   border: solid #525252;
@@ -172,7 +172,7 @@
   gap: 20px;
   border-radius: 10px;
   transition: all 0.4s;
-  animation: pause 0.4s ease-in;
+  animation: fade-in 0.4s ease-in;
   backdrop-filter: blur(10px);
   background-color: #222222ac;
   border: solid #525252;
@@ -180,7 +180,19 @@
 }
 
 .win {
-  animation: pause 0.4s ease-in;
+  animation: fade-in 0.4s ease-in;
+}
+
+.RoomCountDown {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border: solid;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
 
 @keyframes win {
@@ -206,6 +218,7 @@
     opacity: 1;
   }
 }
+
 .pauseDisplay p {
   text-shadow: 0px 0px 10px #b2b2b2;
   animation: textanimation 4s ease-in infinite;

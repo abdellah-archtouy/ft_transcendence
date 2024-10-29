@@ -2,8 +2,6 @@ import traceback, asyncio, json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .common_functions import start, join_room
 
-# local_rooms = {}
-
 def create_local_info(username: str) -> dict:
     local_info = {
         "username": username,
@@ -19,19 +17,28 @@ class LocalRoomManager():
         self.user1 = None
         self.user2 = None
     
-    def join_Local_room(self, LocalConsumer):
-        name = join_room(LocalConsumer, self.rooms)
-        return name
+    async def join_Local_room(self, LocalConsumer):
+        lock = await self.get_lock()
+        async with lock:
+            name = join_room(LocalConsumer, self.rooms)
+            return name
 
-    def remove_room(self, LocalConsumer):
-        try:
-            room = self.rooms.get(LocalConsumer.room_group_name)
-            if room:
-                del self.rooms[LocalConsumer.room_group_name]
-                LocalConsumer.channel_layer.group_discard(LocalConsumer.room_group_name, LocalConsumer.channel_name)
-                room.keep_updating = False
-        except Exception as e:
-            print(f"remove_name: {e}")
+    async def get_lock(self):
+        if self.lock is None:
+            self.lock = asyncio.Lock()
+        return self.lock
+
+    async def remove_room(self, LocalConsumer):
+        lock = await self.get_lock()
+        async with lock:
+            try:
+                room = self.rooms.get(LocalConsumer.room_group_name)
+                if room:
+                    del self.rooms[LocalConsumer.room_group_name]
+                    LocalConsumer.channel_layer.group_discard(LocalConsumer.room_group_name, LocalConsumer.channel_name)
+                    room.keep_updating = False
+            except Exception as e:
+                print(f"remove_name: {e}")
 
     async def assign_users_info(self, LocalConsumer):
         LocalConsumer.user1 = create_local_info(LocalConsumer.username1)
@@ -70,12 +77,12 @@ room_ma = LocalRoomManager()
 class LocalConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         try:
-            self.user_id = None
+            # self.user_id = None
             self.username1 = self.scope['url_route']['kwargs'].get('username1')
             self.username2 = self.scope['url_route']['kwargs'].get('username2')
             self.gamemode = "Local"
             self.channel_name = self.channel_name
-            self.room_group_name = room_ma.join_Local_room(self)
+            self.room_group_name = await room_ma.join_Local_room(self)
             await room_ma.start_periodic_updates(self)
             await self.channel_layer.group_add(
                 self.room_group_name,
@@ -126,6 +133,6 @@ class LocalConsumer(AsyncWebsocketConsumer):
     
     async def disconnect(self, code):
         try:
-            room_ma.remove_room(self)
+            await room_ma.remove_room(self)
         except Exception as e:
             print(f"disconnect: {e}")

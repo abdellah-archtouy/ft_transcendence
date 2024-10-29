@@ -114,23 +114,24 @@ def room_naming(rooms):
     return missed
 
 def join_remote_room(instance, rooms):
-    for room_name, room in rooms.items():
-        if room.type == "Remote":
-            if room.tmp_uid == instance.user_id:
-                now = datetime.now()
-                time_diff = now - room.disconnected_at  # Calculate time difference since disconnection
-                if time_diff <= timedelta(seconds=10):
-                    room.assign_user(instance.user_id)
-                    return room_name
-                # else:
-                #     return
+    if instance.gamemode == "Remote":
+        for room_name, room in rooms.items():
+            if room.type == "Remote":
+                if room.tmp_uid == instance.user_id:
+                    now = datetime.now()
+                    time_diff = now - room.disconnected_at  # Calculate time difference since disconnection
+                    if time_diff <= timedelta(seconds=10):
+                        room.assign_user(instance.user_id)
+                        return room_name
+                    # else:
+                    #     return
 
-    for room_name, room in rooms.items():
-        if room.type == "Remote":
-            if room.uid1 and room.uid2 is None:
-                room.assign_user(instance.user_id)
-                instance.room_group_name = room_name
-                return room_name
+        for room_name, room in rooms.items():
+            if room.type == "Remote":
+                if room.uid1 and room.uid2 is None:
+                    room.assign_user(instance.user_id)
+                    instance.room_group_name = room_name
+                    return room_name
 
     new_room_name = f'room_{room_naming(rooms)}'
     new_room = Room()
@@ -143,11 +144,9 @@ def join_remote_room(instance, rooms):
 
 def join_local_room(instance, rooms):
     try:
-        new_room_name = f'room_{room_naming(rooms)}'
+        new_room_name = f'Local_{room_naming(rooms)}'
         new_room = Room()
         new_room.type = instance.gamemode # here i assign the room mode
-        if instance.gamemode != "Local":
-            new_room.assign_user(instance.user_id)
         rooms[new_room_name] = new_room
         instance.room_group_name = new_room_name
         return new_room_name
@@ -155,7 +154,7 @@ def join_local_room(instance, rooms):
         print(f"Error in join Local or Bot: {e}")
 
 def join_room(gameconsumer, rooms):
-    if gameconsumer.gamemode != "Remote":
+    if gameconsumer.gamemode == "Local":
         room_name = join_local_room(gameconsumer, rooms)
     else:
         room_name = join_remote_room(gameconsumer, rooms)
