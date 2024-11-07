@@ -27,6 +27,7 @@ urlpatterns = [
     path("api/", include("User.urls")),
     path("chat/", include("Chat.urls")),
     path("game/", include("Game.urls")),
+    path("notification/", include("Notifications.urls")),
 ]
 
 if settings.DEBUG:

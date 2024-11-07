@@ -3,10 +3,10 @@ import "./tournamentLocal.css";
 import LocalRoom from "../../localRoom";
 
 const TournamentLocal = () => {
-
   const [addTournament, setAddTournament] = useState(false);
   const [tournamentComplete, setTournamentComplete] = useState(false);
   const [tournament, setTournament] = useState(false);
+  const [showPopup, setShowPopup] = useState(null);
   const [isFirstRound, setIsFirstRound] = useState(true);
   const [theWinner, setTheWinner] = useState([]);
   const [pair, setPair] = useState([]);
@@ -15,13 +15,13 @@ const TournamentLocal = () => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    const hasAllPlayers = players.every((player) => player);
+    const isNotDuplicated = new Set(players).size === players.length;
+    const isFull = players.every((player) => player);
+    const hasAllPlayers = isFull && isNotDuplicated;
     if (hasAllPlayers) {
-    if (Array.isArray(players))
-      {
+      if (Array.isArray(players)) {
         const newpair = players.reduce((matches, _, index, array) => {
-          if (index % 2 === 0)
-              matches.push([array[index], array[index + 1]]);
+          if (index % 2 === 0) matches.push([array[index], array[index + 1]]);
           return matches;
         }, []);
         setPair(newpair);
@@ -29,6 +29,10 @@ const TournamentLocal = () => {
         setIsFirstRound(true);
       }
     }
+    if (!isFull)
+        setShowPopup("You must Fill The Form!")
+    else if (!isNotDuplicated)
+          setShowPopup("Two Players Has The Same Name!")
   }
 
   const handleChange = (e) => {
@@ -41,25 +45,36 @@ const TournamentLocal = () => {
   };
 
   useEffect(() => {
+    console.log(matchIndex)
     if (theWinner.length === 2 && isFirstRound) {
       const finalPair = [[theWinner?.[0]?.username, theWinner?.[1]?.username]];
-      setPair(finalPair);
-      setMatchIndex(0);
-      setTheWinner([]);
-      setIsFirstRound(false);
+      setTimeout(() => {
+        setMatchIndex(0);
+        setPair(finalPair);
+        setTheWinner([]);
+        setIsFirstRound(false);
+      }, 3000);
     } else if (theWinner.length === 1 && !isFirstRound) {
       setTournamentComplete(true);
-      console.log("Tournament Winner:", theWinner[0]);
     }
   }, [theWinner]);
 
+  useEffect(() => {
+    if (showPopup)
+      {
+        setTimeout(() => {
+          setShowPopup(null)
+        }, 3000);
+      }
+  }, [showPopup]);
+
   function handleMatchWinner(winner) {
     setTheWinner((prevWinners) => [...prevWinners, winner]);
-    if(isFirstRound)
+    if (isFirstRound)
       if (matchIndex < pair.length - 1)
         setTimeout(() => {
           setMatchIndex((prevIndex) => prevIndex + 1);
-        }, 5000)
+        }, 3000);
   }
 
   if (tournamentComplete) {
@@ -67,16 +82,20 @@ const TournamentLocal = () => {
       <div className="tournament-complete">
         <h1>Tournament Complete!</h1>
         <h2>Winner: {theWinner[0]?.usename}</h2>
-        <button onClick={() => {
-          setAddTournament(false);
-          setTournament(false);
-          setTheWinner([]);
-          setPair([]);
-          setMatchIndex(0);
-          setPlayers([null, null, null, null]);
-          setIsFirstRound(true);
-          setTournamentComplete(false);
-        }}>Start New Tournament</button>
+        <button
+          onClick={() => {
+            setAddTournament(false);
+            setTournament(false);
+            setTheWinner([]);
+            setPair([]);
+            setMatchIndex(0);
+            setPlayers([null, null, null, null]);
+            setIsFirstRound(true);
+            setTournamentComplete(false);
+          }}
+        >
+          Start New Tournament
+        </button>
       </div>
     );
   }
@@ -108,77 +127,78 @@ const TournamentLocal = () => {
           </button>
         </div>
       ) : !tournament ? (
-          <div
-            className="AddTournament-container"
-            key={"AddTournament-container"}
-          >
-            <h1 className="AddTournamament-header">Local Tournament</h1>
-            <div className="AddTournament-formatContainer">
-              <form className="AddTournament-form" onSubmit={handleSubmit}>
-                <div
-                  id="AddTournament-cancel"
-                  onClick={() => setAddTournament(false)}
-                >
-                  cancel
-                </div>
-                <div className="input-container">
-                  <h1 className="AddTournamament-formheader">
-                    Local Tournament
-                  </h1>
-                  <div>
-                    <label>First Player:</label>
-                    <input
-                      type="text"
-                      id="fname"
-                      name="0"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div>
-                    <label>Second Player:</label>
-                    <input
-                      type="text"
-                      id="sname"
-                      name="1"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div>
-                    <label>Third Player:</label>
-                    <input
-                      type="text"
-                      id="tname"
-                      name="2"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div>
-                    <label>Fourth Player:</label>
-                    <input
-                      type="text"
-                      id="foname"
-                      name="3"
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-                <div className="submitTournament">
-                  <div className="bgcolor"></div>
-                  <input type="submit" value="Play" id="AddTournament-submit" />
-                </div>
-              </form>
-            </div>
+        <div
+          className="AddTournament-container"
+          key={"AddTournament-container"}
+        >
+          <div className={`tournament-popup ${showPopup ? 'show' : ''}`}>
+            <p className='tournament-popup-p'>{showPopup}</p>
           </div>
-        ) : tournament && pair[matchIndex] ? (
+          <h1 className="AddTournamament-header">Local Tournament</h1>
+          <div className="AddTournament-formatContainer">
+            <form className="AddTournament-form" onSubmit={handleSubmit}>
+              <div
+                id="AddTournament-cancel"
+                onClick={() => setAddTournament(false)}
+              >
+                cancel
+              </div>
+              <div className="input-container">
+                <h1 className="AddTournamament-formheader">Local Tournament</h1>
+                <div>
+                  <label>First Player:</label>
+                  <input
+                    type="text"
+                    id="fname"
+                    name="0"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label>Second Player:</label>
+                  <input
+                    type="text"
+                    id="sname"
+                    name="1"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label>Third Player:</label>
+                  <input
+                    type="text"
+                    id="tname"
+                    name="2"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label>Fourth Player:</label>
+                  <input
+                    type="text"
+                    id="foname"
+                    name="3"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <div className="submitTournament">
+                <div className="bgcolor"></div>
+                <input type="submit" value="Play" id="AddTournament-submit" />
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : tournament && pair[matchIndex] ? (
         <>
           <LocalRoom
-          key={pair[matchIndex].join("_")}
-          theWinner={handleMatchWinner}
-          data={pair[matchIndex]}
-          mode={"TournamentLocal"}
+            key={pair[matchIndex].join("_")}
+            theWinner={handleMatchWinner}
+            data={pair[matchIndex]}
+            mode={"TournamentLocal"}
           />
         </>
-      ) : null }
+      ) : null}
     </>
   );
 };

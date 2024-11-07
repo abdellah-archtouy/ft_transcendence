@@ -21,6 +21,7 @@ from uuid import uuid4
 import requests, os, string, random
 from django.conf import settings
 from django.db.models import Q
+from Notifications.views import create_notification
 
 
 User = get_user_model()
@@ -414,6 +415,9 @@ def add_friend(request):
 
         # Check if friend exists
         friend = User.objects.get(id=friend_id)
+
+        #posting in the Notification table
+        create_notification(friend, current_user, "FRIEND_REQUEST") 
 
         # Check if friendship already exists
         if (

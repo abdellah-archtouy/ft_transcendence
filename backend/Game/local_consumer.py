@@ -97,14 +97,16 @@ class LocalConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event))
 
     def move_players(self, room, key):
+        left_speed = room.leftPaddle.speed
+        right_speed = room.rightPaddle.speed
         if key == "KeyW":
-            room.leftPaddle.set_Player_attribute("velocityY", -5)
+            room.leftPaddle.set_Player_attribute("velocityY", -5 * left_speed)
         if key == "KeyS":
-            room.leftPaddle.set_Player_attribute("velocityY", 5)
+            room.leftPaddle.set_Player_attribute("velocityY", 5 * left_speed)
         if key == "ArrowUp":
-            room.rightPaddle.set_Player_attribute("velocityY", -5)
+            room.rightPaddle.set_Player_attribute("velocityY", -5 * right_speed)
         if key == "ArrowDown":
-            room.rightPaddle.set_Player_attribute("velocityY", 5)
+            room.rightPaddle.set_Player_attribute("velocityY", 5 * right_speed)
 
     async def receive(self, text_data):
         data = json.loads(text_data)

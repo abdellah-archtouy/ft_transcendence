@@ -4,7 +4,6 @@ import axios from "axios";
 import "./room.css";
 import { useNavigate } from "react-router-dom";
 
-let ima = "/pause.svg";
 let Board;
 let boardWidth = 1000;
 let boardHeight = 550;
@@ -39,9 +38,10 @@ const Room = ({ data, mode }) => {
 
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [ima, setIma] = useState("/pause.svg");
+  const [close, setClose] = useState(false);
   const [canvas, setCanvas] = useState(false);
   const [countDown, setCountDown] = useState(0);
-  const [vsDisplay, setVsDisplay] = useState([]);
   const [pause, setPause] = useState(false);
   const [winner, setWinner] = useState(null);
   const animationRef = useRef(null);
@@ -239,12 +239,13 @@ const Room = ({ data, mode }) => {
     if (gamemode === "Remote")
       return  `ws://${host}:8000/ws/game/Remote/${userData.id}`;
     else
-      return `ws://${host}:8000/ws/game/bot/${modedata}/${userData.id}`;
-  }
-  
-  useEffect(() => {
-    if (!userData) return;
+    return `ws://${host}:8000/ws/game/bot/${modedata}/${userData.id}`;
+}
+
+useEffect(() => {
+  if (!userData) return;
     const url = getWSUrl();
+    console.log(url)
     WSocket = new WebSocket(url);
     
     WSocket.onopen = () => {
@@ -287,7 +288,10 @@ const Room = ({ data, mode }) => {
         return tmp?.winner;
       });
       if (tmp?.stat === "close") {
-        navigate(-1);
+        setClose(true)
+        setTimeout(() => {
+          navigate(-1);
+        }, 1000);
       }
       tmp?.stat === "countdown"
         ? setCountDown(tmp?.value)
@@ -372,24 +376,22 @@ const Room = ({ data, mode }) => {
 
   useEffect(() => {
     if (!pause) {
-      ima = "/pause.svg";
+      setIma(() => "/pause.svg");
       window.addEventListener("keydown", movePlayer);
       window.addEventListener("keyup", stopPlayer);
       animationRef.current = requestAnimationFrame(update);
     } else {
-      ima = "/play.svg";
+      setIma(() => "/play.svg");
       window.removeEventListener("keydown", movePlayer);
-      window.removeEventListener("keydown", pauseGame);
       window.removeEventListener("keyup", stopPlayer);
       cancelAnimationFrame(animationRef.current);
     }
     return () => {
       cancelAnimationFrame(animationRef.current);
       window.removeEventListener("keydown", movePlayer);
-      window.removeEventListener("keydown", pauseGame);
       window.removeEventListener("keyup", stopPlayer);
     };
-  }, [pause, winner]);
+  }, [pause, winner, countDown]);
 
   const gameRender = () => {
     if (canvas) {
@@ -423,12 +425,12 @@ const Room = ({ data, mode }) => {
   useEffect(() => {
     setTimeout(() => {
       if (countDown > 0) setCountDown((e) => e - 1);
-    }, 1000);
+    }, 999);
   }, [countDown]);
 
-  if (!user || !user?.[0]) return <LoadingPage />;
+  if (!user) return <LoadingPage />;
   return (
-    <div className="RoomContainer">
+    <div className={close ? "RoomContainer fade-out" : "RoomContainer"}>
       <div className="RoomFirst">
         <div className="userinfo">
           <div className="image">
@@ -458,7 +460,15 @@ const Room = ({ data, mode }) => {
         </div>
       </div>
       <div className="RoomSecond">
-        {countDown > 0 && <div className="RoomCountDown">{countDown}</div>}
+        {
+          countDown > 0 && (
+            <div className="RoomCountDown">
+                <p>
+                  {countDown}
+                </p>
+            </div>
+          )
+        }
         {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>

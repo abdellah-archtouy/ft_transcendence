@@ -122,6 +122,7 @@ def join_remote_room(instance, rooms):
                     time_diff = now - room.disconnected_at  # Calculate time difference since disconnection
                     if time_diff <= timedelta(seconds=10):
                         room.assign_user(instance.user_id)
+                        instance.connection_type = "Reconnection"
                         return room_name
                     # else:
                     #     return

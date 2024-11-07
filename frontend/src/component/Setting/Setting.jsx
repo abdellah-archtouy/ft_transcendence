@@ -24,6 +24,7 @@ const Setting = () => {
   }
 
   function coverUrl(cover) {
+    console.log(cover)
     return `http://localhost:8000${cover}`;
   }
 

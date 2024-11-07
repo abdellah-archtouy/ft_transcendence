@@ -69,17 +69,14 @@ function App() {
   };
 
   const scroll = (location.pathname !== "/" && location.pathname !== "/profile") && {
-        height: `100%`
-    }
-
+    height: `100%`
+  }
   return (
     <div className={"App"} style={{ ...bgImage, ...scroll }}>
-      {" "}
-      {/* style={{...bgImage}} */}
       {auth ? (
         <>
           <Navbar />
-          <div className="main">
+          <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/game/*" element={<GameRouting />} />

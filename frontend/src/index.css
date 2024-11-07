@@ -3,7 +3,6 @@
   padding: 0;
   box-sizing: border-box;
   line-height: 1;
-  /* border: solid; */
 }
 
 #root {
@@ -48,10 +47,6 @@ body {
       margin-bottom = 0; here you override that rule and give it 0
     }
   */
-}
-
-.fixed-height {
-  height: 100%;
 }
 
 @keyframes vibrate {

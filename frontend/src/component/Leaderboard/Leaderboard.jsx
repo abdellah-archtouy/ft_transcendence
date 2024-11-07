@@ -29,7 +29,7 @@ const Leaderboard = () => {
 
           if (refresh) {
             axios
-              .post(`${apiUrl}/api/token/refresh/`, { refresh })
+              .post(`http://${apiUrl}:8000/api/token/refresh/`, { refresh })
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
@@ -163,11 +163,11 @@ const Leaderboard = () => {
             <div className="item-container">
               {rows.map((row, index) => (
                 <li
-                key={row.id}
+                key={index}
                 className="Leaderboard-list-item"
                 style={{
                   animationName: "fade-in",
-                  animationDuration: `${index * 0.5}s`,
+                  animationDuration: `${(index + 1) * 0.5}s`,
                   animationTimingFunction: "ease-in-out",
                   animationFillMode: "forwards",
                 }}

@@ -173,7 +173,8 @@ class RoomManager():
 
     async def send_periodic_updates(self, ConsumerObj):
         room = self.rooms[ConsumerObj.room_group_name]
-        await self.start_game(ConsumerObj)
+        if ConsumerObj.connection_type == None:
+            await self.start_game(ConsumerObj)
         while room and room.keep_updating and not room.winner:
             if room:
                 await start(room, self.user1, self.user2)
@@ -244,6 +245,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await self.close()
                 return
             self.user_id = self.scope['url_route']['kwargs']['uid']
+            self.connection_type = None
             self.channel_name = self.channel_name
             self.room_group_name = await room_manager.join_or_create_room(self)
             await room_manager.start_periodic_updates(self)

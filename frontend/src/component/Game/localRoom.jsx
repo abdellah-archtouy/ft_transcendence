@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
 import LoadingPage from "../loadingPage/loadingPage";
 import "./room.css";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +37,7 @@ let modedata = null;
 const TournamentRoom = ({ theWinner, data, mode }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [ima, setIma] = useState("/pause.svg");
   const [roomData, setRoomData] = useState(null);
   const [canvas, setCanvas] = useState(false);
   const [countDown, setCountDown] = useState(0);
@@ -76,33 +76,6 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
     ctx.globalAlpha = opacity;
     ctx.fill();
   };
-
-  // function buttonMovement(event) {
-  //   if (event === "KeyW") {
-  //     WSocket?.send(
-  //       JSON.stringify({
-  //         type: "keypress",
-  //         key: "KeyW",
-  //       })
-  //     );
-  //   }
-  //   if (event === "KeyS") {
-  //     WSocket?.send(
-  //       JSON.stringify({
-  //         type: "keypress",
-  //         key: "KeyS",
-  //       })
-  //     );
-  //   }
-  //   if (event === "Down") {
-  //     WSocket?.send(
-  //       JSON.stringify({
-  //         type: "keydown",
-  //         key: "KeyS",
-  //       })
-  //     );
-  //   }
-  // }
 
   function movePlayer(e) {
     if (e.code === "KeyW") {
@@ -214,37 +187,6 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
     Board.width = boardWidth;
   }
 
-  // let leftPaddleRef = useRef();
-  // let rightPaddleRef = useRef();
-
-  // const handleLeftPaddleMouseDown = () => {
-  //   if (leftPaddleRef.current && !pause && !winner) {
-  //     leftPaddleRef.current.classList.add("active");
-  //     buttonMovement("KeyW");
-  //   }
-  // };
-
-  // const handleLeftPaddleMouseUp = () => {
-  //   if (leftPaddleRef.current && !pause && !winner) {
-  //     leftPaddleRef.current.classList.remove("active");
-  //     buttonMovement("Down");
-  //   }
-  // };
-
-  // const handleRightPaddleMouseDown = () => {
-  //   if (rightPaddleRef.current && !pause && !winner) {
-  //     rightPaddleRef.current.classList.add("active");
-  //     buttonMovement("KeyS");
-  //   }
-  // };
-
-  // const handleRightPaddleMouseUp = () => {
-  //   if (rightPaddleRef.current && !pause && !winner) {
-  //     rightPaddleRef.current.classList.remove("active");
-  //     buttonMovement("Down");
-  //   }
-  // };
-
   function getWSUrl() {
     if (modedata.length === 2) {
       let username1 = modedata[0];
@@ -257,7 +199,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
     const url = getWSUrl();
     if (!url) return;
     WSocket = new WebSocket(url);
-    console.log(WSocket)
+    console.log(WSocket);
 
     WSocket.onopen = () => {
       console.log("WebSocket connection established");
@@ -296,8 +238,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
           obj = [{ ...tmp?.user1 }, { ...tmp?.user2 }];
         return obj;
       });
-      if (mode === "TournamentLocal" && tmp?.winner)
-        theWinner(tmp?.winner);
+      if (mode === "TournamentLocal" && tmp?.winner) theWinner(tmp?.winner);
       setWinner(() => {
         return tmp?.winner;
       });
@@ -318,21 +259,19 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
 
   useEffect(() => {
     if (!pause) {
-      ima = "/pause.svg";
+      setIma("/pause.svg");
       window.addEventListener("keydown", movePlayer);
       window.addEventListener("keyup", stopPlayer);
       animationRef.current = requestAnimationFrame(update);
     } else {
-      ima = "/play.svg";
+      setIma("/play.svg");
       window.removeEventListener("keydown", movePlayer);
-      window.removeEventListener("keydown", pauseGame);
       window.removeEventListener("keyup", stopPlayer);
       cancelAnimationFrame(animationRef.current);
     }
     return () => {
       cancelAnimationFrame(animationRef.current);
       window.removeEventListener("keydown", movePlayer);
-      window.removeEventListener("keydown", pauseGame);
       window.removeEventListener("keyup", stopPlayer);
     };
   }, [pause, winner]);
@@ -374,7 +313,9 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
 
   if (!roomData) return <LoadingPage />;
   return (
-    <div className="RoomContainer">
+    <div
+      className={!winner ? "RoomContainer" : "RoomContainer fade-out"}
+    >
       <div className="RoomFirst">
         <div className="userinfo">
           <div className="image">
@@ -448,36 +389,6 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
           </button>
         )}
       </div>
-      {/* <div className="mobilebuttons">
-        <button
-          ref={leftPaddleRef}
-          className="leftPaddle"
-          onTouchStart={handleLeftPaddleMouseDown}
-          onTouchEnd={handleLeftPaddleMouseUp}
-          onMouseDown={handleLeftPaddleMouseDown}
-          onMouseUp={handleLeftPaddleMouseUp}
-        >
-          <img
-            src="/GameMobileButton.svg"
-            alt=""
-            className="GameMobileButton"
-          />
-        </button>
-        <button
-          ref={rightPaddleRef}
-          className="rightPaddle"
-          onTouchStart={handleRightPaddleMouseDown}
-          onTouchEnd={handleRightPaddleMouseUp}
-          onMouseDown={handleRightPaddleMouseDown}
-          onMouseUp={handleRightPaddleMouseUp}
-        >
-          <img
-            src="/GameMobileButton.svg"
-            alt=""
-            className="GameMobileButton"
-          />
-        </button>
-      </div> */}
     </div>
   );
 };
