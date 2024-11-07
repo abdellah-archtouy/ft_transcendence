@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from User.models import User
+from User.models import User , Achievement
 from Chat.models import Conversation
 from Chat.models import Message
 
@@ -23,3 +23,8 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ('conversation', 'user', 'message', 'time', 'conversation_info')
+
+class AchievementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Achievement
+        fields = ('maestro' , 'downkeeper', 'jocker' , 'the_emperor' , 'thunder_strike')

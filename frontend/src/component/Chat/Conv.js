@@ -8,11 +8,10 @@ const Conv = ({ data, userData, selectedConvId }) => {
   function avatarUrl(name) {
     return `http://${window.location.hostname}:8000` + name;
   }
-
+  
   useEffect(() => {
     const date = new Date(data.last_message_time);
     setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
-    // setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
   }, [data]);
   return (
     <div className={`conv ${selectedConvId === data.id ? 'selected' : ''}`}>
