@@ -22,7 +22,7 @@ class User(AbstractUser):
         default="avatars/default_avatar.png",
     )
     cover = models.ImageField(
-        upload_to="covers/", null=True, blank=True, default="covers/default.jpeg"
+        upload_to="covers/", null=True, blank=True, default="covers/default_cover.png"
     )
     bio = models.TextField(blank=True)  # Removed max_length, added blank=True
     win = models.IntegerField(default=0)
