@@ -67,7 +67,7 @@ function App() {
     setAuth(true);
   };
 
-  const scroll = location.pathname !== "/" && {
+  const scroll = (location.pathname !== "/" && location.pathname !== "/profile") && {
         height: `100%`
     }
 
