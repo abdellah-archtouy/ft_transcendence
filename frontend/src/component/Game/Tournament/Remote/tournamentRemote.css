@@ -78,7 +78,7 @@
 /* styling AddTournament-container */
 /* ******************************* */
 
-.AddTournament-container {
+.remote-AddTournament-container {
     height: 100%;
     width: 100%;
     position: relative;
@@ -89,7 +89,7 @@
     animation: fade-in 1s ease-in-out;
 }
 
-.AddTournamament-header {
+.remote-AddTournamament-header {
     margin-top: 50px;
     color: #ffffff;
     text-shadow: 
@@ -97,9 +97,9 @@
     0px 0px 30px #9f857fcc;
 }
 
-.AddTournament-formatContainer {
+.remote-AddTournament-formatContainer {
     max-height: 650px;
-    width: 400px;
+    width: 350px;
     flex: 1;
     margin-top: 50px;
     border-radius: 30px;
@@ -108,7 +108,7 @@
     align-items: center;
     justify-content: flex-end;
     overflow: hidden;
-    background-image: linear-gradient(to top, #000000 20%, transparent 80%), url("../asset/lord4.svg");
+    background-image: url("../asset/lord4.svg");
     background-size: cover, 100%; /* Ensure both the image and gradient cover the container */
     background-position: center, center top; /* Adjust positioning */
     background-repeat: no-repeat;
@@ -117,21 +117,21 @@
     position: relative;
 }
 
-.AddTournamament-formheader {
+.remote-AddTournamament-formheader {
     display: none;
 }
 
-.AddTournament-form {
+.remote-AddTournament-form {
     all: unset;
     display: flex;
     flex-direction: column;
     height: fit-content;
     width: 100%;
     justify-content: center;
-    gap: 50px;
+    gap: 20px;
 }
 
-.input-container {
+.remote-input-container {
     display: flex;
     flex-wrap: wrap;
     display: flex;
@@ -139,21 +139,23 @@
     gap: 15px;
 }
 
-.input-container > div {
+.remote-input-container > div {
     text-align: start;
     text-indent: 5px;
     display: flex;
     flex-direction: column;
     line-height: 1;
     gap: 5px;
+    width: 100%;
+    font-weight: 600;
 }
 
-.input-container > div > label {
+.remote-input-container > div > label {
     color: #E9E5DC;
-    font-size: 16px;
+    font-size: 17px;
 }
 
-.input-container > div > input {
+.remote-input-container > div > input {
     width: 100%;
     height: fit-content;
     padding: 11px;
@@ -165,13 +167,13 @@
     transition: all 0.4s ease;
 }
 
-.input-container > div > input:focus {
+.remote-input-container > div > input:focus {
     border-color: #E9E5DC;
     color: #E9E5DC;
     box-shadow: 0 0 8px #b3b3b380;
 }
 
-.submitTournament {
+.remote-submitTournament {
     position: relative;
     width: 100%;
     display: flex;
@@ -199,7 +201,7 @@
     position: relative;
 }
 
-.bgcolor {
+.remote-bgcolor {
     position: absolute;
     top: 0;
     right: 0;
@@ -252,16 +254,16 @@
 
 @media (max-height: 49vw) {
 
-    .AddTournament-formatContainer {
+    .remote-AddTournament-formatContainer {
         margin-top: 30px;
     }
 
-    .AddTournamament-header {
+    .remote-AddTournamament-header {
         all: unset;
         display: none;
     }
 
-    .AddTournamament-formheader {
+    .remote-AddTournamament-formheader {
         display: block;
         font-weight: 550;
         color: #E9E5DC;
@@ -272,18 +274,18 @@
 }
 
 @media (max-width: 600px) {
-    .main:has(.AddTournament-container) {
+    .main:has(.remote-AddTournament-Container) {
         margin-bottom: 0;
     }
-    .AddTournament-container {
+    .remote-AddTournament-Container {
         width: 100%;
         height: 100%;
     }
-    .AddTournamament-header {
+    .remote-AddTournamament-header {
         all: unset;
         display: none;
     }
-    .AddTournament-formatContainer {
+    .remote-AddTournament-formatContainer {
         max-height: unset;
         min-height: 100%;
         height: fit-content;
@@ -294,23 +296,40 @@
         justify-content: unset;
     }
 
-    .AddTournament-form {
+    .remote-AddTournament-form {
         margin-top: 100%;
         align-items: center;
     }
 
-    .input-container {
+    .remote-input-container {
         width: 250px;
     }
-    .input-container > div { /* hadi hiya lform bdatha */
+    .remote-input-container > div { /* hadi hiya lform bdatha */
         width: 100%;
     }
 
-    .AddTournamament-formheader {
+    .remote-AddTournamament-formheader {
         display: block;
         font-weight: 550;
         color: #E9E5DC;
         width: 100%;
         text-shadow: 0 0 6px #9E857F;
     }
+}
+
+.tournament-popup {
+    position: absolute;
+    top: 0px;
+    opacity: 0;
+    right: -100%;
+    background-color: rgb(34, 34, 34, 0.8);
+    padding: 10px;
+    border-right: 5px solid rgba(209, 209, 209, 0.5);
+    transition: all 1s ease-in-out;
+}
+
+.tournament-popup.show {
+    right: 0%;
+    opacity: 1;
+    animation: fade-out 2s ease-in-out 2s;
 }

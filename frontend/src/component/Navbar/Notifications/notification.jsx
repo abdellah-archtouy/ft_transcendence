@@ -1,13 +1,10 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./notification.css";
 
 const Notification = ({ setShowNotifications, notificationData }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
-  // const [user, setUser] = useState(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   function avatarUrl(name, notif) {
     if (notif?.notification_type !== "TOURNAMENT_INVITE")
@@ -42,19 +39,16 @@ const Notification = ({ setShowNotifications, notificationData }) => {
     ];
     const date = new Date(time);
     const today = new Date();
-    const minuteDelay = (today.getMinutes() - date.getMinutes())
+    const minuteDelay = today.getMinutes() - date.getMinutes();
 
     const options = { hour: "2-digit", minute: "2-digit", hour12: true };
     const isToday = date.toDateString() === today.toDateString();
     const isNow = minuteDelay < 30 && minuteDelay >= 0 && isToday;
     const isYesterday = date.getDate() - today.getDate();
     let dateTime = `${date.getDate()} ${month[date.getMonth()]}`;
-    if (isNow)
-      dateTime = "now";
-    else if (isToday)
-      dateTime = "Today";
-    else if (isYesterday === -1)
-      dateTime ="Yesterday";
+    if (isNow) dateTime = "now";
+    else if (isToday) dateTime = "Today";
+    else if (isYesterday === -1) dateTime = "Yesterday";
     return (
       <>
         <p>{dateTime}</p>
@@ -89,42 +83,50 @@ const Notification = ({ setShowNotifications, notificationData }) => {
         style={{ border: "0.1px solid rgb(255, 255, 255, 0.35)", width: "96%" }}
       />
       <div className="notification-list">
-        {notificationData.map((notif, index) => (
-          <div
-            className="notification-item"
-            key={index}
-            style={{
-              animationName: "fade-in",
-              animationDuration: `${index + 0.5}s`,
-              animationTimingFunction: "ease-in-out",
-              animationFillMode: "forwards",
-            }}
-          >
-            <img
-              src={avatarUrl(notif?.sender_avatar, notif)}
-              alt=""
-              className={
-                avatarUrl(notif?.sender_avatar, notif) === notif?.sender_avatar
-                  ? "sender_avatar"
-                  : "sender_avatar profile"
-              }
-            />
-            <div className="message-and-time">
-              <h5>
-                <span className="titleBold">
-                  {notif?.message.substring(
-                    0,
-                    positionOfNth(notif?.message, 1)
-                  )}
-                </span>
-                {notif?.message.substring(positionOfNth(notif?.message, 1))}
-              </h5>
-              <div className="notification-timeDisplay">
-                {returnTime(notif?.time)}
+        {notificationData.length ? (
+          notificationData.map((notif, index) => (
+            <div
+              className="notification-item"
+              key={index}
+              style={{
+                animationName: "fade-in",
+                animationDuration: `${index + 0.5}s`,
+                animationTimingFunction: "ease-in-out",
+                animationFillMode: "forwards",
+              }}
+              onClick={() => {
+                if (notif?.link) navigate(notif?.link);
+              }}
+            >
+              <img
+                src={avatarUrl(notif?.sender_avatar, notif)}
+                alt=""
+                className={
+                  avatarUrl(notif?.sender_avatar, notif) ===
+                  notif?.sender_avatar
+                    ? "sender_avatar"
+                    : "sender_avatar profile"
+                }
+              />
+              <div className="message-and-time">
+                <h5>
+                  <span className="titleBold">
+                    {notif?.message.substring(
+                      0,
+                      positionOfNth(notif?.message, 1)
+                    )}
+                  </span>
+                  {notif?.message.substring(positionOfNth(notif?.message, 1))}
+                </h5>
+                <div className="notification-timeDisplay">
+                  {returnTime(notif?.time)}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="notification-item-empty">You have no new notifications.</div>
+        )}
       </div>
     </div>
   );

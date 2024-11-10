@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./tournamentLocal.css";
 import LocalRoom from "../../localRoom";
 
-const TournamentLocal = () => {
+const TournamentLocal = ({error}) => {
   const [addTournament, setAddTournament] = useState(false);
   const [tournamentComplete, setTournamentComplete] = useState(false);
   const [tournament, setTournament] = useState(false);
-  const [showPopup, setShowPopup] = useState(null);
   const [isFirstRound, setIsFirstRound] = useState(true);
   const [theWinner, setTheWinner] = useState([]);
   const [pair, setPair] = useState([]);
@@ -30,9 +29,9 @@ const TournamentLocal = () => {
       }
     }
     if (!isFull)
-        setShowPopup("You must Fill The Form!")
+        error("You must Fill The Form!")
     else if (!isNotDuplicated)
-          setShowPopup("Two Players Has The Same Name!")
+          error("Two Players Has The Same Name!")
   }
 
   const handleChange = (e) => {
@@ -58,15 +57,6 @@ const TournamentLocal = () => {
       setTournamentComplete(true);
     }
   }, [theWinner]);
-
-  useEffect(() => {
-    if (showPopup)
-      {
-        setTimeout(() => {
-          setShowPopup(null)
-        }, 3000);
-      }
-  }, [showPopup]);
 
   function handleMatchWinner(winner) {
     setTheWinner((prevWinners) => [...prevWinners, winner]);
@@ -131,9 +121,6 @@ const TournamentLocal = () => {
           className="AddTournament-container"
           key={"AddTournament-container"}
         >
-          <div className={`tournament-popup ${showPopup ? 'show' : ''}`}>
-            <p className='tournament-popup-p'>{showPopup}</p>
-          </div>
           <h1 className="AddTournamament-header">Local Tournament</h1>
           <div className="AddTournament-formatContainer">
             <form className="AddTournament-form" onSubmit={handleSubmit}>

@@ -14,8 +14,17 @@
 }
 
 .Notification-container > * {
-    animation: fade-in 1s ease-in;
+    animation: fwoosh-elements 0.8s ease-in;
 }
+
+@keyframes fwoosh-elements {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+  }
 
 .notification-header {
     height: 16px;
@@ -39,12 +48,19 @@
 }
 
 .notification-list {
-    height: 265px;
     overflow: scroll;
+    flex: 1;
     width: 96%;
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.notification-item-empty {
+    font-size: medium;
+    font-weight: lighter;
+    font-style: italic;
+    color: rgb(255, 255, 255, 0.4);
 }
 
 /************************************/

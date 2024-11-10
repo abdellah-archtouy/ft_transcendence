@@ -223,30 +223,27 @@
   position: absolute;
   top: 160%;
   right: 50%;
-  min-height: 353px;
   width: 300px;
-  height: fit-content;
+  height: 350px;
   z-index: 2000;
-  animation: fwoosh 0.4s ease-in-out;
+  animation: fwoosh 0.4s ease-in;
+}
+
+.Notification-div.close {
+  display: none;
+  .Notification-container > * {
+    opacity: 0;
+  }
 }
 
 @keyframes fwoosh {
   0% {
       opacity: 0;
       width: 0px;
+      height: 0px;
   }
   100% {
       opacity: 1;
-  }
-}
-
-@keyframes reverse-fwoosh {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    width: 0px;
   }
 }
 
@@ -310,7 +307,4 @@
     transform: translateX(var(--transformX)) translateY(var(--transformY));
   }
 
-  /* .button {
-    right: clamp(1.25rem, 3.646vw - 0.208rem, 2.125rem);
-  } */
 }

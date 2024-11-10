@@ -6,7 +6,7 @@ const GameMode = () => {
 
   function updatevalues(mode) {
     let d = {
-        mode: mode,
+        botmode: mode,
       };
     navigate("/game/bot", { state: { values:d } });
   }

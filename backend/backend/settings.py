@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "User",
     "Game",
     "Chat",
+    "Tournament",
     "Notifications",
     "rest_framework",
     "rest_framework_simplejwt",

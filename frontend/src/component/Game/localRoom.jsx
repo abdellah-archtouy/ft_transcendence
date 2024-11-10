@@ -317,7 +317,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
       className={!winner ? "RoomContainer" : "RoomContainer fade-out"}
     >
       <div className="RoomFirst">
-        <div className="userinfo">
+        <div className="room-userinfo">
           <div className="image">
             <img
               src={image_renaming(user?.[0]?.avatar)}

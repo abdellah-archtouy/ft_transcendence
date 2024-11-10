@@ -39,7 +39,8 @@ body {
   flex-direction: column;
   flex: 1;
   width: 100%;
-  margin-bottom: clamp(6.875rem, 4.688vw + 5rem, 12.5rem); 
+  margin-bottom: clamp(6.875rem, 4.688vw + 5rem, 12.5rem);
+  position: relative;
   /*
     i add the margin bottom here because we wanna avoid hard coding in the app.js
     and to deal with the margin-bottom in your page you must add this rule of css before start styling
@@ -139,4 +140,21 @@ body {
 
 @media (max-width: 1024px) {
   
+}
+
+.tournament-popup {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  right: -100%;
+  background-color: rgb(34, 34, 34, 0.8);
+  padding: 10px;
+  border-right: 5px solid rgba(209, 209, 209, 0.5);
+  transition: all 1s ease-in-out;
+}
+
+.tournament-popup.show {
+  right: 0%;
+  opacity: 1;
+  animation: fade-out 2s ease-in-out 2s;
 }

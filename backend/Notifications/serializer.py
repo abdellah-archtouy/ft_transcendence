@@ -12,5 +12,6 @@ class notificationSerializer(serializers.ModelSerializer):
             "sender",
             "message",
             "notification_type",
-            "time"
+            "time",
+            "link"
         ]

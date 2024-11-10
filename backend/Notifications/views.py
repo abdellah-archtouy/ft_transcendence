@@ -19,7 +19,7 @@ def get_avatar(sender_id):
         avatar = sender_obj.avatar.url if sender_obj.avatar else None
     return avatar
 
-def create_notification(friend, user, n_type):
+def create_notification(friend, user, n_type, link):
     if user and n_type != "TOURNAMENT_INVITE":
         if n_type == "FRIEND_REQUEST":
             message = f"{user.username} sent you a friend request"
@@ -34,6 +34,7 @@ def create_notification(friend, user, n_type):
         "sender": user.id if user else None,
         "message": message,
         "notification_type": n_type,
+        "link": link
     }
     notification_serializer = notificationSerializer(data=notification)
     if notification_serializer.is_valid():
@@ -45,6 +46,7 @@ def create_notification(friend, user, n_type):
             "sender_avatar": avatar,  # Access avatar URL
             "message": notification_instance.message,
             "notification_type": notification_instance.notification_type,
+            "link": notification_instance.link,
             "time": notification_instance.time.isoformat()  # Convert time to ISO format for JSON compatibility
         }
         async_to_sync(channel_layer.group_send)(
@@ -73,6 +75,7 @@ def get_notifications(request):
                 "sender_avatar": avatar,
                 "message": notification["message"],
                 "notification_type": notification["notification_type"],
+                "link": notification["link"],
                 "time": notification["time"]
             }
             custom_data.append(sent_data)

@@ -71,15 +71,30 @@ function App() {
   const scroll = (location.pathname !== "/" && location.pathname !== "/profile") && {
     height: `100%`
   }
+
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (error)
+      {
+        setTimeout(() => {
+          setError(null)
+        }, 3000);
+      }
+  }, [error]);
+
   return (
     <div className={"App"} style={{ ...bgImage, ...scroll }}>
       {auth ? (
         <>
           <Navbar />
           <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
+            <div className={`tournament-popup ${error ? 'show' : ''}`}>
+              <p className='tournament-popup-p'>{error}</p>
+            </div>
             <Routes>
               <Route exact path="/" element={<Home />} />
-              <Route exact path="/game/*" element={<GameRouting />} />
+              <Route exact path="/game/*" element={<GameRouting  error={setError}/>} />
               <Route exact path="/chat" element={<Chat />} />
               <Route exact path="/leaderboard" element={<Leaderboard />} />
               <Route exact path="/setting" element={<Setting />} />

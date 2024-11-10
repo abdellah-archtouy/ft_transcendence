@@ -27,6 +27,8 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
 
   const apiUrl = process.env.REACT_APP_API_URL;
+  const hostName = process.env.REACT_APP_API_HOSTNAME;
+
   const array = [
     { index: 0, path: "/", activeElement: "Home" },
     { index: 1, path: "/game", activeElement: "Game" },
@@ -93,11 +95,13 @@ const Navbar = () => {
   const handleClickOutside = (event) => {
     if (burgerMenuRef.current && !burgerMenuRef.current.contains(event.target))
       setNavDisplay(true);
-    if (NotificationRef.current && !NotificationRef.current.contains(event.target))
-      {
-        setShowNotifications(false);
-        setNewNotif(false);
-      }
+    if (
+      NotificationRef.current &&
+      !NotificationRef.current.contains(event.target)
+    ) {
+      setShowNotifications(false);
+      setNewNotif(false);
+    }
   };
 
   useEffect(() => {
@@ -123,26 +127,26 @@ const Navbar = () => {
         });
 
         setUser(response.data);
-        fetchNotification()
+        fetchNotification();
       } catch (error) {
         handleFetchError(error);
       }
     };
 
     const fetchNotification = async () => {
-          try {
-            const access = localStorage.getItem("access");
-    
-            const response = await axios.get(`${apiUrl}/notification`, {
-              headers: {
-                Authorization: `Bearer ${access}`,
-              },
-            });
-            setNotificationData(response.data);
-          } catch (error) {
-            handleFetchError(error);
-          }
-        };
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get(`${apiUrl}/notification`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        setNotificationData(response.data);
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
 
     const handleFetchError = (error) => {
       if (error.response) {
@@ -189,7 +193,7 @@ const Navbar = () => {
     if (user) {
       const user_id = user.id;
       const socket = new WebSocket(
-        `ws://localhost:8000/ws/notification/${user_id}/`
+        `ws://${hostName}:8000/ws/notification/${user_id}/`
       );
 
       socket.onmessage = function (event) {
@@ -328,7 +332,12 @@ const Navbar = () => {
               <img src={notifiedJarass} alt="" />
             )}
           </button>
-          {showNotifications && <div className="Notification-div" ref={NotificationRef}><Notification setShowNotifications={setShowNotifications} notificationData={notificationData}/></div>}
+          <div className={showNotifications ? "Notification-div" : "Notification-div close"} ref={NotificationRef}>
+            <Notification
+              setShowNotifications={setShowNotifications}
+              notificationData={notificationData}
+            />
+          </div>
           <button
             className="navbutton"
             onClick={() => {

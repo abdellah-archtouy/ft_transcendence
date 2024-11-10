@@ -417,7 +417,7 @@ def add_friend(request):
         friend = User.objects.get(id=friend_id)
 
         #posting in the Notification table
-        create_notification(friend, current_user, "FRIEND_REQUEST") 
+        create_notification(friend, current_user, "FRIEND_REQUEST", link=None)
 
         # Check if friendship already exists
         if (

@@ -31,11 +31,8 @@ let ball = {
 };
 
 let WSocket;
-let gamemode = null;
-let modedata = null;
 
 const Room = ({ data, mode }) => {
-
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [ima, setIma] = useState("/pause.svg");
@@ -47,12 +44,11 @@ const Room = ({ data, mode }) => {
   const animationRef = useRef(null);
   const navigate = useNavigate();
 
-  if (mode) gamemode = mode;
-
-  if (data !== undefined)
-      modedata = data;
-    else
-      modedata = null;
+  /* setting the bot mode, i used state for that */
+  const [botMode, setBotMode] = useState(null);
+  const [gamemode, setGamemode] = useState(null);
+  const [user1, setUser1] = useState(null);
+  const [user2, setUser2] = useState(null);
 
   const host = process.env.REACT_APP_API_HOSTNAME;
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -81,33 +77,30 @@ const Room = ({ data, mode }) => {
   };
 
   function buttonMovement(event) {
-    if (event === "KeyW")
-      {
-        WSocket?.send(
-          JSON.stringify({
-            type: "keypress",
-            key: "KeyW",
-          })
-        );
-      }
-    if (event === "KeyS")
-      {
-        WSocket?.send(
-          JSON.stringify({
-            type: "keypress",
-            key: "KeyS",
-          })
-        );
-      }
-    if (event === "Down")
-      {
-        WSocket?.send(
-          JSON.stringify({
-            type: "keydown",
-            key: "KeyS",
-          })
-        );
-      }
+    if (event === "KeyW") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keypress",
+          key: "KeyW",
+        })
+      );
+    }
+    if (event === "KeyS") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keypress",
+          key: "KeyS",
+        })
+      );
+    }
+    if (event === "Down") {
+      WSocket?.send(
+        JSON.stringify({
+          type: "keydown",
+          key: "KeyS",
+        })
+      );
+    }
   }
 
   function movePlayer(e) {
@@ -204,136 +197,145 @@ const Room = ({ data, mode }) => {
     Board.width = boardWidth;
   }
 
-  let leftPaddleRef = useRef()
-  let rightPaddleRef = useRef()
+  let leftPaddleRef = useRef();
+  let rightPaddleRef = useRef();
 
   const handleLeftPaddleMouseDown = () => {
     if (leftPaddleRef.current && !pause && !winner) {
-      leftPaddleRef.current.classList.add('active');
-      buttonMovement("KeyW")
+      leftPaddleRef.current.classList.add("active");
+      buttonMovement("KeyW");
     }
   };
-  
+
   const handleLeftPaddleMouseUp = () => {
     if (leftPaddleRef.current && !pause && !winner) {
-      leftPaddleRef.current.classList.remove('active');
-      buttonMovement("Down")
+      leftPaddleRef.current.classList.remove("active");
+      buttonMovement("Down");
     }
   };
 
   const handleRightPaddleMouseDown = () => {
     if (rightPaddleRef.current && !pause && !winner) {
-      rightPaddleRef.current.classList.add('active');
-      buttonMovement("KeyS")
+      rightPaddleRef.current.classList.add("active");
+      buttonMovement("KeyS");
     }
   };
-  
+
   const handleRightPaddleMouseUp = () => {
     if (rightPaddleRef.current && !pause && !winner) {
-      rightPaddleRef.current.classList.remove('active');
-      buttonMovement("Down")
+      rightPaddleRef.current.classList.remove("active");
+      buttonMovement("Down");
     }
   };
 
   function getWSUrl() {
     if (gamemode === "Remote")
-      return  `ws://${host}:8000/ws/game/Remote/${userData.id}`;
-    else
-    return `ws://${host}:8000/ws/game/bot/${modedata}/${userData.id}`;
-}
+      return `ws://${host}:8000/ws/game/Remote/${userData.id}`;
+    else if (gamemode === "bot")
+      return `ws://${host}:8000/ws/game/bot/${botMode}/${userData.id}`;
+    return null;
+  }
 
-useEffect(() => {
-  if (!userData) return;
+  useEffect(() => {
+    if (!userData) return;
     const url = getWSUrl();
-    console.log(url)
-    WSocket = new WebSocket(url);
-    
-    WSocket.onopen = () => {
-      console.log("WebSocket connection established");
-    };
+    if (url) {
+      WSocket = new WebSocket(url);
 
-    function compaireObjects(a, b) {
-      if (
-        a !== undefined &&
-        b !== undefined &&
-        JSON.stringify(b) !== JSON.stringify(a)
-      )
-        return true;
-      return false;
-    }
+      WSocket.onopen = () => {
+        console.log("WebSocket connection established");
+      };
 
-    WSocket.onmessage = function (e) {
-      let tmp = JSON.parse(e.data);
-      if (compaireObjects(tmp?.ballInfo, ball)) ball = tmp?.ballInfo;
-      if (compaireObjects(tmp?.leftPaddle, player1)) player1 = tmp?.leftPaddle;
-      if (compaireObjects(tmp?.rightPaddle, player2))
-        player2 = tmp?.rightPaddle;
-      setPause(() => {
-        return tmp?.room_paused;
-      });
-      setUser((e) => {
-        let obj = e;
+      function compaireObjects(a, b) {
         if (
-          obj === null ||
-          (obj !== null &&
-            (compaireObjects(tmp?.user1, obj[0]) ||
-              compaireObjects(tmp?.user2, obj[1])))
+          a !== undefined &&
+          b !== undefined &&
+          JSON.stringify(b) !== JSON.stringify(a)
         )
-        {
-          obj = [{ ...tmp?.user1 }, { ...tmp?.user2 }];
-        }
-        return obj;
-      });
-      setWinner(() => {
-        return tmp?.winner;
-      });
-      if (tmp?.stat === "close") {
-        setClose(true)
-        setTimeout(() => {
-          navigate(-1);
-        }, 1000);
+          return true;
+        return false;
       }
-      tmp?.stat === "countdown"
-        ? setCountDown(tmp?.value)
-        : setCountDown(() => 0);
-    };
 
-    WSocket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
+      WSocket.onmessage = function (e) {
+        let tmp = JSON.parse(e.data);
+        if (compaireObjects(tmp?.ballInfo, ball)) ball = tmp?.ballInfo;
+        if (compaireObjects(tmp?.leftPaddle, player1))
+          player1 = tmp?.leftPaddle;
+        if (compaireObjects(tmp?.rightPaddle, player2))
+          player2 = tmp?.rightPaddle;
+        setPause(() => {
+          return tmp?.room_paused;
+        });
+        setUser((e) => {
+          let obj = e;
+          if (
+            obj === null ||
+            (obj !== null &&
+              (compaireObjects(tmp?.user1, obj[0]) ||
+                compaireObjects(tmp?.user2, obj[1])))
+          ) {
+            obj = [{ ...tmp?.user1 }, { ...tmp?.user2 }];
+          }
+          return obj;
+        });
+        setWinner(() => {
+          return tmp?.winner;
+        });
+        if (tmp?.stat === "close") {
+          setClose(true);
+          setTimeout(() => {
+            navigate(-1);
+          }, 1000);
+        }
+        tmp?.stat === "countdown"
+          ? setCountDown(tmp?.value)
+          : setCountDown(() => 0);
+      };
 
-    WSocket.onclose = (event) => {
-      console.log("WebSocket connection closed:", event);
-    };
+      WSocket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
 
-    return () => {
-      WSocket.close();
-    };
+      WSocket.onclose = (event) => {
+        console.log("WebSocket connection closed:", event);
+      };
+
+      return () => {
+        WSocket.close();
+      };
+    }
   }, [userData, navigate]);
 
   useEffect(() => {
     /**************************************/
     /*     hna  remote game katbda        */
     /**************************************/
-    
+
+    if (mode) setGamemode(mode);
+
+    if (data !== undefined) {
+      if (gamemode === "bot") setBotMode(data.botmode);
+      if (gamemode === "friends") {
+        setUser1(data.user1);
+        setUser2(data.user2);
+      }
+    }
+    console.log(data.user1)
     const fetchUserData = async () => {
       try {
         const access = localStorage.getItem("access");
-        
-        const response = await axios.get(
-          `${apiUrl}/api/users/profile/`,
-          {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          }
-        );
+
+        const response = await axios.get(`${apiUrl}/api/users/profile/`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
         setUserData(response.data);
       } catch (error) {
         handleFetchError(error);
       }
     };
-    
+
     const handleFetchError = (error) => {
       if (error.response) {
         if (error.response.status === 401) {
@@ -351,7 +353,9 @@ useEffect(() => {
                 localStorage.removeItem("access");
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
-                console.log({ general: "Session expired. Please log in again." });
+                console.log({
+                  general: "Session expired. Please log in again.",
+                });
                 // refreh the page
                 window.location.reload();
                 navigate("/");
@@ -370,7 +374,7 @@ useEffect(() => {
         });
       }
     };
-    
+
     fetchUserData();
   }, []);
 
@@ -432,7 +436,7 @@ useEffect(() => {
   return (
     <div className={close ? "RoomContainer fade-out" : "RoomContainer"}>
       <div className="RoomFirst">
-        <div className="userinfo">
+        <div className="room-userinfo">
           <div className="image">
             <img
               src={image_renaming(user?.[0]?.avatar)}
@@ -460,15 +464,11 @@ useEffect(() => {
         </div>
       </div>
       <div className="RoomSecond">
-        {
-          countDown > 0 && (
-            <div className="RoomCountDown">
-                <p>
-                  {countDown}
-                </p>
-            </div>
-          )
-        }
+        {countDown > 0 && (
+          <div className="RoomCountDown">
+            <p>{countDown}</p>
+          </div>
+        )}
         {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>
@@ -515,27 +515,27 @@ useEffect(() => {
       </div>
       <div className="mobilebuttons">
         <button
-                ref={leftPaddleRef}
-                className="leftPaddle"
-                onTouchStart={handleLeftPaddleMouseDown}
-                onTouchEnd={handleLeftPaddleMouseUp}
-                onMouseDown={handleLeftPaddleMouseDown}
-                onMouseUp={handleLeftPaddleMouseUp}
-                >
+          ref={leftPaddleRef}
+          className="leftPaddle"
+          onTouchStart={handleLeftPaddleMouseDown}
+          onTouchEnd={handleLeftPaddleMouseUp}
+          onMouseDown={handleLeftPaddleMouseDown}
+          onMouseUp={handleLeftPaddleMouseUp}
+        >
           <img
             src="/GameMobileButton.svg"
             alt=""
             className="GameMobileButton"
-            />
+          />
         </button>
         <button
-                ref={rightPaddleRef}
-                className="rightPaddle"
-                onTouchStart={handleRightPaddleMouseDown}
-                onTouchEnd={handleRightPaddleMouseUp}
-                onMouseDown={handleRightPaddleMouseDown}
-                onMouseUp={handleRightPaddleMouseUp}
-                >
+          ref={rightPaddleRef}
+          className="rightPaddle"
+          onTouchStart={handleRightPaddleMouseDown}
+          onTouchEnd={handleRightPaddleMouseUp}
+          onMouseDown={handleRightPaddleMouseDown}
+          onMouseUp={handleRightPaddleMouseUp}
+        >
           <img
             src="/GameMobileButton.svg"
             alt=""

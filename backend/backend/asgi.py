@@ -16,10 +16,11 @@ from channels.auth import AuthMiddlewareStack
 import Chat.routing
 import Game.routing
 import Notifications.routing
+import Tournament.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 
-websocket_urlpatterns = Chat.routing.websocket_urlpatterns + Game.routing.websocket_urlpatterns + Notifications.routing.websocket_urlpatterns
+websocket_urlpatterns = Chat.routing.websocket_urlpatterns + Game.routing.websocket_urlpatterns + Notifications.routing.websocket_urlpatterns + Tournament.routing.websocket_urlpatterns
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),

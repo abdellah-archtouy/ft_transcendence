@@ -12,6 +12,7 @@ class Notifications(models.Model):
         User, on_delete=models.CASCADE, related_name="notification_sender", null=True, blank=True
     )
     message = models.TextField(blank=True)  # Removed max_length, added blank=True
+    link = models.TextField(max_length=200, null=True, blank=True)
     time = models.DateTimeField(default=timezone.now)
     read = models.BooleanField(default=False)
     notification_type = models.CharField(max_length=50, blank=True, choices=[
