@@ -2,19 +2,32 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import logo from "../../icons/logo.svg";
 import jarass from "../../icons/jarass.svg";
+import notifiedJarass from "../../icons/notifiedJarass.svg";
 import searchicon from "../../icons/search.svg";
 import burgerMenu from "../../icons/navicons/burgerMenu.svg";
 import React, { useEffect, useState } from "react";
 import "./navbar.css";
 import SearchBar from "./searchBar";
 import { useRef } from "react";
+import Notification from "./Notifications/notification";
+import axios from "axios";
 
 const Navbar = () => {
   const [activeElement, setActiveElement] = useState(null);
   const [search, setSearch] = useState(false);
   const [navDisplay, setNavDisplay] = useState(true);
+  const [newNotif, setNewNotif] = useState(false);
   const location = useLocation();
-  const burgerMenuRef = useRef(null)
+  const burgerMenuRef = useRef(null);
+
+  const [showNotifications, setShowNotifications] = useState(false);
+  const NotificationRef = useRef(null);
+  const [notificationData, setNotificationData] = useState(null);
+
+  const [user, setUser] = useState(null);
+
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const hostName = process.env.REACT_APP_API_HOSTNAME;
 
   const array = [
     { index: 0, path: "/", activeElement: "Home" },
@@ -69,28 +82,127 @@ const Navbar = () => {
       const navItems = document.querySelectorAll(".nav ul li");
       const itemOffsetLeft = navItems[Index.index].offsetLeft;
       const itemOffsetTop = navItems[Index.index].offsetTop;
-      navItems[Index.index].classList.add("active")
+      navItems[Index.index].classList.add("active");
       const coloredDiv = document.querySelector(".items");
+      let colorDivOffsetTop = coloredDiv.offsetTop;
+      if (navDisplay) colorDivOffsetTop = itemOffsetTop;
       coloredDiv.style.transform = `translateX(${
         itemOffsetLeft - coloredDiv.offsetLeft
-      }px) translateY(${itemOffsetTop - coloredDiv.offsetTop}px)`;
+      }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
     }
   }, [location.pathname]);
 
   const handleClickOutside = (event) => {
     if (burgerMenuRef.current && !burgerMenuRef.current.contains(event.target))
-      setNavDisplay(true)
-  }
+      setNavDisplay(true);
+    if (
+      NotificationRef.current &&
+      !NotificationRef.current.contains(event.target)
+    ) {
+      setShowNotifications(false);
+      setNewNotif(false);
+    }
+  };
 
-  useEffect(() => { // to run func on mouseclick that function check if we click outside the burgermenu
-    document.addEventListener("mousedown", handleClickOutside)
+  useEffect(() => {
+    // to run func on mouseclick that function check if we click outside the burgermenu
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-    }
+    };
   }, []);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get(`${apiUrl}/api/users/profile/`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+
+        setUser(response.data);
+        fetchNotification();
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    const fetchNotification = async () => {
+      try {
+        const access = localStorage.getItem("access");
+
+        const response = await axios.get(`${apiUrl}/notification`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        setNotificationData(response.data);
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    const handleFetchError = (error) => {
+      if (error.response) {
+        if (error.response.status === 401) {
+          const refresh = localStorage.getItem("refresh");
+
+          if (refresh) {
+            axios
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
+              .then((refreshResponse) => {
+                const { access: newAccess } = refreshResponse.data;
+                localStorage.setItem("access", newAccess);
+                fetchUserData(); // Retry fetching user data
+              })
+              .catch((refreshError) => {
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
+                console.log("you have captured the error");
+                console.log({
+                  general: "Session expired. Please log in again.",
+                });
+                window.location.reload();
+                navigate("/");
+              });
+          } else {
+            console.log({
+              general: "No refresh token available. Please log in.",
+            });
+          }
+        } else {
+          console.log({ general: "Error fetching data. Please try again." });
+        }
+      } else {
+        console.log({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      const user_id = user.id;
+      const socket = new WebSocket(
+        `ws://${hostName}:8000/ws/notification/${user_id}/`
+      );
+
+      socket.onmessage = function (event) {
+        const notification = JSON.parse(event.data);
+        setNotificationData((prev) => [notification, ...prev]);
+        setNewNotif(true);
+      };
+    }
+  }, [user]);
 
   return (
     <>
@@ -207,9 +319,25 @@ const Navbar = () => {
           >
             <img src={searchicon} alt="" />
           </button>
-          <button className="navbutton">
-            <img src={jarass} alt="" />
+          <button
+            className={!newNotif ? "navbutton" : "navbutton vibrate"}
+            onClick={() => {
+              setShowNotifications(true);
+            }}
+            ref={NotificationRef}
+          >
+            {!newNotif ? (
+              <img src={jarass} alt="" />
+            ) : (
+              <img src={notifiedJarass} alt="" />
+            )}
           </button>
+          <div className={showNotifications ? "Notification-div" : "Notification-div close"} ref={NotificationRef}>
+            <Notification
+              setShowNotifications={setShowNotifications}
+              notificationData={notificationData}
+            />
+          </div>
           <button
             className="navbutton"
             onClick={() => {

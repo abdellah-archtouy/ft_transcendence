@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import redirect
@@ -22,6 +23,7 @@ import requests, os, string, random
 from django.conf import settings
 from django.db.models import Q
 import re
+from Notifications.views import create_notification
 
 
 User = get_user_model()
@@ -416,6 +418,9 @@ def add_friend(request):
 
         # Check if friend exists
         friend = User.objects.get(id=friend_id)
+
+        # posting in the Notification table
+        create_notification(friend, current_user, "FRIEND_REQUEST", link=None)
 
         # Check if friendship already exists
         if (

@@ -1,12 +1,21 @@
+.main:has(.RoomContainer) {
+  margin-bottom: 0px;
+}
+
 .RoomContainer {
   height: 100%;
-  width: 100%;
   flex: 1;
+  width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 2vh;
-  margin-top: 2vh;
+  padding: clamp(0.625rem, 6.163vw - 0.82rem, 3.125rem) 0px;
+  animation: fade-in 0.5s ease-in 0s;
+}
+
+.RoomContainer.fade-out {
+  animation: fade-out 1s ease-out 2s;
 }
 
 .mobilebuttons {
@@ -21,7 +30,7 @@
   align-items: center;
 }
 
-.userinfo {
+.room-userinfo {
   height: 100%;
   display: flex;
   align-items: center;
@@ -83,8 +92,12 @@
 
 .RoomSecond {
   position: relative;
-  width: clamp(23.438rem, 58.685vw + 9.683rem, 62.5rem);
-  height: clamp(14.625rem, 30.329vw + 7.517rem, 34.813rem);
+  --scale: 1;
+  --rotate: 0deg;
+  --text-rotation: 0deg;
+  transform: rotate(var(--rotate)) scale(var(--scale));
+  height: 40vh;
+  max-height: 557px;
   aspect-ratio: 16 / 9;
 }
 
@@ -142,7 +155,7 @@
   justify-content: center;
   border-radius: 10px;
   transition: all 0.4s;
-  animation: pause 0.4s ease-in;
+  animation: fade-in 0.4s ease-in;
   backdrop-filter: blur(10px);
   background-color: #222222ac;
   border: solid #525252;
@@ -162,7 +175,7 @@
   gap: 20px;
   border-radius: 10px;
   transition: all 0.4s;
-  animation: pause 0.4s ease-in;
+  animation: fade-in 0.4s ease-in;
   backdrop-filter: blur(10px);
   background-color: #222222ac;
   border: solid #525252;
@@ -170,7 +183,24 @@
 }
 
 .win {
-  animation: pause 0.4s ease-in;
+  animation: fade-in 0.4s ease-in;
+}
+
+.RoomCountDown > p {
+  line-height: 0.7;
+  animation: countdown 1s linear infinite;
+}
+
+.RoomCountDown {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 3;
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
 }
 
 @keyframes win {
@@ -188,14 +218,17 @@
   }
 }
 
-@keyframes pause {
+@keyframes countdown {
   0% {
-    opacity: 0;
+    opacity: 1;
+    transform: scale(2) rotate(var(--text-rotation));
   }
   100% {
-    opacity: 1;
+    opacity: 0;
+    transform: scale(1) rotate(var(--text-rotation));
   }
 }
+
 .pauseDisplay p {
   text-shadow: 0px 0px 10px #b2b2b2;
   animation: textanimation 4s ease-in infinite;
@@ -226,9 +259,10 @@
   animation: vibrate 1s ease-in;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1024px) and (min-height: 620px) {
   .RoomContainer {
     justify-content: space-between;
+    
   }
 
   .RoomSecond {
@@ -242,11 +276,12 @@
     width: 40%;
     justify-content: space-between;
     user-select: none;
+    padding: 20px 0;
   }
 
-  .mobilebuttons > button.active {
+  .mobilebuttons > button:active {
     transform: translateY(0px) rotate(45deg);
-    box-shadow: 5px 5px 0px 0px #7c7c7c;
+    box-shadow: none;
   }
 
   .mobilebuttons > button {
@@ -274,48 +309,66 @@
     width: 80%;
   }
 
-  .rightPaddle > img {
+  .leftPaddle > img {
     transform: rotate(135deg);
   }
 }
 
 @media (max-width: 640px) {
+  .RoomContainer{
+    justify-content: space-around;
+    gap: 30px;
+  }
+  
   .RoomSecond {
-    margin-top: auto;
+    --scale: 0.8;
+    --rotate: -90deg;
     order: 3;
-    transform: rotate(-90deg);
+    margin: auto 0px;
   }
 
-  .RoomSecond > div > p {
-    transform: rotate(90deg);
+  .RoomSecond > div {
+    padding: 10px;
+    font-size: 35px;
   }
-
+  
+  .RoomSecond > div > p, .RoomSecond > div > .win > p {
+    --text-rotation: 90deg;
+    transform: rotate(var(--text-rotation));
+  }
+  
   .buttons {
     order: 0;
   }
   
   .mobilebuttons {
     width: 50%;
-    margin-top: auto;
-    /* transform: translateY(-10px); */
   }
   
   .mobilebuttons > button {
     height: 50px;
     width: 50px;
   }
-
+  
   .rightPaddle > img {
     transform: rotate(225deg);
   }
-
+  
   .leftPaddle > img {
     transform: rotate(45deg);
   }
 }
 
-@media (max-width: 550px) and (max-height: 720px) {
+@media (max-height: 720px) {
+  
   .RoomSecond {
-    transform: rotate(-90deg) scale(0.7);
+    --scale: 0.7;
+  }
+}
+
+@media (min-height: 880px) and (max-width: 1024px) {
+  
+  .RoomSecond {
+    --scale: 0.9;
   }
 }

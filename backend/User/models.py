@@ -3,12 +3,14 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import datetime
 
+
 def reset_ranks():
     users = User.objects.all()
     sorted_users_by_score = users.order_by("-score")
     for rank, user in enumerate(sorted_users_by_score, start=1):
         user.rank = rank
         user.save()
+
 
 # Create your models here.
 class User(AbstractUser):
@@ -22,7 +24,7 @@ class User(AbstractUser):
         default="avatars/default_avatar.png",
     )
     cover = models.ImageField(
-        upload_to="covers/", null=True, blank=True, default="covers/default.jpeg"
+        upload_to="covers/", null=True, blank=True, default="covers/default_cover.png"
     )
     bio = models.TextField(blank=True)  # Removed max_length, added blank=True
     win = models.IntegerField(default=0)
@@ -51,7 +53,7 @@ class UserOTP(models.Model):
 
 class Achievement(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE#, related_name='user_achievement'
+        User, on_delete=models.CASCADE  # , related_name='user_achievement'
     )  # Renamed uid to user for clarity
     maestro = models.BooleanField(default=False)
     downkeeper = models.BooleanField(default=False)
@@ -76,11 +78,3 @@ class Friend(models.Model):
 
     def __str__(self):
         return f"{self.user1.username} - {self.user2.username}"
-
-
-class Notification(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="notifications"
-    )  # Fixed related_name
-    message = models.TextField(blank=True)  # Removed max_length, added blank=True
-    time = models.DateTimeField(auto_now_add=True)

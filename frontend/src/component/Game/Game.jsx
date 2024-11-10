@@ -1,9 +1,9 @@
-import "./Game.css";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TournamentVector from "../../icons/Vector1.svg";
 import BotVector from "../../icons/Vector2.svg";
 import FriendVector from "../../icons/Vector.svg";
-import { useEffect, useState } from "react";
+import "./Game.css";
 
 const Game = () => {
   const [fade, setFade] = useState(false);

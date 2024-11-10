@@ -1,0 +1,346 @@
+.profile_user{
+    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    margin-top: 100px;
+    margin-bottom: 150px;
+    /* border: red solid; */
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.userinfo{
+    height: 370px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: end;
+    align-items: center;
+    border-radius: 30px;
+    padding-top: 160px;
+    /* border: red solid; */
+    padding-bottom: 50px;
+    background-color: #22222280;
+    width: 900px;
+    z-index: 0;
+}
+
+.userinfo::after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: 303px;
+    border-radius: 30px 0 0 0;
+    box-shadow: -7px -7px 0 7px rgb(0, 0, 0);
+    top: -0px;
+    /* border: solid red; */
+    z-index: 1;
+}
+
+.userinfo::before {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    left: 303px;
+    border-radius: 0 30px 0 0;
+    box-shadow: 7px -7px 0 7px rgb(0, 0, 0);
+    top: -0px;
+    /* border: solid red; */
+    z-index: 1;
+}
+
+
+.avatar-profile{
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    background: black;
+    border-radius: 50%;
+    top: 150px;
+    z-index: 1;
+    /* border: red solid; */
+    overflow: hidden;         
+    display: flex;          
+    align-items: center;     
+    justify-content: center;  
+}
+
+
+.avatar-profile img{
+    border: #636262 solid;
+    width: 178px;
+    height: 178px;
+    align-self: center;
+    justify-self: center;
+    box-shadow: 0px 0px 40px rgb(189, 189, 189, 0.25);
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.analytics-achievment{
+    height: 350px;
+    display: flex;
+    /* grid-template-columns: 2fr 1fr; */
+    gap: 10px;
+    width: 900px;
+}
+
+.analytics-achievment .analytics{
+    background: #22222280;
+    width: 577px;
+    display: flex;
+    padding: 34px;
+    border-radius: 30px;
+}
+
+
+.analytics-achievment .achievment{
+    background: #22222280;
+    border-radius: 30px;
+    width: 304px;
+    /* padding: 24px; */
+    padding-top: 34px;
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    backdrop-filter: blur(20px);
+}
+
+
+.analytics-achievment .achievment h1{
+    align-self: flex-start;
+    line-height: 1;
+
+    padding-left: 34px;
+}
+.analytics-achievment .achievment .elements{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    border-radius: 9px;
+    gap: 10px;
+    justify-self: end;
+    margin: 0;
+    padding: 0 34px;
+    padding-top: 100px;
+    margin-bottom: 34px;
+    top: 0px;
+    overflow: scroll;
+    overflow-x: hidden;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.analytics-achievment .achievment .elements .element {
+    position: relative;
+    width: 100%;
+    height: 55px;
+
+}
+.analytics-achievment .achievment .elements .element img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.username{
+    height: 32px;
+    line-height: normal;
+}
+
+.name-status{
+    height: 32px;
+    /* width: 135px; */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+.online{
+    height: 10px;
+    width: 10px;
+    background: #62A460;
+}
+
+.bio{
+    /* border: red solid; */
+    width: 50%;
+    height: fit-content;
+}
+
+.userinfo p{
+    color: #666666;
+}
+
+.win-rank-score{ 
+    
+
+    position: relative;
+    width: 60%;
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ach-info{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    height: 100%;
+}
+
+.ach-joker .ach-info h1{
+    padding: 0px;
+    color: #9EF08F;
+}
+
+.ach-thunder_strike .ach-info h1{
+    padding: 0px;
+    color: #B0D2D2;
+}
+
+.ach-the_emperor .ach-info h1{
+    padding: 0px;
+    color: #D8D8D8;
+}
+
+.ach-maestro .ach-info h1{
+    padding: 0px;
+    color: #FBD9AB;
+}
+
+.ach-downkeeper .ach-info h1{
+    padding: 0px;
+    color: #253743;
+}
+
+.ach-name{
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.achivement{
+    position: relative;
+    background-size: cover;
+    display: flex;
+    gap: 25px;
+    flex-direction: row;
+    align-items: center;
+    /* width: 238px; */
+    height: 55px;
+    padding: 5px;
+    padding-left: 9px;
+    border-radius: 9px;
+    z-index: 0;
+}
+
+
+.ach-maestro{
+    background-image: url('./background/bg_maestro.png');
+    box-shadow: 0px 0px 20px #A32B2850;
+    
+}
+
+.ach-downkeeper{
+    background-image: url('./background/bg_downkeeper.png');
+    /* box-shadow: 0px 0px 20px maestro
+maestro#A32B2850; */
+    
+}
+
+.ach-joker{
+    background-image: url('./background/bg_joker.png');
+    box-shadow: 0px 0px 20px #007A0275;
+    z-index: 10;
+}
+
+.ach-the_emperor{
+    background-image: url('./background/bg_the\ 3.png');
+    box-shadow: 0px 0px 20px #A7A7A7;
+}
+
+.ach-thunder_strike{
+    background-image: url('./background/bg_thunder.png');
+    box-shadow: 0px 0px 20px #49A7C0;
+}
+
+.ach-joker .joker_icon{
+    height: 100%;
+    width: 55px;
+    border-radius: 50%;
+    text-shadow: 0px 0px 20px #007A0275;
+}
+
+.ach-maestro .maestro_icon{
+    height: 100%;
+    border-radius: 50%;
+    text-shadow: 0px 0px 20px #A32B2850;
+}
+
+.ach-the_emperor .the_emperor_icon{
+    height: 100%;
+    border-radius: 50%;
+    text-shadow: 0px 0px 20px #A7A7A7;
+}
+
+.ach-thunder_strike .thunder_strike_icon{
+    height: 100%;
+    border-radius: 50%;
+    text-shadow: 0px 0px 20px #49A7C0;
+}
+
+
+.ach-downkeeper .downkeeper_icon{
+    height: 100%;
+    border-radius: 50%;
+    /* text-shadow: 0px 0px 20px #A32B2850; */
+}
+
+.ach-icon >svg{
+    width: auto;
+    /* align-self: center;
+    justify-self: center; */
+    height: 100%;
+    z-index: 1;
+}
+
+/* .ach-joker .joker_icon > svg{
+    z-index: 1;
+    width: auto;
+    height: 100%;
+}
+
+.ach-maestro .maestro_icon > svg{
+    z-index: 1;
+    width: auto;
+    height: 100%;
+} */
+
+/* .ach-downkeeper .downkeeper_icon > svg{
+    z-index: 1;
+    border: red solid;
+    width: auto;
+    height: 100%;
+} */
+
+.ach-info > p{
+    text-align: start;
+    color: #FFFFFF50;
+    line-height: 1;
+    font-size: 10px;
+    font-weight: 400;
+}
