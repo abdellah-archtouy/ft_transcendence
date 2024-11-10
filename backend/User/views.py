@@ -179,7 +179,7 @@ def download_and_save_avatar(avatar_url, username):
         # Check if the file already exists and remove it (if you want to replace it)
         avatar_path = f"{settings.MEDIA_ROOT}/avatars/{avatar_filename}"
         if os.path.exists(avatar_path):
-            os.remove(avatar_path)  # Remove the existing avatar file
+            return None  # Return None if the file already exists
 
         # Create a ContentFile object from the image content
         avatar_file = ContentFile(response.content, avatar_filename)
@@ -480,10 +480,10 @@ def search_bar_list(request):
 @permission_classes([IsAuthenticated])
 def update_general_info(request):
     try:
-
         user = request.user
         data = request.data
 
+        print("data", data)
         # Update username if provided
         new_username = data.get("username", None)
         if new_username and new_username != user.username:
@@ -499,12 +499,24 @@ def update_general_info(request):
         if new_bio:
             user.bio = new_bio
 
+        # Handle avatar and cover image uploads (if provided)
+        new_avatar = data.get("avatar", None)  # Assuming avatar is uploaded as file
+        new_cover = data.get("cover", None)  # Assuming cover is uploaded as file
+
+        if new_avatar:
+            # Update avatar logic here (you might want to process the image or save it)
+            user.avatar = new_avatar
+
+        if new_cover:
+            # Update cover logic here (you might want to process the image or save it)
+            user.cover = new_cover
+
         # Save the updated user data
         user.save()
 
-        # Return updated user data
+        # Return updated user data (returning the updated fields including avatar and cover)
         avatar_url = user.avatar.url if user.avatar else None
-        print("user successfully updated")
+        cover_url = user.cover.url if user.cover else None
         return Response(
             {
                 "message": "User information updated successfully.",
@@ -513,7 +525,7 @@ def update_general_info(request):
                 "email": user.email,
                 "bio": user.bio,
                 "avatar": avatar_url,
-                "cover": user.cover.url if user.cover else None,
+                "cover": cover_url,
             },
             status=status.HTTP_200_OK,
         )

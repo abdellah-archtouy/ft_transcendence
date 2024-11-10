@@ -223,6 +223,19 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
       // Move focus to the previous input on backspace if current is empty
       e.target.previousSibling.focus();
     }
+  
+    // Add this logic for the Enter key press
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submission
+  
+      if (index === otp.length - 1) {
+        // Submit OTP if it's the last field
+        handleOtpSubmit(e); // Call your OTP submit function
+      } else {
+        // Move to the next input if not the last field
+        e.target.nextSibling.focus();
+      }
+    }
   };
 
   const handlePaste = (e) => {
@@ -410,6 +423,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
               placeholder={errors.email || "Email"}
               value={email}
               onChange={handleChange(setEmail)}
+              onKeyDown={(e) => handleKeyDown(e, 0)}
             />
             {!isForgotPassword && (
               <div className="password-container">

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-function Card({ friends, handleAddFriend }) {
+function Card({ friends, handleAddFriend}) {
   const nameRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
@@ -24,7 +24,7 @@ function Card({ friends, handleAddFriend }) {
   const avatarUrl = `http://localhost:8000${friends.avatar}`;
 
   return (
-    <div className="card-container">
+    <div className="card-container" >
       <div className="card">
         <img src={avatarUrl} alt={`${friends.username}'s avatar`} />
         <div className="container">

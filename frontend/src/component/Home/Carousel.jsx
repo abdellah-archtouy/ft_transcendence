@@ -65,7 +65,7 @@ function Carousel({ friends, handleAddFriend }) {
   return (
     <Slider {...settings}>
       {friends.length > 0 ? (
-        friends.map((friend) => (
+        friends.map((friend, index) => (
           <Card
             friends={friend}
             handleAddFriend={handleAddFriend}

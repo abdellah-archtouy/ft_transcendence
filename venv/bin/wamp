@@ -1,4 +1,4 @@
-#!/home/non/ft_transcendence/venv/bin/python3
+#!/Users/rel-fila/ft_transcendence/venv/bin/python3.13
 # -*- coding: utf-8 -*-
 import re
 import sys

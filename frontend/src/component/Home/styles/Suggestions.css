@@ -1,5 +1,5 @@
 .suggestions {
-    height: 400px;
+    height: clamp(17.5rem, 16.47rem + 5.1502vw, 25rem);
     width: 50vw;
     background: rgba(34, 34, 34, 0.46);
     border-radius: 16px;
@@ -10,6 +10,7 @@
     border-radius: 30px;
     flex-shrink: 0;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 5px 5px;
+    transition: all 0.3s ease;
 }
 
 .card {
@@ -17,12 +18,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    margin-left: 8%;
-    border-radius: 25px;
+    border-radius: clamp(1rem, 0.9657rem + 0.1717vw, 1.25rem);
     background-color: #222222;
     width: 100%;
     height: 100%;
-    padding: 12% 0 12% 0;
+    padding: 1rem;
 }
 
 .name-container {
@@ -31,13 +31,16 @@
     overflow: hidden;
     white-space: nowrap;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .name {
     display: inline-block;
     transition: transform 0.3s linear;
-    font-size: 1.5em;
-
+    font-size: clamp(1.125rem, 1.0735rem + 0.2575vw, 1.5rem);
+    width: 100%;
 }
 
 .name-container.overflow:hover .name {
@@ -56,10 +59,10 @@
 
 
 .card img {
-    width: 50%;
-    height: auto;
+    width: clamp(5rem, 4.6567rem + 1.7167vw, 7.5rem);
+    height: clamp(5rem, 4.6567rem + 1.7167vw, 7.5rem);
     border-radius: 50%;
-    border: 3px solid #636262;
+    border: clamp(0.0625rem, 0.0453rem + 0.0858vw, 0.1875rem) solid #636262;
 }
 
 .card-btn {
@@ -67,11 +70,12 @@
     background-color: rgba(217, 217, 217, 0.5);
     color: black;
     height: 80%;
-    width: 100%;
+    width: clamp(3.4375rem, 3.0512rem + 1.9313vw, 6.25rem);
     border: 0;
     border-radius: 6px;
     margin-bottom: 10%;
     cursor: pointer;
+    font-size: clamp(0.4375rem, 0.386rem + 0.2575vw, 0.8125rem);
     transition: all 0.5s ease;
 }
 
@@ -147,19 +151,14 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: 1.5em;
-    margin-left: 1em;
+    font-size: clamp(1rem, 0.8798rem + 0.6009vw, 1.875rem);
     margin-bottom: 0;
-    user-select: none;
+    padding: 1.2rem;
 }
 
 .slide-elements {
     width: 100%;
     height: 80%;
-}
-
-.card-container-name {
-    font-size: 1.2em;
 }
 
 .slick-slider {
@@ -172,7 +171,6 @@
     width: auto;
 }
 
-
 .slick-track {
     height: 100%;
     width: auto;
@@ -181,6 +179,10 @@
 .card-container {
     height: 100%;
     width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5%;
 }
 
 .slick-slide div:first-child {
@@ -189,65 +191,39 @@
 }
 
 .container-btn {
-    width: 40%;
+    width: 100%;
     height: auto;
     scale: 1.2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
 }
 
 @media (min-width: 1440px) and (max-width: 1919px) {
     .suggestions {
-        height: 350px;
         width: 65vw;
-    }
-
-    .card img {
-        border: 2px solid #636262;
-    }
-
-    .card-btn {
-        font-weight: 600;
     }
 }
 
 @media (min-width: 1024px) and (max-width: 1439px) {
     .suggestions {
-        height: 350px;
         width: 80vw;
     }
 
-    .card-btn {
-        font-size: 0.7rem;
-    }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
     .suggestions {
-        height: 300px;
         width: 90vw;
     }
 
-    .card-btn {
-        font-size: 0.6rem;
-    }
-
-    .card img {
-        border: 2px solid #636262;
-    }
 }
 
 @media (min-width: 320px) and (max-width: 767px) {
     .suggestions {
-        height: 300px;
         width: 95vw;
-    }
-
-    .card-btn {
-        font-size: 0.6rem;
-    }
-
-    .card img {
-        border: 2px solid #636262;
+        height: 270px;
     }
 
     element {

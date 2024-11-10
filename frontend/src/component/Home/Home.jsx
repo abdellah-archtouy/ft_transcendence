@@ -156,15 +156,16 @@ const Home = () => {
   return (
     <div className="home-div">
       <div className="home-dive-welcome">
+        <div className="home-div-welcome-text">
         {user ? (
           <>
-            <h2>
+            <h2 className="home-div-welcome-text-name">
               Hello,{" "}
               {user.username.length > 9
                 ? `${user.username.substring(0, 9)}...`
                 : user.username}
             </h2>
-            <p>Welcome back to our game</p>
+            <p >Welcome back to our game</p>
           </>
         ) : (
           <p>Loading...</p>
@@ -175,6 +176,7 @@ const Home = () => {
         >
           Play now
         </button>
+        </div>
       </div>
       <div className="suggestions">
         <div className="header_element">

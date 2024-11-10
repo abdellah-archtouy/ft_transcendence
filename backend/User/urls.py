@@ -31,18 +31,11 @@ urlpatterns = [
     path("users/suggest_friends/", suggest_friends, name="suggest_friends"),
     path("auth/callback/", handle_42_callback, name="handle_42_callback"),
     path("users/validate/", validate_token, name="validate_token"),
-    # add the resend-otp endpoint
     path("users/resend-otp/", resend_otp, name="resend_otp"),
-    # add the forgot-password endpoint
     path("users/forgot-password/", forgot_password, name="forgot_password"),
-    # add the add friend endpoint
     path("users/add_friend/", add_friend, name="add_friend"),
-    path(
-        "searchbar/", search_bar_list, name="search_bar_list"
-    ),  # return the user list of search bar
-    # add the update password endpoint
+    path("searchbar/", search_bar_list, name="search_bar_list"),
     path("users/change_password/", change_password, name="change_password"),
-    # add the update general info endpoint
     path("users/update-general-info/", update_general_info, name="update_general_info"),
 ]
 

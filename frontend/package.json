@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@tsparticles/react": "^3.0.0",
     "axios": "^1.7.7",
+    "cropperjs": "^1.6.2",
     "dotenv": "^16.4.5",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",

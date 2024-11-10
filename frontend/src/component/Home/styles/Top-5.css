@@ -1,7 +1,6 @@
 .top-5 {
     width: 60%;
     height: 100%;
-    /* From https://css.glass */
     background: rgba(34, 34, 34, 0.46);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -17,26 +16,24 @@
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    margin-left: 1.2em;
-    margin-right: 1.2rem;
     margin-bottom: 0;
     height: 20%;
-    width: auto;
     user-select: none;
+    padding: 1.2rem;
 }
 
 .top-5-stats {
     height: 75%;
-    width: 99%;
+    width: 100%;
 }
 
 .top-5-header div a {
     color: rgba(255, 255, 255, 0.25);
-    font-size: 18px;
+    font-size: clamp(0.75rem, 0.6985rem + 0.2575vw, 1.125rem);
 }
 
 .top-5-header h2 {
-    font-size: 2em;
+    font-size: clamp(1.5625rem, 1.408rem + 0.7725vw, 2.6875rem);
 }
 
 .top-5-container {
@@ -47,20 +44,22 @@
 .top-5-list {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 3%;
     height: 100%;
     width: 100%;
+    padding: 0 1.2rem 0 1.2rem;
 }
 
 .top-5-list-item {
-    width: 96%;
+    width: 100%;
     height: 15%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     gap: 1.4em;
-    margin-left: 1.2em;
+    font-size: clamp(0.5625rem, 0.5024rem + 0.3004vw, 1rem);
 }
 
 
@@ -69,6 +68,7 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     height: 5%;
+    
 }
 
 .top-5-list-item div {
@@ -82,15 +82,9 @@
 }
 
 
-.size-6 {
-    width: 25%;
-    height: auto;
-}
-
 .top-5-list-item {
     background-color: #222222;
     border-radius: 10px;
-    padding: 0.3em;
     height: 16%;
 }
 
@@ -102,81 +96,40 @@
 }
 
 .top-5-list-item-user img {
-    width: 2.9rem;
-    height: auto;
+    width: clamp(1.875rem, 1.7462rem + 0.6438vw, 2.8125rem);
+    height: clamp(1.875rem, 1.7462rem + 0.6438vw, 2.8125rem);
     border-radius: 50%;
-    border: 2px solid #636262;
+    border: clamp(0.0625rem, 0.0539rem + 0.0429vw, 0.125rem) solid #636262;
 }
 
-.size-6:hover {
+.top5-LinkIcon {
+    height: clamp(0.625rem, 0.414vw + 0.547rem, 0.813rem);
+    fill: rgb(255, 255, 255, 0.8);
+    transition: all 0.4s ease-in-out;
+}
+.top5-LinkIcon:hover {
     cursor: pointer;
     filter: drop-shadow(0 0 0.75rem rgba(255, 255, 255, 0.8));
 }
 
 .top-5-list-item-link a {
-    text-decoration: none;
     color: #FFFFFF;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
 }
 
-.top-5-list-item-link {
-    margin-top: 0.3rem;
-}
-
-
-.top-5-list-item-user:first-child {
-    margin-left: 0.5em;
-}
 
 .top-5-list-item-user,
 .top-5-list-item-name,
 .top-5-list-item-rank,
 .top-5-list-item-score,
-.top-5-list-item-wins {
+.top-5-list-item-wins,
+.top-5-list-item-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    user-select: none;  
-    /* overflow: hidden; */
-}
-
-@media (min-width: 1440px) and (max-width: 1919px) {
-    .top-5-list-item-user img {
-        width: 2.5rem;
-        height: auto;
-        border: 1.5px solid #636262;
-    }
-
-    .top-5-list-item {
-        margin-right: 2rem;
-    }
-
-    .top-5-list-item-link {
-        margin-top: 0.3rem;
-    }
-
-    .top-5-header div a {
-        font-size: 16px;
-    }
-}
-
-@media (min-width: 1024px) and (max-width: 1439px) {
-    .top-5-list-item-user img {
-        width: 2.5rem;
-        height: auto;
-        border: 1.5px solid #636262;
-    }
-
-    .top-5-list-item {
-        font-size: 0.8rem;
-    }
-
-    .top-5-header div a {
-        font-size: 14px;
-    }
-
-    .top-5-header h2 {
-        font-size: 1.6em;
-    }
+    user-select: none;
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -185,39 +138,6 @@
         height: 50%;
     }
 
-    .top-5-header h2 {
-        font-size: 1.6em;
-        margin-left: 0.1rem;
-    }
-
-    .top-5-list-item-user img {
-        width: 2rem;
-        height: auto;
-        border: 1.5px solid #636262;
-    }
-
-    .top-5-list-item {
-        font-size: 0.8rem;
-    }
-
-    .top-5-header div a {
-        font-size: 15px;
-    }
-
-    .top-5-list-item-link {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .top-5-list-item-link a svg {
-        width: 1rem;
-    }
-
-    .top-5-list {
-        margin-left: 0.2rem;
-        padding-right: 0.2rem;
-    }
 }
 
 @media (min-width: 320px) and (max-width: 767px) {
@@ -226,37 +146,4 @@
         height: 50%;
     }
 
-    .top-5-header h2 {
-        font-size: 1.6em;
-        margin-left: 0.1rem;
-    }
-
-    .top-5-list-item-user img {
-        width: 2rem;
-        height: auto;
-        border: 1.5px solid #636262;
-    }
-
-    .top-5-list-item {
-        font-size: 0.8rem;
-    }
-
-    .top-5-header div a {
-        font-size: 15px;
-    }
-
-    .top-5-list-item-link {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .top-5-list-item-link a svg {
-        width: 1rem;
-    }
-
-    .top-5-list {
-        margin-left: 0.2rem;
-        padding-right: 0.2rem;
-    }
 }

@@ -10,7 +10,12 @@ function Stats({ data }) {
     <div className="matches-container">
       <ul className="matches-list">
         {stats.map((stat, index) => (
-          <li key={index} className="matches-list-item">
+          <li key={index} className="matches-list-item" style={{
+            animationName: "fade-in",
+            animationDuration: `${index * 1.5}s`,
+            animationTimingFunction: "ease-in-out",
+            animationFillMode: "forwards",
+          }}>
             <div className="matches-list-item-user">
               <img src={avatarUrl(stat.winner_avatar)} alt="user1" />
               <p>{stat.winner_username.toUpperCase()}</p>
