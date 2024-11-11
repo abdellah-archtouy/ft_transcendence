@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./tournamentRemote.css"
+import "./tournamentRemote.css";
 import { useRef } from "react";
 import TournamentCard from "./tournamentCard";
+import Slider from "react-slick";
 
 const TournamentRemote = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -17,22 +18,23 @@ const TournamentRemote = () => {
   const navigate = useNavigate();
   let socketRef = useRef(null);
 
-
   function handleSubmit(e) {
     e.preventDefault();
     const isFull = tournamentName ? true : false;
-    if (isFull && socketRef.current && socketRef.current.readyState === WebSocket.OPEN)
-      {
-        socketRef.current?.send(
-          JSON.stringify({
-            type: "create",
-            name: tournamentName
-          })
-        );
-      }
-      else {
-        console.log("WebSocket is not open");
-      }
+    if (
+      isFull &&
+      socketRef.current &&
+      socketRef.current.readyState === WebSocket.OPEN
+    ) {
+      socketRef.current?.send(
+        JSON.stringify({
+          type: "create",
+          name: tournamentName,
+        })
+      );
+    } else {
+      console.log("WebSocket is not open");
+    }
   }
 
   const handleChange = (e) => {
@@ -53,11 +55,11 @@ const TournamentRemote = () => {
 
         setUser(response.data);
       } catch (error) {
-        handleFetchError(error);
+        handleFetchError(error, fetchUserData);
       }
     };
 
-    const handleFetchError = (error) => {
+    const handleFetchError = (error, retryFunction) => {
       if (error.response) {
         if (error.response.status === 401) {
           const refresh = localStorage.getItem("refresh");
@@ -68,7 +70,7 @@ const TournamentRemote = () => {
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
-                fetchUserData(); // Retry fetching user data
+                retryFunction(); // Retry fetching user data
               })
               .catch((refreshError) => {
                 localStorage.removeItem("access");
@@ -101,8 +103,10 @@ const TournamentRemote = () => {
   useEffect(() => {
     if (user) {
       const user_id = user.id;
-      socketRef.current = new WebSocket(`ws://${hostName}:8000/ws/tournament/${user_id}/`);
-      
+      socketRef.current = new WebSocket(
+        `ws://${hostName}:8000/ws/tournament/${user_id}/`
+      );
+
       socketRef.current.onopen = () => {
         console.log("WebSocket connection established");
       };
@@ -129,88 +133,123 @@ const TournamentRemote = () => {
 
   useEffect(() => {
     if (join) {
-      socketRef.current.send(
-        JSON.stringify({
-          type:"join",
-          name: tournamentName
-      }))
+      if (
+        join &&
+        socketRef.current &&
+        socketRef.current.readyState === WebSocket.OPEN
+      )
+        socketRef.current.send(
+          JSON.stringify({
+            type: "join",
+            name: tournamentName,
+          })
+        );
     }
-  }, join)
+  }, join);
 
-  if (!tournamentData) return <>Loading ...</>
-  return( 
+  if (!tournamentData) return <>Loading ...</>;
+  return (
     <div className="tournamentRemote-container">
-        <h1 className="noTournament-header">Tournament</h1>
-        {!tournamentData.length && !noTournament ? (
-            <div className="noTournament-container" key={"noTournament-container"}>
-                <p className="noTournament-text">
-                    No Tournament is registered
-                    <br />
-                    in the Tournaments
-                    <br /> <br />
-                    Create your own here !
-                </p>
-                <button
-                    className="notournament-addButton"
-                    onClick={() => setNoTournament(true)}
-                    >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                        className="addButton_icon"
-                    >
-                        <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
-                    </svg>
-                    <p>Add Tournament</p>
-                </button>
-            </div>
-            ) : !tournamentData.length ? (
-                <div
-                className="remote-AddTournament-container"
-                key={"AddTournament-container"}
-                >
-                <h1 className="remote-AddTournamament-header">Remote Tournament</h1>
-                <div className="remote-AddTournament-formatContainer">
-                  <form className="remote-AddTournament-form" onSubmit={handleSubmit}>
-                    <div
-                      id="AddTournament-cancel"
-                      onClick={() => setNoTournament(false)}
-                    >
-                      cancel
-                    </div>
-                    <div className="remote-input-container">
-                      <h1 className="remote-AddTournamament-formheader">Remote Tournament</h1>
-                      <div>
-                        <label>Tournament Name:</label>
-                        <input
-                          type="text"
-                          id="fname"
-                          name="0"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="remote-submitTournament">
-                      <div className="remote-bgcolor"></div>
-                      <input type="submit" value="Play" id="AddTournament-submit" />
-                    </div>
-                  </form>
+      {!tournamentData.length && !noTournament ? (
+        <div className="noTournament-container" key={"noTournament-container"}>
+          <h1 className="noTournament-header">Tournament</h1>
+          <p className="noTournament-text">
+            No Tournament is registered
+            <br />
+            in the Tournaments
+            <br /> <br />
+            Create your own here !
+          </p>
+          <button
+            className="notournament-addButton"
+            onClick={() => setNoTournament(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              className="addButton_icon"
+            >
+              <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+            </svg>
+            <p>Add Tournament</p>
+          </button>
+        </div>
+      ) : !tournamentData.length ? (
+        <div
+          className="remote-AddTournament-container"
+          key={"AddTournament-container"}
+        >
+          <h1 className="remote-AddTournamament-header">Remote Tournament</h1>
+          <div className="remote-AddTournament-formatContainer">
+            <form className="remote-AddTournament-form" onSubmit={handleSubmit}>
+              <div
+                id="AddTournament-cancel"
+                onClick={() => setNoTournament(false)}
+              >
+                cancel
+              </div>
+              <div className="remote-input-container">
+                <h1 className="remote-AddTournamament-formheader">
+                  Remote Tournament
+                </h1>
+                <div>
+                  <label>Tournament Name:</label>
+                  <input
+                    type="text"
+                    id="fname"
+                    name="0"
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
-            )
-            : (
-                <>
-                  <input type="text" name="searchbar" className="tournament-search" placeholder="tournament name"/>
-                  {tournamentData.length && tournamentData.map((tournament, index) => (
-                    <div key={index} style={{width:"50%"}}>
-                      <TournamentCard  setJoin={setJoin} data={tournament}/>
-                    </div>
-                  ))
-                  }
-                </>
-            )
-        }
+              <div className="remote-submitTournament">
+                <div className="remote-bgcolor"></div>
+                <input type="submit" value="Play" id="AddTournament-submit" />
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <div className="Tournament-display">
+          <h1 className="noTournament-header">Tournament</h1>
+          <input
+            type="text"
+            name="searchbar"
+            className="tournament-search"
+            placeholder="tournament name"
+          />
+          <div className="cards-item">
+            <div className="tournament-on-hold">
+              <h3>Tournaments on hold:</h3>
+              <button
+                className="tournament-display-addButton"
+                onClick={() => setNoTournament(true)}
+                >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="addButton_icon"
+                  >
+                  <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+                </svg>
+                <p>Add Tournament</p>
+              </button>
+            </div>
+            <div className="tournament-cards">
+              {tournamentData.length &&
+                tournamentData.map((tournament, index) => (
+                  <TournamentCard key={index} setJoin={setJoin} data={tournament} />
+                ))}
+            </div>
+            <div className="scroll-buttons">
+              <button className="slide-left" />
+              <button className="slide-right" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-)};
+  );
+};
 
 export default TournamentRemote;

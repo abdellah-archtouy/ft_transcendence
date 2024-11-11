@@ -1,6 +1,7 @@
 .TournamentCard-container {
-    width: 100%;
-    max-width: 350px;
+    height: 100%;
+    max-height: 400px;
+    font-size: 1rem;
     aspect-ratio: 7 / 12;
     background-image: url("../asset/lord4.svg");
     background-size: cover;
@@ -19,16 +20,17 @@
 
 .TournamentCard-numusers {
     font-weight: 200;
-    font-size: clamp(0.75rem, 1.17vw + 0.501rem, 1.25rem);
+    font-size: 0.875em; /* 0.875em makes it slightly smaller than the base size */
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 1em; /* Positioned 1em from the top, scales with the parent font-size */
+    right: 1em;
 }
 
 .TournamentCard-name {
     text-transform: capitalize;
     font-weight: 600;
     color: #E9E5DC;
+    font-size: 18px;
 }
 
 .TournamentCard-join {
@@ -44,6 +46,7 @@
     transition: transform 0.3s ease;
     position: relative;
     z-index: 100;
+    cursor: pointer;
 }
 
 .TournamentCard-join:hover {
@@ -52,6 +55,7 @@
 
 .join-button {
     position: relative;
+    cursor: pointer;
 }
 
 .bg-color{

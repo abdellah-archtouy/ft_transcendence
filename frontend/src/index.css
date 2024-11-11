@@ -139,19 +139,46 @@ body {
   
 }
 
+.pop-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 50px;
+  width: 100%;
+  overflow: hidden;
+}
+
 .tournament-popup {
   position: absolute;
   top: 0;
-  opacity: 0;
   right: -100%;
-  background-color: rgb(34, 34, 34, 0.8);
+  background-color: rgb(34, 34, 34);
   padding: 10px;
   border-right: 5px solid rgba(209, 209, 209, 0.5);
-  transition: all 1s ease-in-out;
 }
 
 .tournament-popup.appeare {
-  right: 0%;
-  opacity: 1;
-  animation: fade-out 2s ease-in-out 2s;
+  animation: popupAppearing 4s ease-in-out;
+  z-index: 1000;
+}
+
+@media (max-width: 640px) {
+  .pop-container {
+    top: 10px;
+  }
+}
+
+@keyframes popupAppearing {
+  0% {
+    right: -100%;
+  }
+  10% {
+    right: 0%;
+  }
+  90% {
+    right: 0%;
+  }
+  100% {
+    right: -100%;
+  }
 }

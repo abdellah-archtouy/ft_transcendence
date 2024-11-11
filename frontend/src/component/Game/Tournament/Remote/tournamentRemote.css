@@ -26,6 +26,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    gap: clamp(1.25rem, 4.386vw + 0.318rem, 3.125rem);
 }
 
 .noTournament-container {
@@ -194,22 +195,6 @@
     gap: 20px;
 }
 
-#AddTournament-submit {
-    color: #E9E5DC;
-    width: 100px;
-    height: 30px;
-    font-size: 13px;
-    font-weight: 550;
-    justify-self: flex-end;
-    padding: unset;
-    cursor: pointer;
-    background-color: #000000;
-    border: #5A564D 0.81px solid;
-    z-index: 2;
-    transition: transform 0.3s ease;
-    position: relative;
-}
-
 .remote-bgcolor {
     position: absolute;
     top: 0;
@@ -222,6 +207,111 @@
 }
 
 /*  tournament-display start here  */
+
+.Tournament-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(2.5rem, 4.386vw + 1.568rem, 4.375rem);
+    width: 100%;
+    height: 100%;
+}
+
+.cards-item {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 1020px;
+    position: relative;
+    height: 100%;
+}
+
+.tournament-on-hold {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.tournament-on-hold > h3 {
+    font-weight: 500;
+    text-decoration: underline;
+    color: rgb(255, 255, 255, 0.8);
+    line-height: 1;
+}
+
+.tournament-display-addButton {
+    font-size: 12px;
+    height: fit-content;
+    width: fit-content;
+    outline: none;
+    border: none;
+    background: #AFAFAF;
+    color: #000000;
+    fill: #000000;
+    padding: 8px 12px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    border: solid 1px #AFAFAF;
+}
+
+.tournament-display-addButton:hover {
+    color: #DFDFDF;
+    background: unset;
+    fill: #AFAFAF;
+    border: solid 1px #565656;
+}
+
+.tournament-cards {
+    flex-wrap: wrap;
+    display: flex;
+    gap: 20px;
+    justify-content: space-around;
+    align-items: start;
+    overflow: scroll;
+    height: 50vh;
+    padding: 10px;
+}
+
+.scroll-buttons {
+    position: absolute;
+    height: fit-content;
+    width: fit-content;
+    right: -50px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.slide-left , .slide-right{
+    background: none;
+    display: none;
+    border: 1px #5A564D solid;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;
+    height: 30px;
+    width: 30px;
+}
+
+.slide-left {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23fff' d='M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z'/%3E%3C/svg%3E");
+}
+
+.slide-right {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23fff' d='M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z'/%3E%3C/svg%3E");
+    transform: rotate(180deg);
+}
 
 .tournament-search {
     width: clamp(18.75rem, 73.099vw + 3.216rem, 50rem);
@@ -237,47 +327,6 @@
 }
 
 /*         ends here         */
-
-#AddTournament-submit:hover {
-    transform: translateX(-4px) translateY(-4px);
-}
-
-#AddTournament-submit:active {
-    transform: translateX(0px) translateY(0px);
-}
-
-#AddTournament-cancel {
-    --background1: linear-gradient(to left, rgb(116, 116, 116), transparent), linear-gradient(to left, transparent 70%, rgb(116, 116, 116));
-    color: #E9E5DC;
-    width: unset;
-    height: unset;
-    font-size: 15px;
-    font-weight: 550;
-    padding: 5px 12px;
-    line-height: 1;
-    border-radius: 15px;
-    border: #5A564D 0.81px solid;
-    mask-image: var(--background1);
-    mask-size: 200px;
-    mask-position: 0px;
-    cursor: pointer;
-    backdrop-filter: blur(20px);
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    transition: mask-position 0.5s ease, all 0.3s ease-in-out;
-}
-
-#AddTournament-cancel:hover {
-    mask-position: 100px;
-}
-
-#AddTournament-cancel:active {
-    background-color: #9f9d99;
-    color: #000000;
-    mask-image: unset;
-}
-
 @media (max-height: 49vw) {
 
     .remote-AddTournament-formatContainer {
@@ -341,21 +390,9 @@
         width: 100%;
         text-shadow: 0 0 6px #9E857F;
     }
-}
 
-.tournament-popup {
-    position: absolute;
-    top: 0px;
-    opacity: 0;
-    right: -100%;
-    background-color: rgb(34, 34, 34, 0.8);
-    padding: 10px;
-    border-right: 5px solid rgba(209, 209, 209, 0.5);
-    transition: all 1s ease-in-out;
-}
-
-.tournament-popup.show {
-    right: 0%;
-    opacity: 1;
-    animation: fade-out 2s ease-in-out 2s;
+    .tournament-cards {
+        justify-content: center;
+        align-items: center;
+    }
 }

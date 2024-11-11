@@ -250,7 +250,7 @@
     mask-image: unset;
 }
 
-@media (max-height: 49vw) {
+@media (max-height: 49vw) and (max-width: 600px) {
 
     .AddTournament-formatContainer {
         margin-top: 30px;

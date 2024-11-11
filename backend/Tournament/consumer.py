@@ -10,6 +10,36 @@ class TournamentRoomManager():
     def create_tournament(self, name, user):
         tournament = Tournament(name)
         self.tournaments[name] = tournament
+        tournament = Tournament("name1")
+        self.tournaments[name] = tournament
+        tournament = Tournament("namedad")
+        self.tournaments["namedad"] = tournament
+        tournament = Tournament("namesda")
+        self.tournaments["namesda"] = tournament
+        tournament = Tournament("asdas")
+        self.tournaments["asdas"] = tournament
+        tournament = Tournament("ghdfg")
+        self.tournaments["ghdfg"] = tournament
+        tournament = Tournament("name1555")
+        self.tournaments["name1555"] = tournament
+        tournament = Tournament("name15553")
+        self.tournaments["name15553"] = tournament
+        tournament = Tournament("name15554")
+        self.tournaments["name15554"] = tournament
+        tournament = Tournament("name15556")
+        self.tournaments["name15556"] = tournament
+        tournament = Tournament("name15558")
+        self.tournaments["name15558"] = tournament
+        tournament = Tournament("name15559")
+        self.tournaments["name15559"] = tournament
+        tournament = Tournament("name1555r")
+        self.tournaments["name1555r"] = tournament
+        tournament = Tournament("name1555h")
+        self.tournaments["name1555h"] = tournament
+        tournament = Tournament("name1555j")
+        self.tournaments["name1555j"] = tournament
+        # tournament = Tournament("name1555v")
+        # self.tournaments["name1555v"] = tournament
         self.tournaments[name].users.append(user)
         if len(self.tournaments[name].users) < 4:
             self.tournaments[name].users_num += 1

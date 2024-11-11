@@ -79,7 +79,7 @@ function App() {
       {
         setTimeout(() => {
           setError(null)
-        }, 2500)
+        }, 4000)
       }
   },[error])
 
@@ -91,8 +91,10 @@ function App() {
         <>
           <Navbar />
           <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
-            <div className={`tournament-popup ${error ? 'appeare' : ''}`}>
-                <p className='tournament-popup-p'>{error}</p>
+            <div className="pop-container">
+              <div className={`tournament-popup ${error ? 'appeare' : ''}`}>
+                  <p className='tournament-popup-p'>{error}</p>
+              </div>
             </div>
             <Routes>
               <Route exact path="/" element={<Home />} />
