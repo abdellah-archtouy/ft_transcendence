@@ -1,5 +1,5 @@
 import React from "react";
-import RemoteLocal from "../RemoteLocal";
+import RemoteLocal from "../remoteLocal/RemoteLocal";
 
 
 const Friend = () => {

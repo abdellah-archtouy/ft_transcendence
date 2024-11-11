@@ -19,6 +19,15 @@
     src: local('Montserrat italic'), url('./../asset/Montserrat/Montserrat-Italic-VariableFont_wght.ttf') format("truetype")
 }
 
+.tournamentRemote-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .noTournament-container {
     height: 100%;
     width: 100%;
@@ -211,6 +220,23 @@
     border-radius: 8px;
     z-index: 1;
 }
+
+/*  tournament-display start here  */
+
+.tournament-search {
+    width: clamp(18.75rem, 73.099vw + 3.216rem, 50rem);
+    color: #DFDFDF;
+    background: none;
+    border-radius: 8px;
+    padding: clamp(0.5rem, 1.023vw + 0.283rem, 0.938rem);
+    padding-right: calc(clamp(0.5rem, 1.023vw + 0.283rem, 0.938rem) * 3);
+    border: #B2B2B2 1px solid;
+    background-image: url("../asset/search.svg");
+    background-repeat: no-repeat;
+    background-position: calc(100% - clamp(0.5rem, 1.023vw + 0.283rem, 0.938rem));
+}
+
+/*         ends here         */
 
 #AddTournament-submit:hover {
     transform: translateX(-4px) translateY(-4px);

@@ -1,5 +1,5 @@
 import React from 'react'
-import RemoteLocal from "../RemoteLocal"
+import RemoteLocal from "../remoteLocal/RemoteLocal"
 
 const Tournament = () => {
   const links = ["/game/tournament/local", "/game/tournament/remote"]

@@ -6,10 +6,10 @@ import TournamentRemote from "./Tournament/Remote/tournamentRemote";
 import Friend from "./Friend/friend";
 import Remote from "./Friend/remote";
 import LocalGame from "./Friend/local"
-import Game from "./Game";
+import Game from "./main/Game";
 import Bot from "./bot/bot";
 import GameMode from "./bot/gameMode"
-import ManagedRoom from './managedRoom';
+import ManagedRoom from './rooms/managedRoom';
 
 function gameRouting({ error }) {
   return (

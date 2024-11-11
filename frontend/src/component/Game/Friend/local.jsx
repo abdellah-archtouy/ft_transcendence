@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // import Room from "../room";
 import LoadingPage from "../../loadingPage/loadingPage"
-import LocalRoom from "../localRoom"
+import LocalRoom from "../rooms/localRoom"
 
 const Remote = () => {
   const [roomData] = useState("Local");

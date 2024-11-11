@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./tournamentRemote.css"
+import { useRef } from "react";
+import TournamentCard from "./tournamentCard";
 
 const TournamentRemote = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -10,15 +12,27 @@ const TournamentRemote = () => {
   const [tournamentData, setTournamentData] = useState(null);
   const [noTournament, setNoTournament] = useState(null);
   const [tournamentName, setTournamentName] = useState(null);
+  const [join, setJoin] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  let socketRef = useRef(null);
+
 
   function handleSubmit(e) {
     e.preventDefault();
-    const isFull = 1;
-    const hasAllPlayers = isFull;
-
-    /* hna kahssk thandli o t parssi ila kant kayna ch tournoua bnafss smiya */
+    const isFull = tournamentName ? true : false;
+    if (isFull && socketRef.current && socketRef.current.readyState === WebSocket.OPEN)
+      {
+        socketRef.current?.send(
+          JSON.stringify({
+            type: "create",
+            name: tournamentName
+          })
+        );
+      }
+      else {
+        console.log("WebSocket is not open");
+      }
   }
 
   const handleChange = (e) => {
@@ -38,22 +52,6 @@ const TournamentRemote = () => {
         });
 
         setUser(response.data);
-        fetchTournament();
-      } catch (error) {
-        handleFetchError(error);
-      }
-    };
-
-    const fetchTournament = async () => {
-      try {
-        const access = localStorage.getItem("access");
-
-        const response = await axios.get(`${apiUrl}/tournament`, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
-        setTournamentData(response.data);
       } catch (error) {
         handleFetchError(error);
       }
@@ -103,23 +101,48 @@ const TournamentRemote = () => {
   useEffect(() => {
     if (user) {
       const user_id = user.id;
-      const socket = new WebSocket(
-        `ws://${hostName}:8000/ws/tournament/${user_id}/`
-      );
+      socketRef.current = new WebSocket(`ws://${hostName}:8000/ws/tournament/${user_id}/`);
+      
+      socketRef.current.onopen = () => {
+        console.log("WebSocket connection established");
+      };
 
-      socket.onmessage = function (event) {
-        const tournament = JSON.parse(event.data);
-        setTournamentData((prev) => [tournament, ...prev]);
+      socketRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setTournamentData(data);
+        if (data.error) {
+          console.log(data.error);
+        }
+      };
+
+      socketRef.current.onclose = () => {
+        console.log("WebSocket connection closed");
+      };
+
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.close();
+        }
       };
     }
   }, [user]);
 
+  useEffect(() => {
+    if (join) {
+      socketRef.current.send(
+        JSON.stringify({
+          type:"join",
+          name: tournamentName
+      }))
+    }
+  }, join)
+
   if (!tournamentData) return <>Loading ...</>
   return( 
-    <>
+    <div className="tournamentRemote-container">
+        <h1 className="noTournament-header">Tournament</h1>
         {!tournamentData.length && !noTournament ? (
             <div className="noTournament-container" key={"noTournament-container"}>
-                <h1 className="noTournament-header">Tournament</h1>
                 <p className="noTournament-text">
                     No Tournament is registered
                     <br />
@@ -177,10 +200,17 @@ const TournamentRemote = () => {
             )
             : (
                 <>
+                  <input type="text" name="searchbar" className="tournament-search" placeholder="tournament name"/>
+                  {tournamentData.length && tournamentData.map((tournament, index) => (
+                    <div key={index} style={{width:"50%"}}>
+                      <TournamentCard  setJoin={setJoin} data={tournament}/>
+                    </div>
+                  ))
+                  }
                 </>
             )
         }
-    </>
+    </div>
 )};
 
 export default TournamentRemote;

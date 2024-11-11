@@ -46,9 +46,11 @@ const Navbar = () => {
     const itemOffsetLeft = navItems[index].offsetLeft;
     const itemOffsetTop = navItems[index].offsetTop;
     const coloredDiv = document.querySelector(".items");
+    let colorDivOffsetTop = coloredDiv.offsetTop
+    if (navDisplay) colorDivOffsetTop = itemOffsetTop
     coloredDiv.style.transform = `translateX(${
       itemOffsetLeft - coloredDiv.offsetLeft
-    }px) translateY(${itemOffsetTop - coloredDiv.offsetTop}px)`;
+    }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
     coloredDiv.style.transition = `transform 0.3s ease-in-out`;
   };
 

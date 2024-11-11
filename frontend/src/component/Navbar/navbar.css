@@ -10,7 +10,6 @@
   background-color: rgb(0, 0, 0, 0.8);
   z-index: 1000;
   padding: 26px;
-  height: 128px;
 }
 .navContainer::before {
   content: "";
@@ -260,10 +259,6 @@
     cursor: pointer;
   }
   
-  .navContainer {
-    height: unset;
-  }
-  
   .logoContainer {
     order: -1;
     position: absolute;
@@ -292,7 +287,7 @@
   .activated.navigation {
     left: 0;
   }
-
+  
   .nav {
     background-color: transparent;
     border-radius: 0;
@@ -302,9 +297,20 @@
   .nav li {
     transform: rotate(-90deg);
   }
-
+  
   .nav .items {
     transform: translateX(var(--transformX)) translateY(var(--transformY));
   }
-
+  
+}
+@media (max-width: 640px) {
+  .Notification-div{
+    top: 100%;
+    right: 0;
+    height: 100vh;
+    width: 100%;
+  }
+  .button {
+    position: static;
+  }
 }

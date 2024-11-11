@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import LoadingPage from "../loadingPage/loadingPage";
+import LoadingPage from "../../loadingPage/loadingPage";
 import "./room.css";
 import { useNavigate } from "react-router-dom";
 

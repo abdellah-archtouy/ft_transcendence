@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./tournamentLocal.css";
-import LocalRoom from "../../localRoom";
+import LocalRoom from "../../rooms/localRoom";
 
 const TournamentLocal = ({error}) => {
   const [addTournament, setAddTournament] = useState(false);

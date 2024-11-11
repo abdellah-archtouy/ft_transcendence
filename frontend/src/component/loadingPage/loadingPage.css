@@ -1,5 +1,5 @@
 .main:has(.LoadingPagecontent) {
-    margin-bottom: 0;
+    margin-bottom: 0px !important;
 }
 
 .LoadingPagecontent{
@@ -12,6 +12,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    backdrop-filter: blur(20px);
 }
 
 .LoadingPagecontent span {

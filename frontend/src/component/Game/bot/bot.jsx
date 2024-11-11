@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import LoadingPage from "../../loadingPage/loadingPage";
-import "../room.css";
-import Room from "../room";
+import Room from "../rooms/room";
 
 const Bot = () => {
   const location = useLocation();

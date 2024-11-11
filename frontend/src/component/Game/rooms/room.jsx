@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import LoadingPage from "../loadingPage/loadingPage";
+import LoadingPage from "../../loadingPage/loadingPage";
 import axios from "axios";
 import "./room.css";
 import { useNavigate } from "react-router-dom";
@@ -315,12 +315,12 @@ const Room = ({ data, mode }) => {
 
     if (data !== undefined) {
       if (gamemode === "bot") setBotMode(data.botmode);
+      console.log(gamemode)
       if (gamemode === "friends") {
         setUser1(data.user1);
         setUser2(data.user2);
       }
     }
-    console.log(data.user1)
     const fetchUserData = async () => {
       try {
         const access = localStorage.getItem("access");

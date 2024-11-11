@@ -22,7 +22,8 @@ function App() {
   // const [scroll, setScroll] = useState(false);
   const location = useLocation();
   const bgImage = auth && {
-    background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
+    background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`,
+    backgroundSize: `100%, 500px`,
   };
 
   const souldApplyMargin = location.pathname !== "/chat";
@@ -71,6 +72,17 @@ function App() {
         height: `100%`
     }
 
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    if (error)
+      {
+        setTimeout(() => {
+          setError(null)
+        }, 2500)
+      }
+  },[error])
+
   return (
     <div className={"App"} style={{ ...bgImage, ...scroll }}>
       {" "}
@@ -79,9 +91,12 @@ function App() {
         <>
           <Navbar />
           <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
+            <div className={`tournament-popup ${error ? 'appeare' : ''}`}>
+                <p className='tournament-popup-p'>{error}</p>
+            </div>
             <Routes>
               <Route exact path="/" element={<Home />} />
-              <Route exact path="/game/*" element={<GameRouting />} />
+              <Route exact path="/game/*" element={<GameRouting error={setError} />} />
               <Route exact path="/chat" element={<Chat />} />
               <Route exact path="/leaderboard" element={<Leaderboard />} />
               <Route exact path="/setting" element={<Setting />} />

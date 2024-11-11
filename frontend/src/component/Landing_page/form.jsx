@@ -22,8 +22,6 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
   const client_id = process.env.REACT_APP_CLIENT_ID;
   const api_callback = process.env.REACT_APP_API_CALLBACK;
 
-  console.log(apiUrl, api_callback);
-
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };

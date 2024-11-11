@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Room from "../room";
+import Room from "../rooms/room";
 import LoadingPage from "../../loadingPage/loadingPage"
 
 const Remote = () => {
