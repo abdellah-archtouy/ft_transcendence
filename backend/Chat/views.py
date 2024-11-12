@@ -7,6 +7,7 @@ from .serializer import (
     ConvSerializer,
     MessageSerializer,
     AchievementSerializer,
+    GameSerializer,
 )
 from User.models import User, Achievement
 from Chat.models import Conversation, Message
@@ -135,3 +136,122 @@ def get_user_data(request):
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+from datetime import datetime, timedelta
+from django.http import JsonResponse
+
+
+def get_last_24_hours():
+    # Start from 12:00 noon (today)
+    current_time = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0)
+    
+    # Generate hours from 12:00 to 00:00 (next day)
+    last_24_hours = [
+        {
+            "hour": (current_time - timedelta(hours=i)).strftime('%H:00'),
+            "wins": 0
+        }
+        for i in range(24)
+    ]
+    last_24_hours.sort(key=lambda x: x['hour'])
+    # print("hnaaaayaaa" ,last_24_hours)
+    return last_24_hours
+
+def get_last_lose_24_hours():
+    # Start from 12:00 noon (today)
+    current_time = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0)
+    
+    # Generate hours from 12:00 to 00:00 (next day)
+    last_24_hours = [
+        {
+            "hour": (current_time - timedelta(hours=i)).strftime('%H:00'),
+            "lose": 0
+        }
+        for i in range(24)
+    ]
+    last_24_hours.sort(key=lambda x: x['hour'])
+    # print("hnaaaayaaa" ,last_24_hours)
+    return last_24_hours
+
+def update_last_24_hours_with_matches(last_24_hours, matches_list):
+    matches_dict = {match['hour']: match['matches'] for match in matches_list}
+    for entry in last_24_hours:
+        hour = entry['hour']
+        if hour in matches_dict:
+            entry['wins'] = matches_dict[hour]
+    last_24_hours.sort(key=lambda x: x['hour'])
+    return last_24_hours
+def update_last_24_hours_with_lose_matches(last_24_hours, matches_list):
+    matches_dict = {match['hour']: match['matches'] for match in matches_list}
+    for entry in last_24_hours:
+        hour = entry['hour']
+        if hour in matches_dict:
+            entry['lose'] = matches_dict[hour]
+    last_24_hours.sort(key=lambda x: x['hour'])
+    return last_24_hours
+
+from Game.models import Game
+from django.utils import timezone
+from datetime import datetime, timedelta
+import pytz
+from collections import defaultdict
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_user_win_and_lose(request):
+    try:
+        now = timezone.now()
+        start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        user = request.user
+        # user = 2
+
+        userwin = GameSerializer(Game.objects.filter(winner=user), many=True).data
+        userlose = GameSerializer(Game.objects.filter(loser=user), many=True).data
+        current_time = datetime.utcnow()
+        time_24_hours_ago = current_time - timedelta(hours=24)
+        filtered_win_matches = []
+        filtered_lose_matches = []
+
+        for match in userwin:
+            match_end_str = match['end'].split("T")[0]
+            match_end = datetime.strptime(match_end_str, '%Y-%m-%d').date()
+            if match_end > time_24_hours_ago.date():
+                filtered_win_matches.append(match)
+
+        for match in userlose:
+            match_end_str = match['end'].split("T")[0]
+            match_end = datetime.strptime(match_end_str, '%Y-%m-%d').date()
+            if match_end > time_24_hours_ago.date():
+                filtered_lose_matches.append(match)
+
+        hourly_win_counts = defaultdict(int)
+        hourly_lose_counts = defaultdict(int)
+
+        for match in filtered_win_matches:
+            match_time = datetime.fromisoformat(match['end'].replace('Z', ''))
+            hour_str = match_time.strftime('%H:00')
+            hourly_win_counts[hour_str] += 1
+    
+        for match in filtered_lose_matches:
+            match_time = datetime.fromisoformat(match['end'].replace('Z', ''))
+            hour_str = match_time.strftime('%H:00')
+            hourly_lose_counts[hour_str] += 1
+    
+        win_result = [{"hour": hour, "matches": count} for hour, count in sorted(hourly_win_counts.items())]
+        lose_result = [{"hour": hour, "matches": count} for hour, count in sorted(hourly_lose_counts.items())]
+        last_win_24_hours = get_last_24_hours()
+        last_lose_24_hours = get_last_lose_24_hours()
+        last_win_result = update_last_24_hours_with_matches(last_win_24_hours, win_result)
+        last_lose_result = update_last_24_hours_with_lose_matches(last_lose_24_hours, lose_result)
+        return Response(
+            {
+                "last_win_24_hours": last_win_result,
+                "last_lose_24_hours": last_lose_result
+            }, status=status.HTTP_200_OK
+        )
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        print("jhjhfh   ",e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# get_user_win_and_lose()

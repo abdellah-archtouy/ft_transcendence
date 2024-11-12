@@ -7,6 +7,7 @@ from .views import (
     post_message,
     UsersView,
     get_user_data,
+    get_user_win_and_lose,
 )
 
 urlpatterns = [
@@ -16,9 +17,5 @@ urlpatterns = [
     path("post/msg/", post_message, name="post_message"),
     path("user/", UserView),
     path("user/data/", get_user_data, name="get_user_data"),
+    path("user/chart/", get_user_win_and_lose, name="get_user_data"),
 ]
-
-# path('logout/', Logout.as_view()),
-# path('', Hi),
-# path('register/', RegisterView.as_view()),
-# path('login/', LoginView.as_view()),

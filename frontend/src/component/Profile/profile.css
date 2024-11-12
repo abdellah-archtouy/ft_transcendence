@@ -90,13 +90,6 @@
     width: 900px;
 }
 
-.analytics-achievment .analytics{
-    background: #22222280;
-    width: 577px;
-    display: flex;
-    padding: 34px;
-    border-radius: 30px;
-}
 
 
 .analytics-achievment .achievment{
@@ -251,7 +244,7 @@
 
 .ach-maestro{
     background-image: url('./background/bg_maestro.png');
-    box-shadow: 0px 0px 20px #A32B2850;
+    box-shadow: 0px 0px 20px #A32B2875;
     
 }
 
@@ -270,12 +263,12 @@ maestro#A32B2850; */
 
 .ach-the_emperor{
     background-image: url('./background/bg_the\ 3.png');
-    box-shadow: 0px 0px 20px #A7A7A7;
+    box-shadow: 0px 0px 20px #A7A7A775;
 }
 
 .ach-thunder_strike{
     background-image: url('./background/bg_thunder.png');
-    box-shadow: 0px 0px 20px #49A7C0;
+    box-shadow: 0px 0px 20px #49A7C075;
 }
 
 .ach-joker .joker_icon{
@@ -343,4 +336,72 @@ maestro#A32B2850; */
     line-height: 1;
     font-size: 10px;
     font-weight: 400;
+}
+
+.analytics-achievment .analytics{
+    background: #22222280;
+    width: 577px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 34px;
+    border-radius: 30px;
+}
+
+.analytics-achievment .analytics h1{
+    align-self: flex-start;
+    /* padding-left: 34px; */
+}
+
+
+.chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+.hhP{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 180%;
+    scale: 1.1;
+    /* border: red solid;   */
+}
+
+.area {
+    /* border: red solid;   */
+    
+}
+
+.test{
+    font-size: 8px;
+    /* border: red solid;   */
+}   
+
+.yaxis{
+    display: none;
+}
+
+.select-div{
+    align-self: flex-start;
+    display: flex;
+    gap: 10px;
+}
+
+.select{
+    background: #22222280;
+    color: #B0B0B0;
+    outline: none; 
+    border-radius: 4.71px;
+    border: #B0B0B0 solid 1px;
+    box-shadow: 0px 0px 3.77px #B0B0B0;
+}
+
+.hove{
+    background: #767373;
 }
