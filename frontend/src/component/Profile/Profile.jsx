@@ -13,6 +13,7 @@ import The_emperor from './The_emperor';
 import Thunder_Strike from './Thunder_Strike';
 import PureComponent from './Chartline';
 import dayjs from 'dayjs';
+import OthersProfile from './OthersProfile';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -26,8 +27,11 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const [chartData, setChartData] = useState([]);
-  const [win , setWin] = useState([]);
-  const [loss , setLoss] = useState([]);
+  const [win24 , setWin24] = useState([]);
+  const [loss24 , setLoss24] = useState([]);
+  const [win7 , setWin7] = useState([]);
+  const [loss7 , setLoss7] = useState([]);
+  const [time, setTime] = useState("hour");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,9 +72,11 @@ const Profile = () => {
           withCredentials: true,
         });
     
-        setWin(response.data.last_win_24_hours);
-        setLoss(response.data.last_lose_24_hours);
-        setChartData(response.data.last_win_24_hours);
+        setWin24(response.data.last_win_24_hours);
+        setLoss24(response.data.last_lose_24_hours);
+        setWin7(response.data.this_week_win_summary);
+        setLoss7(response.data.this_week_lose_summary);
+        // setChartData(response.data.last_win_24_hours);
         // console.log('Full Response win lose:', response);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -124,19 +130,28 @@ const Profile = () => {
     fetcwin_loss();
   }, [navigate]);
   
-  
-  
-  
   const [rateType, setRateType] = useState('wins'); // default to 'wins'
-  const [rateTypet, setRateTypet] = useState('7day'); // default to 'wins'
+  const [rateTypet, setRateTypet] = useState('7'); // default to 'wins'
   
   useEffect(() => {
-    if (rateType === 'wins') {
-      setChartData(win);
-    } else {
-      setChartData(loss);
-    }
-  }, [rateType]);
+    if (rateTypet === '7') {
+        setTime("day");
+        if (rateType === 'wins') {
+          setChartData(win7);
+        } else {
+          setChartData(loss7);
+        }
+    } else {  
+        setTime("hour");
+        if (rateType === 'wins') {
+          console.log('win24:', win24);
+          setChartData(win24);
+        } else {
+          console.log('loss24:', loss24);
+          setChartData(loss24);
+        }
+      }
+  }, [rateType, rateTypet, win24, loss24, win7, loss7]);
   
   const handleSelectChange = (event) => {
     setRateType(event.target.value);
@@ -149,6 +164,7 @@ const Profile = () => {
     return <div>Loading...</div>;
   }
   return (
+      //  <OthersProfile/>
     <div className='profile_user'>
       {/* Profile */}
       <Baner banerImg={banerImg}></Baner>
@@ -157,22 +173,22 @@ const Profile = () => {
       <div className='userinfo'>
           <div className='name-status'>
             <h1 className='username'>
-              {userData.username ? userData.username : 'User'}
+              {userData?.username ? userData.username : 'User'}
             </h1>
-            <div className='online'></div>
+            <div className='online on'></div>
           </div>
-          <p className='bio'>{userData.bio}</p>
+          <p className='bio'>{userData?.bio}</p>
           <div className='win-rank-score'>
             <div>
-              {userData.win}
+              {userData?.win}
               <p>Duels Won</p>
             </div>
             <div>
-              #{userData.rank}
+              #{userData?.rank}
               <p>Ranking position</p>
             </div>
             <div>
-              {userData.score}xp
+              {userData?.score}xp
               <p>Score</p>
             </div>
           </div>
@@ -186,12 +202,12 @@ const Profile = () => {
                   <option value="lose">Lost</option>
                 </select>
                 <select className='select' onChange={handleSelectChangetime} value={rateTypet}>
-                  <option value="7">last 7 days</option>
-                  <option value="24">last 24 hour</option>
+                  <option value="7">This Week</option>
+                  <option value="24">This day</option>
                 </select>
             </div>
             <div className='chart '>
-              <PureComponent chartData={chartData} par={rateType}/>
+              <PureComponent chartData={chartData} par1={rateType} par2={time}/>
             </div>
          </div>
          <div className='achievment'>

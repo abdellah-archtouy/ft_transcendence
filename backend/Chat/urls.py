@@ -8,6 +8,8 @@ from .views import (
     UsersView,
     get_user_data,
     get_user_win_and_lose,
+    get_ouser_data,
+    get_ouser_win_and_lose,
 )
 
 urlpatterns = [
@@ -17,5 +19,7 @@ urlpatterns = [
     path("post/msg/", post_message, name="post_message"),
     path("user/", UserView),
     path("user/data/", get_user_data, name="get_user_data"),
+    path("ouser/data/<str:username>", get_ouser_data, name="get_other_user_data"),
+    path("ouser/chart/<str:username>", get_ouser_win_and_lose, name="get_other_user_data"),
     path("user/chart/", get_user_win_and_lose, name="get_user_data"),
 ]
