@@ -1,7 +1,6 @@
 import json
 from datetime import datetime, timedelta
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.db import database_sync_to_async
 import asyncio
 from User.models import User
 from .models import Game
@@ -13,7 +12,6 @@ import math
 
 boardWidth = 1000
 boardHeight = 550
-
 
 def bot_room_infos_set(room, ConsumerObj):
     if ConsumerObj.botmode == "easy":
@@ -39,23 +37,28 @@ async def broadcast(ConsumerObj, room, stat, data=None):
     except Exception as e:
         print(f"broadcast: {e}")
 
-
-async def get_user_from_db(user_id: int) -> dict:
+async def get_user_from_db(user_id: int, room) -> dict:
     user_obj = await User.objects.aget(id=user_id)
     user_data = UserSerializer(user_obj).data
+    goals = 0
+    if room.uid1 == user_id:
+        goals = room.user1_goals
+    elif room.uid2 == user_id:
+        goals = room.user2_goals
     result = {
         "username": user_data["username"],
         "avatar": user_data["avatar"],
-        "goals": 0,
+        "goals": goals,
     }
     return result
 
 
-def create_local_info(username: str) -> dict:
+def create_local_info(username: str, room) -> dict:
+    goals = room.user2_goals
     local_info = {
         "username": username,
         "avatar": "/media/avatars/botProfile.svg",
-        "goals": 0,
+        "goals": goals,
     }
     return local_info
 
@@ -64,8 +67,7 @@ class RoomManager:
     def __init__(self):
         self.rooms = {}
         self.lock = None
-        self.user1 = None
-        self.user2 = None
+        self.channel_names = {}
 
     async def get_lock(self):
         if self.lock is None:
@@ -75,6 +77,11 @@ class RoomManager:
     def get_room(self, room_name):
         room = self.rooms[room_name]
         return room
+    
+    def add_channel_name(self, channel_name, user_id):
+        if user_id not in self.channel_names:
+            self.channel_names[user_id] = []
+        self.channel_names[user_id].append(channel_name)
 
     async def join_or_create_room(self, ConsumerObj):
         lock = await self.get_lock()
@@ -83,6 +90,9 @@ class RoomManager:
             if ConsumerObj.gamemode == "bot":
                 bot_room_infos_set(self.rooms[room_name], ConsumerObj)
             return room_name
+
+    def get_channel_name(self, user_id):
+        return self.channel_names.get(user_id, [])
 
     async def delete_user_room(self, ConsumerObj):
         lock = await self.get_lock()
@@ -97,44 +107,51 @@ class RoomManager:
             try:
                 room = self.rooms.get(ConsumerObj.room_group_name)
                 if room:
-                    if room.type == "Remote":
+                    user_id = ConsumerObj.user_id
+                    channel_layer = ConsumerObj.channel_layer
+                    room_group_name = ConsumerObj.room_group_name
+                    if room.type != "bot":
                         if room.howManyUser() == 2:
-                            room.tmp_uid = ConsumerObj.user_id
                             room.disconnected_at = datetime.now()
-                        room.set_user(ConsumerObj.user_id, None)
+                        room.delete_user(user_id)
+                        channels_list = self.get_channel_name(user_id)
+                        for channel in channels_list:
+                            await channel_layer.send(channel, {"type": "chat_message", "stat": "close"})
+                        if user_id in self.channel_names:
+                            del self.channel_names[user_id]
                         if room.howManyUser() == 0:
-                            del self.rooms[ConsumerObj.room_group_name]
+                            del self.rooms[room_group_name]
                     else:
-                        del self.rooms[ConsumerObj.room_group_name]
+                        del self.rooms[room_group_name]
                     room.keep_updating = False
             except Exception as e:
-                print(f"remove_user_room: {e}")
+                print(f"error remove_user_room: {e}")
 
-    async def assign_users_info(self, ConsumerObj):
+    async def return_user2(self, ConsumerObj):
         try:
             room = self.rooms.get(ConsumerObj.room_group_name)
-            self.user1 = await get_user_from_db(room.uid1)
-            if ConsumerObj.gamemode == "Remote":
-                self.user2 = await get_user_from_db(room.uid2)
+            if ConsumerObj.gamemode != "bot":
+                user2 = await get_user_from_db(room.uid2, room)
             else:
-                self.user2 = create_local_info("Bot")
+                user2 = create_local_info("Bot")
+            return user2
         except Exception as e:
-            print(f"assign_users_info: {e}")
+            print(f"return_user2: {e}")
 
     async def start_periodic_updates(self, ConsumerObj):
         room = self.rooms.get(ConsumerObj.room_group_name)
-        if room.type == "Remote" and room.howManyUser() == 2:
-            await self.assign_users_info(ConsumerObj)
-            room.keep_updating = True
-            self.update_thread = asyncio.ensure_future(
-                self.send_periodic_updates(ConsumerObj)
-            )
+        if room.type != "bot" and room.howManyUser() == 2:
+            if not room.keep_updating:
+                room.keep_updating = True
+                self.update_thread = asyncio.ensure_future(
+                    self.send_periodic_updates(ConsumerObj)
+                )
         elif room.type == "bot":
-            await self.assign_users_info(ConsumerObj)
-            room.keep_updating = True
-            self.update_thread = asyncio.ensure_future(
-                self.send_periodic_updates(ConsumerObj)
-            )
+            if not room.keep_updating:
+                room.keep_updating = True
+                self.update_thread = asyncio.ensure_future(
+                    self.send_periodic_updates(ConsumerObj)
+                )
 
     async def check_time(self, ConsumerObj):
         try:
@@ -146,7 +163,7 @@ class RoomManager:
                         now = datetime.now()
                         time_diff = now - room.disconnected_at
                         if time_diff >= timedelta(seconds=10):
-                            room.set_user(ConsumerObj.user_id, None)
+                            room.delete_user(ConsumerObj.user_id)
                             if ConsumerObj.room_group_name in self.rooms:
                                 await broadcast(ConsumerObj, room, "close")
                             break
@@ -157,13 +174,15 @@ class RoomManager:
     async def start_game(self, ConsumerObj):
         room = self.rooms[ConsumerObj.room_group_name]
         if room.keep_updating:
+            user1 = await get_user_from_db(room.uid1, room)
+            user2 = await self.return_user2(ConsumerObj)
             await ConsumerObj.channel_layer.group_send(
                 ConsumerObj.room_group_name,
                 {
                     "type": "chat_message",
                     "winner": room.winner,
-                    "user1": self.user1,
-                    "user2": self.user2,
+                    "user1": user1,
+                    "user2": user2,
                     "ballInfo": room.ball.attributes,
                     "rightPaddle": room.rightPaddle.attributes,
                     "leftPaddle": room.leftPaddle.attributes,
@@ -180,14 +199,16 @@ class RoomManager:
             await self.start_game(ConsumerObj)
         while room and room.keep_updating and not room.winner:
             if room:
-                await start(room, self.user1, self.user2)
+                await start(room)
+                user1 = await get_user_from_db(room.uid1, room)
+                user2 = await self.return_user2(ConsumerObj)
                 await ConsumerObj.channel_layer.group_send(
                     ConsumerObj.room_group_name,
                     {
                         "type": "chat_message",
                         "winner": room.winner,
-                        "user1": self.user1,
-                        "user2": self.user2,
+                        "user1": user1,
+                        "user2": user2,
                         "ballInfo": room.ball.attributes,
                         "rightPaddle": room.rightPaddle.attributes,
                         "leftPaddle": room.leftPaddle.attributes,
@@ -247,13 +268,13 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.gamemode = "bot"
                 self.botmode = self.scope["url_route"]["kwargs"].get("botmode")
             else:
-                # Invalid game mode
                 await self.close()
                 return
             self.user_id = self.scope["url_route"]["kwargs"]["uid"]
             self.connection_type = None
             self.channel_name = self.channel_name
             self.room_group_name = await room_manager.join_or_create_room(self)
+            room_manager.add_channel_name(self.channel_name, self.user_id)
             await room_manager.start_periodic_updates(self)
             await self.channel_layer.group_add(self.room_group_name, self.channel_name)
             await self.accept()
@@ -293,6 +314,5 @@ class GameConsumer(AsyncWebsocketConsumer):
                     room.room_paused = True
 
         elif action_type == "keydown":
-            if room.type == "Remote" or room.type == "bot":
-                paddle = room.get_paddle_by_user(self.user_id)
-                paddle.set_Player_attribute("velocityY", 0)
+            paddle = room.get_paddle_by_user(self.user_id)
+            paddle.set_Player_attribute("velocityY", 0)

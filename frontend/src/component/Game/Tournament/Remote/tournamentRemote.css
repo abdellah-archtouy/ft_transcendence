@@ -269,48 +269,83 @@
 }
 
 .tournament-cards {
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     display: flex;
-    gap: 20px;
-    justify-content: space-around;
-    align-items: start;
+    gap: auto;
+    justify-content: start;
+    align-items: center;
     overflow: scroll;
-    height: 50vh;
     padding: 10px;
+    gap: 20px;
+}
+
+.carousel-item {
+    height: clamp(14.75rem, 23.977vw + 9.655rem, 25rem);
+    --width: calc( clamp(14.75rem, 23.977vw + 9.655rem, 25rem) * 7 / 12);
+    box-sizing: content-box;
+    padding: 0 calc(50% - (var(--width) / 2));
 }
 
 .scroll-buttons {
-    position: absolute;
     height: fit-content;
     width: fit-content;
-    right: -50px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
 }
 
-.slide-left , .slide-right{
+.scroll-buttons > button {
     background: none;
-    display: none;
+    display: flex;
     border: 1px #5A564D solid;
     border-radius: 50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23fff' d='M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 50%;
     height: 30px;
     width: 30px;
+    cursor: pointer;
+    transition: all 0.4s ease-in;
+}
+
+.scroll-buttons > button:focus {
+    background-color: #9f9d99;
+    fill: #000000;
+}
+
+.scroll-buttons > button:active {
+    background-color: #9f9d99;
+    fill: #000000;
+}
+
+.slide-right:hover {
+    animation: fromRighttoLeft 0.5s ease-in-out;
+}
+
+.slide-left:hover {
+    animation: fromRighttoLeft 0.5s ease-in-out;
+}
+
+@keyframes fromRighttoLeft {
+    0% {
+        background-position: center center;
+    }
+    50% {
+        background-position: center 100%;
+    }
+    100% {
+        background-position: center center;
+    }
 }
 
 .slide-left {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23fff' d='M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z'/%3E%3C/svg%3E");
+    transform: rotate(-90deg);
 }
 
 .slide-right {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='%23fff' d='M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z'/%3E%3C/svg%3E");
-    transform: rotate(180deg);
+    transform: rotate(90deg);
 }
 
 .tournament-search {
@@ -389,10 +424,5 @@
         color: #E9E5DC;
         width: 100%;
         text-shadow: 0 0 6px #9E857F;
-    }
-
-    .tournament-cards {
-        justify-content: center;
-        align-items: center;
     }
 }

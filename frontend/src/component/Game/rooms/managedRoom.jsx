@@ -8,8 +8,7 @@ const ManagedRoom = () => {
 
   // Access specific query parameters
     const data = {
-        user1: queryParams.get('user1'),
-        user2: queryParams.get('user2')
+        room: queryParams.get('room')
     }
     const [mode] = useState("friends");
     return (

@@ -13,7 +13,7 @@
     justify-content: flex-end;
     gap: clamp(0.75rem, 1.17vw + 0.501rem, 1.25rem);
     padding: calc(clamp(1.25rem, 1.462vw + 0.939rem, 1.875rem) + 10px) clamp(1.25rem, 1.462vw + 0.939rem, 1.875rem);
-    box-shadow: 0 0 16px 0 rgb(255, 255, 255, 0.3);
+    box-shadow: 0 0 clamp(0.5rem, 0.585vw + 0.376rem, 0.75rem) 0 rgb(255, 255, 255, 0.3);
     position: relative;
     animation: fade-in 0.4s linear;
 }

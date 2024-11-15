@@ -15,7 +15,7 @@
 }
 
 .RoomContainer.fade-out {
-  animation: fade-out 1s ease-out 2s;
+  animation: fade-out 1s ease-out forwards;
 }
 
 .mobilebuttons {

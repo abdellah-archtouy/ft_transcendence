@@ -4,28 +4,33 @@ import axios from "axios";
 import "./tournamentRemote.css";
 import { useRef } from "react";
 import TournamentCard from "./tournamentCard";
-import Slider from "react-slick";
+import TournamentDisplay from "../Form/tournamentDisplay";
 
 const TournamentRemote = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const hostName = process.env.REACT_APP_API_HOSTNAME;
 
-  const [tournamentData, setTournamentData] = useState(null);
+  const [tournamentData, setTournamentData] = useState([]);
   const [noTournament, setNoTournament] = useState(null);
+  const [tournamentSearch, setTournamentSearch] = useState(null);
   const [tournamentName, setTournamentName] = useState(null);
   const [join, setJoin] = useState(false);
+  const [cancle, setCancle] = useState(false);
+  const [joinCard, setJoinCard] = useState(null);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   let socketRef = useRef(null);
 
   function handleSubmit(e) {
     e.preventDefault();
+    setNoTournament(false);
     const isFull = tournamentName ? true : false;
     if (
       isFull &&
       socketRef.current &&
       socketRef.current.readyState === WebSocket.OPEN
     ) {
+      setJoinCard(tournamentName);
       socketRef.current?.send(
         JSON.stringify({
           type: "create",
@@ -113,9 +118,15 @@ const TournamentRemote = () => {
 
       socketRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        setTournamentData(data);
-        if (data.error) {
-          console.log(data.error);
+        if (!data?.error)
+          {
+            setTournamentData(data);
+            setTournamentSearch(data);
+            if (data?.joined)
+              setJoin(data?.joined);
+          }
+        if (data?.error) {
+          console.log(data?.error);
         }
       };
 
@@ -132,20 +143,88 @@ const TournamentRemote = () => {
   }, [user]);
 
   useEffect(() => {
-    if (join) {
+    if (joinCard) {
       if (
-        join &&
+        joinCard &&
         socketRef.current &&
         socketRef.current.readyState === WebSocket.OPEN
       )
         socketRef.current.send(
           JSON.stringify({
             type: "join",
-            name: tournamentName,
+            name: joinCard,
           })
         );
     }
-  }, join);
+  }, [joinCard]);
+
+  useEffect(() => {
+    if (cancle) {
+      if (
+        cancle &&
+        socketRef.current &&
+        socketRef.current.readyState === WebSocket.OPEN
+      )
+        console.log(joinCard)
+        socketRef.current.send(
+          JSON.stringify({
+            type: "leave",
+            name: joinCard,
+          })
+        );
+    }
+  }, [cancle]);
+
+  const draggableContentRef = useRef(null);
+  const contentItemsRef = useRef([]);
+
+  const handleNextClick = () => {
+    // Get the current scroll position of the container
+    const currentScrollPosition = draggableContentRef.current.scrollLeft;
+
+    // Find the next content item based on the current scroll position
+    for (let i = 1; i < contentItemsRef.current.length; i++) {
+      const item = contentItemsRef.current[i];
+      if (item.offsetLeft > currentScrollPosition) {
+        console.log(item.offsetLeft)
+        draggableContentRef.current.scrollTo({
+          left: item.offsetLeft,
+          behavior: "smooth", // Smooth scroll to the next item
+        });
+        break;
+      }
+    }
+  };
+  
+  const handlePrevClick = () => {
+    // Get the current scroll position of the container
+    const currentScrollPosition = draggableContentRef.current.scrollLeft;
+
+    // Find the next content item based on the current scroll position
+    for (let i = contentItemsRef.current.length - 1; i >= 0; i--) {
+      const item = contentItemsRef.current[i];
+      if (item.offsetLeft < currentScrollPosition) {
+        draggableContentRef.current.scrollTo({
+          left: item.offsetLeft,
+          behavior: "smooth", // Smooth scroll to the next item
+        });
+        break;
+      }
+    }
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    let filteredData = null;
+    if (tournamentData && isNaN(searchTerm)) {
+      filteredData = tournamentData.filter((tournament) =>
+        tournament?.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+      );
+    }
+    setTournamentSearch(filteredData);
+    if (!searchTerm) setTournamentSearch(tournamentData)
+  }, [searchTerm, tournamentData])
 
   if (!tournamentData) return <>Loading ...</>;
   return (
@@ -174,7 +253,7 @@ const TournamentRemote = () => {
             <p>Add Tournament</p>
           </button>
         </div>
-      ) : !tournamentData.length ? (
+      ) : noTournament ? (
         <div
           className="remote-AddTournament-container"
           key={"AddTournament-container"}
@@ -209,7 +288,7 @@ const TournamentRemote = () => {
             </form>
           </div>
         </div>
-      ) : (
+      ) : !join ? (
         <div className="Tournament-display">
           <h1 className="noTournament-header">Tournament</h1>
           <input
@@ -217,6 +296,9 @@ const TournamentRemote = () => {
             name="searchbar"
             className="tournament-search"
             placeholder="tournament name"
+            onChange={(input) => {
+              setSearchTerm(input.target.value);
+            }}
           />
           <div className="cards-item">
             <div className="tournament-on-hold">
@@ -235,18 +317,28 @@ const TournamentRemote = () => {
                 <p>Add Tournament</p>
               </button>
             </div>
-            <div className="tournament-cards">
-              {tournamentData.length &&
-                tournamentData.map((tournament, index) => (
-                  <TournamentCard key={index} setJoin={setJoin} data={tournament} />
-                ))}
-            </div>
+              <div className="tournament-cards" ref={draggableContentRef}>
+                {tournamentData.length &&
+                  tournamentSearch.map((tournament, index) => (
+                    <div
+                      key={index}
+                      ref={(el) => {contentItemsRef.current[index] = el}}
+                      className={`carousel-item`}
+                    >
+                      <TournamentCard setJoin={setJoinCard} data={tournament}/>
+                    </div>
+                  ))}
+              </div>
             <div className="scroll-buttons">
-              <button className="slide-left" />
-              <button className="slide-right" />
+              <button className="slide-left" onClick={handlePrevClick}/>
+              <button className="slide-right" onClick={handleNextClick}/>
             </div>
           </div>
         </div>
+      ) : (
+        <>
+          <TournamentDisplay setCancel={setCancle}/>
+        </>
       )}
     </div>
   );

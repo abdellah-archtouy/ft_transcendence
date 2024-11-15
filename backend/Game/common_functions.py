@@ -12,25 +12,25 @@ def resetballPosition(ball):
     ball.set_attribute("y", ((boardHeight / 2) - 10))
 
 
-async def update(room, user1, user2):
+async def update(room):
     ballx = room.ball.get_attribute("x")
     speed = room.ball.get_attribute("speed")
     old_ball_velocityX = room.ball.get_attribute("velocityX")
     if (ballx < -10) or (ballx > boardWidth):
         if ballx < -10:
-            user2["goals"] += 1
+            room.user2_goals += 1
             x = -1
         else:
-            user1["goals"] += 1
+            room.user1_goals += 1
             x = 1
         room.ball.set_attribute("velocityX", old_ball_velocityX * (-1))
         room.ball.set_attribute(
             "velocityY", speed * math.sin(((3 * math.pi) / 4) * 0.4 * x)
         )
         resetballPosition(room.ball)
-        if user1["goals"] == 6 or user2["goals"] == 6:
+        if room.user1_goals == 6 or room.user2_goals == 6:
             room.room_pause()
-            room.winner = user1 if user1["goals"] == 6 else user2
+            room.winner = room.uid2 if room.user2_goals == 6 else room.uid1
             room.room_paused = True
 
 
@@ -94,7 +94,7 @@ def changePaddlePosition(room):
         print(f"Error in changePaddlePosition: {e}")
 
 
-async def start(room, user1, user2):
+async def start(room):
     try:
         y = room.ball.get_attribute("y") + room.ball.get_attribute("velocityY")
         x = room.ball.get_attribute("x") + room.ball.get_attribute("velocityX")
@@ -112,13 +112,14 @@ async def start(room, user1, user2):
                 room.ball.set_attribute("velocityY", old)
         changePaddlePosition(room)
         velocityChange(room)
-        await update(room, user1, user2)
+        await update(room)
     except Exception as e:
         print(f"start: {e}")
 
 
 def room_naming(rooms):
-    keys = sorted(rooms.keys())
+    filtered_keys = [key for key in rooms.keys() if key.startswith("room_") and key[5:].isdigit()]
+    keys = sorted(filtered_keys)
     loop_list = [int(key[key.find("_") + 1 :]) for key in keys]
     missed = None
     for i in range(1, len(loop_list) + 1):
@@ -133,32 +134,37 @@ def room_naming(rooms):
 def join_remote_room(instance, rooms):
     if instance.gamemode == "Remote":
         for room_name, room in rooms.items():
-            if room.type == "Remote":
-                if room.tmp_uid == instance.user_id:
+            if room.type == "Remote" and room.howManyUser() == 1:
+                if room.findUser(instance.user_id):
                     now = datetime.now()
                     time_diff = (
                         now - room.disconnected_at
-                    )  # Calculate time difference since disconnection
+                    )
                     if time_diff <= timedelta(seconds=10):
-                        room.assign_user(instance.user_id)
+                        room.channel_names[instance.user_id] = [instance.channel_name]
                         instance.connection_type = "Reconnection"
                         return room_name
-                    # else:
-                    #     return
+        
+        for room_name, room in rooms.items():
+            if room.type == "Remote":
+                if room.findUser(instance.user_id):
+                    room.channel_names[instance.user_id].append(instance.channel_name)
+                    instance.connection_type = "Reconnection"
+                    return room_name
 
         for room_name, room in rooms.items():
             if room.type == "Remote":
                 if room.uid1 and room.uid2 is None:
                     room.assign_user(instance.user_id)
-                    instance.room_group_name = room_name
+                    room.channel_names[instance.user_id] = [instance.channel_name]
                     return room_name
 
     new_room_name = f"room_{room_naming(rooms)}"
     new_room = Room()
     new_room.type = instance.gamemode  # here i assign the room mode
     new_room.assign_user(instance.user_id)
+    new_room.channel_names[instance.user_id] = [instance.channel_name]
     rooms[new_room_name] = new_room
-    instance.room_group_name = new_room_name
     return new_room_name
 
 
@@ -168,7 +174,6 @@ def join_local_room(instance, rooms):
         new_room = Room()
         new_room.type = instance.gamemode  # here i assign the room mode
         rooms[new_room_name] = new_room
-        instance.room_group_name = new_room_name
         return new_room_name
     except Exception as e:
         print(f"Error in join Local or Bot: {e}")

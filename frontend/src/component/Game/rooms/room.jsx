@@ -47,8 +47,7 @@ const Room = ({ data, mode }) => {
   /* setting the bot mode, i used state for that */
   const [botMode, setBotMode] = useState(null);
   const [gamemode, setGamemode] = useState(null);
-  const [user1, setUser1] = useState(null);
-  const [user2, setUser2] = useState(null);
+  const [roomName, setRoomName] = useState(null);
 
   const host = process.env.REACT_APP_API_HOSTNAME;
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -233,12 +232,15 @@ const Room = ({ data, mode }) => {
       return `ws://${host}:8000/ws/game/Remote/${userData.id}`;
     else if (gamemode === "bot")
       return `ws://${host}:8000/ws/game/bot/${botMode}/${userData.id}`;
+    else if (gamemode === "friends")
+      return `ws://${host}:8000/ws/game/friends/${data.room}/${userData.id}`;
     return null;
   }
 
   useEffect(() => {
     if (!userData) return;
     const url = getWSUrl();
+    console.log(url)
     if (url) {
       WSocket = new WebSocket(url);
 
@@ -315,10 +317,8 @@ const Room = ({ data, mode }) => {
 
     if (data !== undefined) {
       if (gamemode === "bot") setBotMode(data.botmode);
-      console.log(gamemode)
       if (gamemode === "friends") {
-        setUser1(data.user1);
-        setUser2(data.user2);
+        setRoomName(data.room);
       }
     }
     const fetchUserData = async () => {

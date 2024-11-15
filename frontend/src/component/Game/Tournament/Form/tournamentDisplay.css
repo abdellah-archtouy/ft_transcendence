@@ -1,0 +1,133 @@
+.tournament-display-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.tournament-display-header {
+    font-size: 48px;
+    text-shadow:0px 0px 14.86px #ffffff80,
+    0px 0px 29.71px #ffffff80,
+    0px 0px 104px #ffffff80,
+    0px 0px 208px #ffffff80,
+    0px 0px 356.56px #ffffff80;
+    padding: 50px 0;
+}
+
+.close-Button {
+    border: none;
+    background: #636262;
+    border-radius: 10px;
+    cursor: pointer;
+    position: absolute;
+    top: 50px;
+    right: 70px;
+    width: 60px;
+    color: #00000080;
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    box-sizing: content-box;
+    padding: 10px;
+    transition: all 0.5s ease-in-out;
+}
+
+.close-Button-icon {
+    fill: rgb(255, 255, 255, 0.4);
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.close-Button:hover {
+    background: #ffffff20;
+    color: #636262;
+    fill: #636262;
+}
+
+.close-Button:active {
+    background: #ffffff20;
+    color: #636262;
+    fill: #636262;
+}
+
+.tournament-display {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    width: 100%;
+    height: 50%;
+}
+
+.player-card {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    background-color: rgb(34, 34, 34, 0.8);
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 10px 5px #ffffff40;
+}
+
+.playercard-img {
+    height: 60%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 2px solid #636262;
+    box-shadow: 0 0 20px 0px rgb(189, 189, 189, 0.25);
+}
+
+.round {
+    --width: 600px;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.round-1 {
+    height: 100px;
+    width: var(--width);
+}
+
+.round-2 {
+    height: 100px;
+    width: calc(var(--width) / 1.4);
+}
+
+.tournament-winner {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    display: flex;
+    background-color: rgb(34, 34, 34, 0.8);
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 10px 5px #ffffff40;
+}
+
+.crown {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    fill: #DDC47B;
+    z-index: 1;
+}
+
+.crown-absolute {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    transform: scale(1.2);
+    fill: black;
+}

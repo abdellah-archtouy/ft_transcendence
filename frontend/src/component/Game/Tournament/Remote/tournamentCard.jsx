@@ -2,7 +2,9 @@ import React from 'react';
 import "./tournamentCard.css"
 
 const TournamentCard = ({setJoin, data}) => {
-    console.log(data)
+    function handleJoin() {
+        setJoin(data.name)
+    }
     return (
         <div className='TournamentCard-container'>
             <h4 className='TournamentCard-numusers'>
@@ -13,7 +15,7 @@ const TournamentCard = ({setJoin, data}) => {
             </h1>
             <div className="join-button">
                 <div className="bg-color"></div>
-                <button className="TournamentCard-join" onClick={setJoin(true)}>
+                <button className="TournamentCard-join" onClick={handleJoin}>
                     Join
                 </button>
             </div>

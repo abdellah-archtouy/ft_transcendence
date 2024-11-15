@@ -12,8 +12,11 @@ class Room:
         self.leftPaddle = LeftPaddle(boardWidth, boardHeight)
         self.room_paused = False
         self.fallibility = 1
+        self.channel_names = {}
         self.uid1 = user1
         self.uid2 = user2
+        self.user1_goals = 0
+        self.user2_goals = 0
         self.winner = None
         self.type = None
         self.created_at = datetime.now()
@@ -23,12 +26,13 @@ class Room:
         self.tmp_uid = None
         self.disconnected_at = None
 
-    def findUser(self, id):  # used to find user in the reconnection
-        if self.uid1 == id or self.uid2 == id:
+    def findUser(self, user_id):  # used to find user in the reconnection
+        if self.uid1 == user_id or self.uid2 == user_id:
             return 1
+        return 0
 
-    def get_user_channel(self, channel_name):
-        return self.user_channels.get(channel_name)
+    def get_user_channel(self, user_id):
+        return self.channel_names.get(user_id, [])
 
     def assign_user(self, uid):
         if self.uid1 is None:
@@ -42,19 +46,26 @@ class Room:
         elif self.uid2 == user_id:
             return self.rightPaddle
 
-    def set_user(self, user_id, value):
-        if self.uid1 == user_id:
-            self.uid1 = value
-        elif self.uid2 == user_id:
-            self.uid2 = value
+    # def set_user(self, user_id, value):
+    #     if self.uid1 == user_id:
+    #         self.uid1 = value
+    #     elif self.uid2 == user_id:
+    #         self.uid2 = value
 
+    def delete_user(self, user_id):
+        if user_id in self.channel_names:
+            del self.channel_names[user_id]
+
+    # def howManyUser(self):
+    #     x = 0
+    #     if self.uid1:
+    #         x += 1
+    #     if self.uid2:
+    #         x += 1
+    #     return x
+    
     def howManyUser(self):
-        x = 0
-        if self.uid1:
-            x += 1
-        if self.uid2:
-            x += 1
-        return x
+        return len(self.channel_names)
 
     def room_pause(self):
         if self.room_paused == False:
