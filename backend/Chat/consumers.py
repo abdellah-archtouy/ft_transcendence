@@ -163,16 +163,26 @@ class DataConsumer(WebsocketConsumer):
                 print(f"Error updating conversation: {e}")
         else:
             print("Received data is not a dictionary")
-        # convdata = ConvSerializer(Conversation.objects.all(), many=True)
-        convdata = ConvSerializer(conversation)
-        convdata_json = json.dumps(convdata.data)
+        convdata = ConvSerializer(conversation , many=False)
         user2 = User.objects.get(id=user2_id)
+        convdata_json = convdata.data
+        data_return = [
+            {
+                "id": convdata_json["id"],
+                "uid1": convdata_json["uid1"],
+                "uid2": convdata_json["uid2"],
+                "last_message": convdata_json["last_message"],
+                "last_message_time": convdata_json["last_message_time"],
+                "uid2_info": convdata_json["uid2_info"] if convdata_json["uid1"] == user_id else convdata_json["uid1_info"],
+                "conv_username": convdata_json["uid2_info"]["username"] if convdata_json["uid1"] == user_id else convdata_json["uid1_info"]["username"],
+            }
+        ]
         async_to_sync(self.channel_layer.group_send)(
             f'chat_{user2.username}',
             {
                 'type': 'chat_message',
                 'message': text_data,
-                'data': convdata.data
+                'data': data_return
             }
         )
         async_to_sync(self.channel_layer.group_send)(
@@ -180,7 +190,7 @@ class DataConsumer(WebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': text_data,
-                'data': convdata.data
+                'data': data_return
             }
         )
 

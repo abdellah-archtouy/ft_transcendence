@@ -196,3 +196,13 @@
 /* .chat{
   border: solid white;
 } */
+
+.testt{
+  display: flex;
+  color: #FFFFFF50;
+  text-align: center;
+  height: calc(100vh - 275px);
+  align-items: center;
+  justify-content: center;
+  margin-top: 110px;
+}

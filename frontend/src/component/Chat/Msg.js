@@ -10,10 +10,10 @@ import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import Back from './icons/back';
 import {WebSocketContext} from './Chat';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
-const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
+const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationdata }) => {
     const [message, setMessage] = useState('');
     const [data, setData] = useState([]);  
     const [loading, setLoading] = useState(true);  
@@ -24,32 +24,51 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     const [errors, setErrors] = useState({});
     const [ws, setWs] = useState(null);
     const navigate = useNavigate();
+    const [convname , setConvname] = useState('');
+    const [conversationdata1, setConversationdata1] = useState(conversationdata);
 
-
+    const location = useLocation();
     const socket = useContext(WebSocketContext);
 
+    const queryParam = new URLSearchParams(location.search);
+    // queryParam.get('username');
     
-
+    
     useEffect(() => {
         if (!socket) return;
         socket.onmessage = (event) => {
-         const  message1 = JSON.parse(event.data);
-         
-         const  parsmsg = JSON.parse(message1.message);
-         if (parsmsg.conversation === convid) {
-            const data1 = JSON.parse(message1.message);
-            setData(data => [...data, data1]);
+
+            const  message1 = JSON.parse(event.data);
+            const messag = message1.message;
+            
+            const  parsmsg = JSON.parse(messag);
+            if (String(parsmsg.conversation) === queryParam.get('convid')) {
+                setData(data => [...data, parsmsg]);
             }
         };
-    
+        
         setWs(socket);
-      }, [socket, convid]);
+    }, [socket, convid]);
+
+    useEffect(() => {
+        setConvname(queryParam.get('username'));
+        console.log('convid ', queryParam.get('convid'));
+    }, [queryParam]);
+
     
     useEffect(() => {
         const fetchData = async () => {  
             const access = localStorage.getItem("access");
             try {
-                const response = await axios.get(`http://${window.location.hostname}:8000/chat/msg/${convid}/`, {
+                if (queryParam.get('username') === null)
+                    return;
+                const response2 = await axios.get(`http://${window.location.hostname}:8000/chat/conversation/${queryParam.get('convid')}/`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${access}`,
+                    }});
+                setConversationdata1(response2.data);
+                const response = await axios.get(`http://${window.location.hostname}:8000/chat/msg/${queryParam.get('username')}/`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${access}`,
@@ -85,7 +104,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
                       setErrors({ general: "Session expired. Please log in again." });
                       // refreh the page
                       window.location.reload();
-                      navigate("/");
+                      navigate(`/chat?username=${queryParam.get('username')}&convid=${queryParam.get('convid')}`);
                     });
                 } else {
                   setErrors({
@@ -103,7 +122,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
           };
 
         fetchData();    
-    }, [convid]);
+    }, [convname]);
 
 
     
@@ -118,6 +137,7 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
                 conversation_info: conversationdata.conversation_info,
             };
             ws.send(JSON.stringify(msg));
+
             setMessage('');
         }
     };
@@ -143,6 +163,8 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
     }
 
     const handelcloseChat = () => {
+        queryParam.set('username' , '');
+        navigate('/chat');
         setSelectedConvId(0);
     }
 
@@ -154,24 +176,17 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
       }
     return (
         <div className={`Msg `}> 
-            {!isEmptyObject ? (
+            {queryParam.get('convid') !== null ? (
                 <>
                     <div className={`chat_top_bar `}>
                         <div className='icon_name'>
                             <button className='Backbutton' onClick={handelcloseChat}>
                                 <Back /> 
                             </button>
-                            {conversationdata.uid1_info.username === userData.username ? (
-                                <>
-                                    <img src={avatarUrl(conversationdata.uid2_info.avatar)} alt='avatr' />
-                                    <h3>{conversationdata.uid2_info.username}</h3>
-                                </>
-                            ) : (
-                                <>
-                                <img src={avatarUrl(conversationdata.uid1_info.avatar)} alt='avatar'/>
-                                <h3>{conversationdata.uid1_info.username}</h3>
-                                </>
-                            )}
+                            <>
+                                <img src={avatarUrl(conversationdata1?.uid2_info?.avatar)} alt='avatr' />
+                                <h3>{conversationdata1?.uid2_info?.username}</h3>
+                            </>
                         </div>
                         <div onClick={handelsetclick} className='set'>
                             <button>
@@ -226,28 +241,3 @@ const Msg = ({ userData , convid , setSelectedConvId , conversationdata }) => {
 };
 
 export default Msg;
-
-// useEffect(() => {
-    //     const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/msg/${convid}/`);
-    //     socket.onopen = () => {
-    //         console.log('WebSocket connection established');
-    //     };
-
-    //     socket.onmessage = (e) => {
-    //         const data1 = JSON.parse(e.data);
-    //         setData(data => [...data, data1]);
-            
-    //         // console.log('data:', data);
-    //         // console.log('data1:', data1);
-    //     };
-
-    //     socket.onclose = () => {
-    //         console.log('WebSocket connection closed');
-    //     };
-
-    //     setWs(socket);
-
-    //     return () => {
-    //         socket.close();
-    //     };
-    // }, [data, convid]);

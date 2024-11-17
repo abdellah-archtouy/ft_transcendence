@@ -1,9 +1,13 @@
 import React, { useEffect , useState } from 'react';
 import './Conv.css';
+import { useNavigate, useLocation } from "react-router-dom";
+
 // import Delete from './icons/delete';
 
-const Conv = ({ data, userData, selectedConvId }) => {
+const Conv = ({ data }) => {
   const [last_message_time, setLast_message_time] = useState('');
+  const location = useLocation();
+  const queryParam = new URLSearchParams(location.search);
 
   function avatarUrl(name) {
     return `http://${window.location.hostname}:8000` + name;
@@ -14,34 +18,16 @@ const Conv = ({ data, userData, selectedConvId }) => {
     setLast_message_time(date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit'}));
   }, [data]);
   return (
-    <div className={`conv ${selectedConvId === data.id ? 'selected' : ''}`}>
-      {data.uid1_info.username === userData.username ? (
-        <>
-          <img src={avatarUrl(data.uid2_info.avatar)} alt='user avatar' />
+    <div className={`conv ${queryParam.get('convid') === String(data.id) ? 'selected' : ''}`}>
+          <img src={avatarUrl(data.uid2_info?.avatar)} alt='user avatar' />
           <div className='user_lastmsg'>
             <div className='avatar_on'>
-              <h3>{data.uid2_info.username}</h3>
+              <h3>{data.uid2_info?.username}</h3>
               <div className='online'></div>
             </div>
-            <p>{`${data.last_message.substring(0, 10)} ${data.last_message.length > 10 ? '...' : ''}`}</p>
+            <p>{`${String(data.last_message).substring(0, 10)} ${String(data.last_message).length > 10 ? '...' : ''}`}</p>
           </div>
             <p className='timee'>{last_message_time}</p>
-        </>
-      ) : (
-        <>
-          <img src={avatarUrl(data.uid1_info.avatar)} alt='user avatar'/>
-          <div>
-            <div className='avatar_on'>
-              <h3>{data.uid1_info.username}</h3>
-              <div className='online'></div>
-            </div>
-
-            <p>{`${data.last_message.substring(0, 10)} ${data.last_message.length > 10 ? '...' : ''}`}</p>
-          </div>
-            <p className='timee'>{last_message_time}</p>
-        </>
-      )}
-      {/* <Delete /> */}
     </div>
   );
 };

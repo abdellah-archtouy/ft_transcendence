@@ -78,8 +78,6 @@ const OthersProfile = () => {
         setLoss24(response.data.last_lose_24_hours);
         setWin7(response.data.this_week_win_summary);
         setLoss7(response.data.this_week_lose_summary);
-        // setChartData(response.data.last_win_24_hours);
-        // console.log('Full Response win lose:', response);
       } catch (error) {
         console.error('Error fetching user data:', error);
         setErrors(errors); 
@@ -132,8 +130,8 @@ const OthersProfile = () => {
     fetcwin_loss();
   }, [navigate]);
   
-  const [rateType, setRateType] = useState('wins'); // default to 'wins'
-  const [rateTypet, setRateTypet] = useState('7'); // default to 'wins'
+  const [rateType, setRateType] = useState('wins');
+  const [rateTypet, setRateTypet] = useState('7'); 
   
   useEffect(() => {
     if (rateTypet === '7') {
@@ -162,8 +160,19 @@ const OthersProfile = () => {
     setRateTypet(event.target.value);
   };
 
-  const onmessagecklick = () => {
-    navigate("/chat");
+  const onmessagecklick = async () => {
+        const access = localStorage.getItem("access");
+        const response = await axios.get(`http://${window.location.hostname}:8000/chat/ouser/getconv/${username}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access}`,
+          },
+          withCredentials: true,
+        });
+
+        console.log('response:', response.data.id);
+
+    navigate(`/chat?username=${username}&convid=${response.data.id}`);
   };
 
 

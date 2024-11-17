@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
 import LandingPage from "./component/Landing_page/Landing_page";
+import ChatUser from "./component/Chat/Chat_user";
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 

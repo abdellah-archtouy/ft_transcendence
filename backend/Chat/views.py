@@ -44,12 +44,62 @@ class UsersView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
 
+
+from django.db.models import Q
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def ConvView(request, id):
+def getconvView(request, username):
+    try:
+        user = request.user
+        user2 = User.objects.get(username=username)
+
+        conv = Conversation.objects.get(
+            Q(uid1=user.id, uid2=user2.id) | Q(uid1=user2.id, uid2=user.id)
+        )
+        serializer = ConvSerializer(conv , many=False)
+        # print("hnaaaayaaa", serializer.data)
+        # data_return = serializer.data.
+        # print("hnaaaayaaa c          cdsc", data_return)
+        return Response(serializer.data)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        print("hnaaaayaaa 2", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def ConverstationView(request, convid):
+    try:
+        user = request.user
+        conv = Conversation.objects.get(id=convid)
+        serializer = ConvSerializer(conv , many=False)
+
+        data_return =  {
+            "id": serializer.data["id"],
+            "uid1": serializer.data["uid1"],
+            "uid2": serializer.data["uid2"],
+            "last_message": serializer.data["last_message"],
+            "last_message_time": serializer.data["last_message_time"],
+            "uid2_info": serializer.data["uid2_info"] if serializer.data["uid1"] == user.id else serializer.data["uid1_info"],
+            "conv_username": serializer.data["uid2_info"]["username"] if serializer.data["uid1"] == user.id else serializer.data["uid1_info"]["username"],
+        }
+        return Response(data_return)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        print("hnaaaayaaa 2 1", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def ConvView(request):
     # Retrieves Conversation instances where either uid1 or uid2 matches the given id
-    conv_instances = Conversation.objects.filter(uid1=id) | Conversation.objects.filter(
-        uid2=id
+    user = request.user
+    conv_instances = Conversation.objects.filter(uid1=user.id) | Conversation.objects.filter(
+        uid2=user.id
     )
 
     # Check if any instances were found
@@ -59,15 +109,43 @@ def ConvView(request, id):
     if not conv_instances.exists():
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
     serializer = ConvSerializer(conv_instances, many=True)
-    return Response(serializer.data)  # Return the serialized data as Response
+    data_return = [
+        {
+            "id": conv["id"],
+            "uid1": conv["uid1"],
+            "uid2": conv["uid2"],
+            "last_message": conv["last_message"],
+            "last_message_time": conv["last_message_time"],
+            "uid2_info": conv["uid2_info"] if conv["uid1"] == user.id else conv["uid1_info"],
+            "conv_username": conv["uid2_info"]["username"] if conv["uid1"] == user.id else conv["uid1_info"]["username"],
+        }
+        for conv in serializer.data
+    ]
+
+    return Response(data_return)  # Return the serialized data as Response
+
+from django.db.models import Q
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def get_messages(request, id):
-    messages = Message.objects.filter(conversation=id)
-    serializer = MessageSerializer(messages, many=True)
-    return Response(serializer.data)
+def get_messages(request, username):
+    try:
+        user = request.user
+        other_user = User.objects.get(username=username)
+        if not other_user:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        conv = Conversation.objects.filter(
+            (Q(uid1=user.id) & Q(uid2=other_user.id)) | (Q(uid1=other_user.id) & Q(uid2=user.id))
+        ).first()
+        messages = Message.objects.filter(conversation=conv.id)
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        print("hnaaaayaaa 2", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["POST"])

@@ -4,7 +4,7 @@ import './Chat.css';
 import ConvBar from './Conv_bar';
 import Msg from './Msg';
 import { createContext } from 'react';
-import { useNavigate , useParams , useLocation} from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 
 export const WebSocketContext = createContext(null);
 
@@ -16,13 +16,12 @@ const Chat = () => {
   const [convid , setconvid] = useState(0);
   const [errors, setErrors] = useState({});
   const [conversationdata, setConversationdata] = useState([]);
-  const [selectedConvId, setSelectedConvId] = useState(null);
+  const [selectedConvId, setSelectedConvId] = useState(0);
   const [socket, setSocket] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const queryParam = new URLSearchParams(location.search);
 
+  console.log('selectedConvId:', selectedConvId);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,7 +34,7 @@ const Chat = () => {
               withCredentials: true,
           });
           setUserData(response.data);
-          console.log('userData:', response.data);
+        //   console.log('userData:', response.data);
       } catch (error) {
         console.log("hnaaaaya");
         handleFetchError(error);
@@ -111,14 +110,16 @@ const Chat = () => {
     };
   }, []);
 
+
   if (!userData) {
     return <div>Loading...</div>;
   }
+  // console.log('selectedConvId:', selectedConvId);
   return (
     <WebSocketContext.Provider value={socket}>
       <div className={`chat_container ${selectedConvId === 0 ? 'null' : 'mobile-msg' }`}>
         <ConvBar userData={userData} setconvid={setconvid} selectedConvId={selectedConvId} setSelectedConvId={setSelectedConvId} setConversationdata={setConversationdata}/>
-        <Msg userData={userData} convid={convid} setSelectedConvId={setSelectedConvId} conversationdata={conversationdata}/>
+        <Msg userData={userData} convid={convid} convname={username} setSelectedConvId={setSelectedConvId} conversationdata={conversationdata}/>
       </div>
     </WebSocketContext.Provider>
   );

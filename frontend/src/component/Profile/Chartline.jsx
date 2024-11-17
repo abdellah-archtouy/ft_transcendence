@@ -30,7 +30,7 @@ const MyYearlyWinsChart = ({ chartData, par1 , par2 }) => {
           {/* <CartesianGrid strokeDasharray="3 3" /> */}
           <XAxis className='test' dataKey={par2} interval={interval} />
           <YAxis className='yaxis' width={1} />
-          <Tooltip className="hove" />
+          <Tooltip className="hove"  />
           <Area type="monotone" dataKey={par1} stroke="#767373" fill="#767373" />
         </AreaChart>
       </ResponsiveContainer>

@@ -413,6 +413,7 @@ maestro#A32B2850; */
 
 .hove{
     background: #767373;
+    border: red solid;
 }
 .add-friend-message button{
     all: unset;
