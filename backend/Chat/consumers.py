@@ -204,18 +204,6 @@ class DataConsumer(WebsocketConsumer):
             }
             for conv in serializer2.data
         ]
-        # convdata_json = convdata.data
-        # data_return = [
-        #     {
-        #         "id": convdata_json["id"],
-        #         "uid1": convdata_json["uid1"],
-        #         "uid2": convdata_json["uid2"],
-        #         "last_message": convdata_json["last_message"],
-        #         "last_message_time": convdata_json["last_message_time"],
-        #         "uid2_info": convdata_json["uid2_info"] if convdata_json["uid1"] == user_id else convdata_json["uid1_info"],
-        #         "conv_username": convdata_json["uid2_info"]["username"] if convdata_json["uid1"] == user_id else convdata_json["uid1_info"]["username"],
-        #     }
-        # ]
         async_to_sync(self.channel_layer.group_send)(
             f'chat_{user2.username}',
             {

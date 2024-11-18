@@ -131,10 +131,10 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
         e.preventDefault();
         if (ws) {
             const msg = {
-                conversation: conversationdata.id,
+                conversation: conversationdata1.id,
                 user: userData.id,
                 message: message,
-                conversation_info: conversationdata.conversation_info,
+                conversation_info: conversationdata1.conversation_info,
             };
             ws.send(JSON.stringify(msg));
 
