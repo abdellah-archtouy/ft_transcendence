@@ -54,6 +54,10 @@ def getconvView(request, username):
         user = request.user
         user2 = User.objects.get(username=username)
 
+        # if user == user2:
+        #     print("Cannot create conversation with self")
+        #     return
+
         conv = Conversation.objects.filter(
             (Q(uid1=user.id) & Q(uid2=user2.id)) |
             (Q(uid1=user2.id) & Q(uid2=user.id))

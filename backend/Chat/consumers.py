@@ -83,6 +83,10 @@ class AddConvConsumer(WebsocketConsumer):
         user1 = User.objects.filter(id=user1_id).first()
         user2 = User.objects.filter(id=user_id).first()
 
+        if user1 == user2:
+            print("Cannot create conversation with self")
+            return
+
         # Query for conversation between user_id and user1_id in either direction
         conv = Conversation.objects.filter(
             (Q(uid1=user_id) & Q(uid2=user1_id)) |
@@ -156,7 +160,7 @@ class DataConsumer(WebsocketConsumer):
                             user2_id = conversation.uid2.id
                         else:
                             user2_id = conversation.uid1.id
-                        print(f"Updated conversation last message: {conversation.last_message}")
+                        # print(f"Updated conversation last message: {conversation.last_message}")
                     else:
                         print(f"Conversation with id {conversation_id} not found")
             except Exception as e:
