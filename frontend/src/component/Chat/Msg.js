@@ -42,17 +42,17 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
             const messag = message1.message;
             
             const  parsmsg = JSON.parse(messag);
-            if (String(parsmsg.conversation) === queryParam.get('convid')) {
+            if (parsmsg.conversation == queryParam.get('convid')) {
                 setData(data => [...data, parsmsg]);
             }
         };
         
         setWs(socket);
-    }, [socket, convid]);
+    }, [socket, convid, queryParam]);
 
     useEffect(() => {
         setConvname(queryParam.get('username'));
-        console.log('convid ', queryParam.get('convid'));
+        // console.log('convid ', queryParam.get('convid'));
     }, [queryParam]);
 
     

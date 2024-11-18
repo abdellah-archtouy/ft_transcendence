@@ -54,14 +54,23 @@ def getconvView(request, username):
         user = request.user
         user2 = User.objects.get(username=username)
 
-        conv = Conversation.objects.get(
-            Q(uid1=user.id, uid2=user2.id) | Q(uid1=user2.id, uid2=user.id)
-        )
-        serializer = ConvSerializer(conv , many=False)
-        # print("hnaaaayaaa", serializer.data)
-        # data_return = serializer.data.
-        # print("hnaaaayaaa c          cdsc", data_return)
-        return Response(serializer.data)
+        conv = Conversation.objects.filter(
+            (Q(uid1=user.id) & Q(uid2=user2.id)) |
+            (Q(uid1=user2.id) & Q(uid2=user.id))
+        ).first()
+        if conv:
+            serializer = ConvSerializer(conv)
+            conv_data = serializer.data
+        else:
+        # Create new conversation
+            print("conversation not found")
+            conversation = Conversation(uid1=user, uid2=user2, last_message='')
+            conversation.save()
+            serializer = ConvSerializer(conversation)
+            conv_data = serializer.data
+
+            # serializer = ConvSerializer(conv , many=False)
+        return Response(conv_data)
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:

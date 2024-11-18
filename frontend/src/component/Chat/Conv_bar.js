@@ -20,6 +20,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [isEmptyObject, setisEmptyObject] = useState(true);
   const navigate = useNavigate();
   const socket = useContext(WebSocketContext);
+  const [tmp1, setTmp2] = useState([]);
 
   // const [selectedConvId, setSelectedConvId] = useState(null);
 
@@ -91,48 +92,38 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   fetchData();
 }, []);
 
-  // console.log('conv:', conv);
+// console.log('conv:', conv);
 
   useEffect(() => {
     // console.log('socket:', socket);
     if (!socket) return;
 
     
-    const handleMessage = (e) => {
+    const handleMessage = (e)  => {
         const data = JSON.parse(e.data);
-        const data1 = data.data[0];
-        const existcon = conv.filter((user) => {
-          if (user.id === data1.id) {
-            return data1;}
-        });
-        if (existcon.length === 0) {
-          return;
-        }
-        else {
-          setConv((conv) => conv.map((user) => {
-            if (user.id === data1.id) {
-              return data1;
-            }
-            return user;
-          }
-          ));
-        }
+        setConv(data.data);
     };
-
+    
     socket.addEventListener('message', handleMessage);
-
+    
     return () => {
       socket.removeEventListener('message', handleMessage);
     };
-  }, [socket , conv]);
+  }, [socket]);
 
   const handleClickconv = (conv) => {
-    // setSelectedConvId(conv.id);
     console.log('conv:', conv);
     navigate(`/chat?username=${conv.conv_username}&convid=${conv.id}`);
-    // setconvid(conv.id);
     setConversationdata(conv);
   };
+
+
+  // useEffect(() => {
+  //   const sortedList = [...conv].sort((a, b) => new Date(a.last_message_time) - new Date(b.last_message_time));
+  //   // console.log('sortedList:', sortedList);
+  //   setConv(sortedList);
+  // }, []);
+
 
   useEffect(() => {
     if (selectedConvId !== 0)
@@ -176,7 +167,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     setconvid(user.id);
     setConversationdata(user);
   };
-  
+
 
   return (
     <div className='conv_bar'>
