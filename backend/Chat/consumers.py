@@ -163,16 +163,65 @@ class DataConsumer(WebsocketConsumer):
                 print(f"Error updating conversation: {e}")
         else:
             print("Received data is not a dictionary")
-        # convdata = ConvSerializer(Conversation.objects.all(), many=True)
-        convdata = ConvSerializer(conversation)
-        convdata_json = json.dumps(convdata.data)
+        
+        convdata = ConvSerializer(conversation , many=False)
+        conv_instances = Conversation.objects.filter(uid1=user_id) | Conversation.objects.filter(
+        uid2=user_id
+        )
+        conv_instances = conv_instances.order_by(
+        "-last_message_time"
+        )
+        serializer = ConvSerializer(conv_instances, many=True)
+        data_return = [
+            {
+                "id": conv["id"],
+                "uid1": conv["uid1"],
+                "uid2": conv["uid2"],
+                "last_message": conv["last_message"],
+                "last_message_time": conv["last_message_time"],
+                "uid2_info": conv["uid2_info"] if conv["uid1"] == user_id else conv["uid1_info"],
+                "conv_username": conv["uid2_info"]["username"] if conv["uid1"] == user_id else conv["uid1_info"]["username"],
+            }
+            for conv in serializer.data
+        ]
         user2 = User.objects.get(id=user2_id)
+        conv_instances2 = Conversation.objects.filter(uid1=user2) | Conversation.objects.filter(
+        uid2=user2
+        )
+        conv_instances2 = conv_instances2.order_by(
+        "-last_message_time"
+        )
+        serializer2 = ConvSerializer(conv_instances2, many=True)
+        data_return_user2 = [
+            {
+                "id": conv["id"],
+                "uid1": conv["uid1"],
+                "uid2": conv["uid2"],
+                "last_message": conv["last_message"],
+                "last_message_time": conv["last_message_time"],
+                "uid2_info": conv["uid2_info"] if conv["uid1"] == user_id else conv["uid1_info"],
+                "conv_username": conv["uid2_info"]["username"] if conv["uid1"] == user_id else conv["uid1_info"]["username"],
+            }
+            for conv in serializer2.data
+        ]
+        # convdata_json = convdata.data
+        # data_return = [
+        #     {
+        #         "id": convdata_json["id"],
+        #         "uid1": convdata_json["uid1"],
+        #         "uid2": convdata_json["uid2"],
+        #         "last_message": convdata_json["last_message"],
+        #         "last_message_time": convdata_json["last_message_time"],
+        #         "uid2_info": convdata_json["uid2_info"] if convdata_json["uid1"] == user_id else convdata_json["uid1_info"],
+        #         "conv_username": convdata_json["uid2_info"]["username"] if convdata_json["uid1"] == user_id else convdata_json["uid1_info"]["username"],
+        #     }
+        # ]
         async_to_sync(self.channel_layer.group_send)(
             f'chat_{user2.username}',
             {
                 'type': 'chat_message',
                 'message': text_data,
-                'data': convdata.data
+                'data': data_return_user2
             }
         )
         async_to_sync(self.channel_layer.group_send)(
@@ -180,7 +229,7 @@ class DataConsumer(WebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': text_data,
-                'data': convdata.data
+                'data': data_return
             }
         )
 

@@ -7,18 +7,23 @@ from .views import (
     post_message,
     UsersView,
     get_user_data,
+    get_user_win_and_lose,
+    get_ouser_data,
+    get_ouser_win_and_lose,
+    ConverstationView,
+    getconvView,
 )
 
 urlpatterns = [
     path("users/", UsersView.as_view()),
-    path("conv/<int:id>/", ConvView),
-    path("msg/<int:id>/", get_messages),
+    path("conv/", ConvView),
+    path("conversation/<str:convid>/", ConverstationView),
+    path("msg/<str:username>/", get_messages),
     path("post/msg/", post_message, name="post_message"),
     path("user/", UserView),
     path("user/data/", get_user_data, name="get_user_data"),
+    path("ouser/data/<str:username>", get_ouser_data, name="get_other_user_data"),
+    path("ouser/chart/<str:username>", get_ouser_win_and_lose, name="get_other_user_data"),
+    path("ouser/getconv/<str:username>", getconvView, name="getcomanconv"),
+    path("user/chart/", get_user_win_and_lose, name="get_user_data"),
 ]
-
-# path('logout/', Logout.as_view()),
-# path('', Hi),
-# path('register/', RegisterView.as_view()),
-# path('login/', LoginView.as_view()),

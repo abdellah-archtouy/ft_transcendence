@@ -22,7 +22,7 @@
     border-radius: 30px;
     padding-top: 160px;
     /* border: red solid; */
-    padding-bottom: 50px;
+    padding-bottom: 45px;
     background-color: #22222280;
     width: 900px;
     z-index: 0;
@@ -90,13 +90,6 @@
     width: 900px;
 }
 
-.analytics-achievment .analytics{
-    background: #22222280;
-    width: 577px;
-    display: flex;
-    padding: 34px;
-    border-radius: 30px;
-}
 
 
 .analytics-achievment .achievment{
@@ -122,21 +115,22 @@
 }
 .analytics-achievment .achievment .elements{
     display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 10px;
     width: 100%;
     height: 100%;
     border-radius: 9px;
-    gap: 10px;
     justify-self: end;
     margin: 0;
     padding: 0 34px;
-    padding-top: 100px;
+    padding-top: 10px;
     margin-bottom: 34px;
     top: 0px;
     overflow: scroll;
     overflow-x: hidden;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    /* border: red solid; */
 }
 
 .analytics-achievment .achievment .elements .element {
@@ -167,7 +161,6 @@
 .online{
     height: 10px;
     width: 10px;
-    background: #62A460;
 }
 
 .bio{
@@ -251,7 +244,7 @@
 
 .ach-maestro{
     background-image: url('./background/bg_maestro.png');
-    box-shadow: 0px 0px 20px #A32B2850;
+    box-shadow: 0px 0px 20px #A32B2875;
     
 }
 
@@ -270,12 +263,12 @@ maestro#A32B2850; */
 
 .ach-the_emperor{
     background-image: url('./background/bg_the\ 3.png');
-    box-shadow: 0px 0px 20px #A7A7A7;
+    box-shadow: 0px 0px 20px #A7A7A775;
 }
 
 .ach-thunder_strike{
     background-image: url('./background/bg_thunder.png');
-    box-shadow: 0px 0px 20px #49A7C0;
+    box-shadow: 0px 0px 20px #49A7C075;
 }
 
 .ach-joker .joker_icon{
@@ -343,4 +336,103 @@ maestro#A32B2850; */
     line-height: 1;
     font-size: 10px;
     font-weight: 400;
+}
+
+.analytics-achievment .analytics{
+    background: #22222280;
+    width: 577px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 34px 0;
+    padding-bottom: 0px;
+    border-radius: 30px;
+}
+
+.analytics-achievment .analytics h1{
+    align-self: flex-start;
+    padding-left: 34px;
+    /* padding-left: 34px; */
+}
+
+
+.chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+.hhP{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 180%;
+    /* scale: 1.1; */
+    /* border: red solid;   */
+}
+
+.area {
+    /* border: red solid;   */
+    /* scale: 1.1; */
+    padding: 5px;
+    width: 90%;
+    
+}
+
+.test{
+    font-size: 8px;
+    width: 10%;
+    /* border: red solid;   */
+}   
+
+.yaxis{
+    display: none;
+}
+
+.select-div{
+    align-self: flex-start;
+    padding-left: 34px;
+    display: flex;
+    gap: 10px;
+}
+
+.select{
+    background: #22222280;
+    width: 100px;
+    height: 25px;
+    color: #B0B0B0;
+    outline: none; 
+    border-radius: 4.71px;
+    /* border: #B0B0B0 solid 1px; */
+    box-shadow: 0px 0px 3px #B0B0B0;
+}
+
+.hove{
+    background: #767373;
+    border: red solid;
+}
+.add-friend-message button{
+    all: unset;
+    outline: none; 
+    width: 86px;
+    height: 25px;
+    background: #797979;
+    color: #000000;
+    border-radius: 5px;
+}
+.add-friend-message{
+    display: flex;
+    gap: 5px;
+}
+
+.on{
+    background: #62A460;
+}
+
+.off{
+    background: #A46060;
 }

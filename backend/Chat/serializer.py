@@ -2,6 +2,7 @@ from rest_framework import serializers
 from User.models import User, Achievement
 from Chat.models import Conversation
 from Chat.models import Message
+from Game.models import Game
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,3 +41,9 @@ class AchievementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Achievement
         fields = ("maestro", "downkeeper", "jocker", "the_emperor", "thunder_strike")
+
+
+class GameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ("winner", "loser", "end")

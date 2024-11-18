@@ -20,6 +20,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [isEmptyObject, setisEmptyObject] = useState(true);
   const navigate = useNavigate();
   const socket = useContext(WebSocketContext);
+  const [tmp1, setTmp2] = useState([]);
 
   // const [selectedConvId, setSelectedConvId] = useState(null);
 
@@ -29,13 +30,14 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     
     const access = localStorage.getItem("access");
     try {
-      const response = await axios.get(`http://${window.location.hostname}:8000/chat/conv/${userData.id}/`, {
+      const response = await axios.get(`http://${window.location.hostname}:8000/chat/conv/`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access}`,
         }});
       if (response.data && response.data.length > 0) {
         setConv(response.data);
+        // console.log('data:', response.data);
       } else {
         setConv([]);
         console.log('No data found');
@@ -90,48 +92,38 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   fetchData();
 }, []);
 
-  // console.log('conv:', conv);
+// console.log('conv:', conv);
 
   useEffect(() => {
-    console.log('socket:', socket);
+    // console.log('socket:', socket);
     if (!socket) return;
 
     
-    const handleMessage = (e) => {
+    const handleMessage = (e)  => {
         const data = JSON.parse(e.data);
-        const existcon = conv.filter((user) => {
-          return user.id === data.data.id;
-        });
-        if (existcon.length === 0) {
-          setConv((conv) => [...conv, data.data]);
-        }
-        else {
-          setConv((conv) => conv.map((user) => {
-            if (user.id === data.data.id) {
-              return data.data;
-            }
-            return user;
-          }
-          ));
-        }
+        setConv(data.data);
     };
-
+    
     socket.addEventListener('message', handleMessage);
-
+    
     return () => {
       socket.removeEventListener('message', handleMessage);
     };
-  }, [socket , conv]);
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  }, [socket]);
 
   const handleClickconv = (conv) => {
-    setSelectedConvId(conv.id);
-    setconvid(conv.id);
+    console.log('conv:', conv);
+    navigate(`/chat?username=${conv.conv_username}&convid=${conv.id}`);
     setConversationdata(conv);
   };
+
+
+  // useEffect(() => {
+  //   const sortedList = [...conv].sort((a, b) => new Date(a.last_message_time) - new Date(b.last_message_time));
+  //   // console.log('sortedList:', sortedList);
+  //   setConv(sortedList);
+  // }, []);
+
 
   useEffect(() => {
     if (selectedConvId !== 0)
@@ -170,11 +162,12 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const handlesearchclick = (user) => {
     setSearch('');
     setisEmptyObject(true);
-    setSelectedConvId(user.id);
+    console.log('user:', user);
+    navigate(`/chat?username=${user.conv_username}&convid=${user.id}`);
     setconvid(user.id);
     setConversationdata(user);
   };
-  
+
 
   return (
     <div className='conv_bar'>
@@ -205,7 +198,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
                 key={user.id}
                 onClick={() => handlesearchclick(user)}
               >
-                <Conv data={user} userData={userData} selectedConvId={selectedConvId} />
+                <Conv data={user}/>
               </div>
             ))
           )}
@@ -222,7 +215,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
               key={user.id}
               onClick={() => handleClickconv(user)}
             >
-              <Conv data={user} userData={userData} selectedConvId={selectedConvId} />
+              <Conv data={user}/>
             </div>
           ))
         )}
