@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import User, Friend, UserOTP, reset_ranks  # Import your custom User model
+from Notifications.models import Notifications
 from .serializers import UserSerializer
 from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
@@ -170,18 +171,22 @@ def handle_42_callback(request):
 
 
 def download_and_save_avatar(avatar_url, username):
+    # Define possible image extensions to check
+    image_extensions = ["png", "jpg", "jpeg", "gif", "bmp", "tiff"]
+
+    # Check if any file with the username and an image extension already exists
+    for ext in image_extensions:
+        existing_avatar_path = f"{settings.MEDIA_ROOT}/avatars/{username}.{ext}"
+        if os.path.exists(existing_avatar_path):
+            return None  # Return None if a file with any image extension exists
+
     # Download the avatar image
     response = requests.get(avatar_url)
 
     if response.status_code == 200:
-        # Generate the filename for the avatar (always username + file extension)
+        # Generate the filename for the avatar based on the URL extension
         avatar_extension = avatar_url.split(".")[-1]  # e.g., jpg or png
         avatar_filename = f"{username}.{avatar_extension}"
-
-        # Check if the file already exists and remove it (if you want to replace it)
-        avatar_path = f"{settings.MEDIA_ROOT}/avatars/{avatar_filename}"
-        if os.path.exists(avatar_path):
-            return None  # Return None if the file already exists
 
         # Create a ContentFile object from the image content
         avatar_file = ContentFile(response.content, avatar_filename)
@@ -485,12 +490,12 @@ def search_bar_list(request):
 @permission_classes([IsAuthenticated])
 def update_general_info(request):
     try:
+        print("-----------------")
         user = request.user
         data = request.data
 
-        print("data", data)
-        # Update username if provided
-        new_username = data.get("username", None)
+        # Update username if provided and unique
+        new_username = data.get("username")
         if new_username and new_username != user.username:
             if User.objects.filter(username=new_username).exists():
                 return Response(
@@ -499,29 +504,45 @@ def update_general_info(request):
                 )
             user.username = generate_unique_username(new_username)
 
-        # Update bio if provided
-        new_bio = data.get("bio", None)
+        # Update bio if provided and under character limit
+        new_bio = data.get("bio")
         if new_bio:
+            if len(new_bio) > 150:
+                return Response(
+                    {"error": "Bio must be 150 characters or less."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             user.bio = new_bio
 
-        # Handle avatar and cover image uploads (if provided)
-        new_avatar = data.get("avatar", None)  # Assuming avatar is uploaded as file
-        new_cover = data.get("cover", None)  # Assuming cover is uploaded as file
-
+        # Handle avatar image upload if provided
+        new_avatar = data.get("avatar")
         if new_avatar:
-            # Update avatar logic here (you might want to process the image or save it)
-            user.avatar = new_avatar
+            if user.avatar and user.avatar.name != "avatars/default_avatar.png":
+                user.avatar.delete()
 
+            avatar_extension = os.path.splitext(new_avatar.name)[1]
+            avatar_filename = f"{user.username}{avatar_extension}"
+            user.avatar.save(
+                avatar_filename, ContentFile(new_avatar.read()), save=False
+            )
+
+        # Handle cover image upload if provided
+        new_cover = data.get("cover")
         if new_cover:
-            # Update cover logic here (you might want to process the image or save it)
-            user.cover = new_cover
+            if user.cover and user.cover.name != "covers/default_cover.png":
+                user.cover.delete()
 
-        # Save the updated user data
+            cover_extension = os.path.splitext(new_cover.name)[1]
+            cover_filename = f"{user.username}{cover_extension}"
+            user.cover.save(cover_filename, ContentFile(new_cover.read()), save=False)
+
+        # Save updated user data
         user.save()
 
-        # Return updated user data (returning the updated fields including avatar and cover)
+        # Prepare response with updated fields
         avatar_url = user.avatar.url if user.avatar else None
         cover_url = user.cover.url if user.cover else None
+
         return Response(
             {
                 "message": "User information updated successfully.",
@@ -534,6 +555,7 @@ def update_general_info(request):
             },
             status=status.HTTP_200_OK,
         )
+        print("-----------------")
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -590,18 +612,102 @@ def change_password(request):
 def validate_password_complexity(password):
     """Check password for complexity: min 8 chars, upper, lower, digit, special."""
     if len(password) < 8:
-        return "New password must be at least 8 characters long."
+        return "must be at least 8 characters long."
 
     if not re.search(r"[A-Z]", password):
-        return "Password must contain at least one uppercase letter."
+        return "must contain at least one uppercase letter."
 
     if not re.search(r"[a-z]", password):
-        return "Password must contain at least one lowercase letter."
+        return "must contain at least one lowercase letter."
 
     if not re.search(r"\d", password):
-        return "Password must contain at least one digit."
+        return "must contain at least one digit."
 
     if not re.search(r"[!@#$%^&*]", password):
-        return "Password must contain at least one special character (!@#$%^&*)."
+        return "must contain at least one special character (!@#$%^&*)."
 
     return None  # No errors, password is strong.
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def handle_friend_request(request, id, action):
+    try:
+        current_user = request.user
+        friend = User.objects.get(id=id)
+        # Check if a friend request exists between the users
+        friend_request = Friend.objects.filter(
+            (Q(user1=current_user, user2=friend) | Q(user1=friend, user2=current_user)),
+            request=True,
+        ).first()
+
+        notification = Notifications.objects.filter(
+            (Q(sender=current_user, user=friend) | Q(sender=friend, user=current_user)),
+            notification_type="FRIEND_REQUEST",
+        ).first()
+
+        if not friend_request:
+            print("No friend request found between users.")
+            return Response(
+                {"error": "No friend request found between users."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Handle the action
+        if action == "accept":
+            friend_request.accept = True
+            friend_request.request = False  # Mark the request as processed
+            friend_request.save()
+
+            # delete the friend request notification
+            notification.delete()
+            create_notification(
+                friend, current_user, "FRIEND_REQUEST_ACCEPTED", link=None
+            )
+            return Response(
+                {"message": "Friend request accepted."},
+                status=status.HTTP_200_OK,
+            )
+
+        elif action == "deny":
+            # when denied the request should be deleted
+            friend_request.delete()
+            notification.delete()
+
+            # Optionally, create a success notification for both users
+            create_notification(
+                friend, current_user, "FRIEND_REQUEST_DENIED", link=None
+            )
+
+            return Response(
+                {"message": "Friend request denied."},
+                status=status.HTTP_200_OK,
+            )
+
+        elif action == "block":
+            # this part is reserved for abdollah to implement the block feature
+            friend_request.block = True
+            friend_request.request = False  # Block the friend request
+            friend_request.save()
+
+            return Response(
+                {"message": "Friend request blocked."},
+                status=status.HTTP_200_OK,
+            )
+
+        else:
+            return Response(
+                {"error": "Invalid action specified."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    except User.DoesNotExist:
+        return Response(
+            {"error": "User does not exist."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )

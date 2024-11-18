@@ -52,12 +52,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .user-avatar {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    transition: all 0.3s ease;
 }
 
 .user-avatar-btn {
@@ -125,6 +127,7 @@
     border-radius: 0 0 45px 45px;
     display: flex;
     flex-direction: row;
+    transition: all 0.3s ease;
 }
 
 .settings-forms-btn-container {
@@ -209,6 +212,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 6%;
+    transition: all 0.3s ease;
 }
 
 .form-group {
@@ -245,7 +249,6 @@
     font-size: clamp(0.9375rem, 0.886rem + 0.2575vw, 1.3125rem);
     color: rgba(255, 255, 255, 0.5);
     padding-left: 2%;
-
 }
 
 .form-input {
@@ -428,12 +431,16 @@
         border-radius: 0;
     }
     .user-avatar-container {
-        top: 13%;
+        top: 15%;
         right: 0;
         left: 0;
         margin: auto;
         width: clamp(6.25rem, 4.4603rem + 8.9485vw, 8.75rem);
         height: clamp(6.25rem, 4.4603rem + 8.9485vw, 8.75rem);
+        border-radius: 20%;
+    }
+    .user-avatar {
+        border-radius: 20%;
     }
     .settings-forms {
         height: 35%;

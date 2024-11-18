@@ -21,18 +21,22 @@ function Carousel({ friends, handleAddFriend }) {
           ...prevSettings,
           slidesToShow: 2,
           arrows: false,
+          draggable: true,
+          swipe: true,
         }));
-      } else if (window.innerWidth < 769) {
+      } else if (window.innerWidth < 768) {
         setSettings((prevSettings) => ({
           ...prevSettings,
           slidesToShow: 4,
           arrows: false,
+          draggable: true,
         }));
       } else if (window.innerWidth < 1919) {
         setSettings((prevSettings) => ({
           ...prevSettings,
           slidesToShow: 4,
           arrows: true,
+          draggable: true,
         }));
       } else {
         setSettings((prevSettings) => ({
@@ -60,7 +64,7 @@ function Carousel({ friends, handleAddFriend }) {
     return () => {
       window.removeEventListener("resize", updateSettings);
     };
-  }, []);
+  }, [friends, settings.slidesToShow]);
 
   return (
     <Slider {...settings}>

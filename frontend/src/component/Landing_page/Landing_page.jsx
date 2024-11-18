@@ -5,8 +5,16 @@ import table from "./images/floating_table.svg";
 
 const Landing_page = ({ setAuth }) => {
     const [showPopup, setShowPopup] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     return (
         <div className="page-container">
+            {loading && (
+                <div className="loading-overlay">
+                    <div className="loading-spinner"></div>
+                    <p className="loading-text">Authenticating...</p>
+                </div>
+            )}
             <div className={`popup ${showPopup ? 'show' : ''}`}>
                 <p className='popup-p'>Account created successfully!</p>
             </div>
@@ -14,7 +22,7 @@ const Landing_page = ({ setAuth }) => {
                 <img src={table} alt="" className='table' />
             </div>
             <div className="form-container">
-                <AuthForm setShowPopup={setShowPopup} handleLogin={setAuth} />
+                <AuthForm setShowPopup={setShowPopup} handleLogin={setAuth} setLoading={setLoading} />
             </div>
         </div>
     );
