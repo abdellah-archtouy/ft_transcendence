@@ -27,23 +27,23 @@ class Room:
         self.disconnected_at = None
 
     def findUser(self, user_id):  # used to find user in the reconnection
-        if self.uid1 == user_id or self.uid2 == user_id:
-            return 1
-        return 0
+        if int(user_id) in {self.uid1, self.uid2}:
+            return True
+        return False
 
     def get_user_channel(self, user_id):
         return self.channel_names.get(user_id, [])
 
     def assign_user(self, uid):
         if self.uid1 is None:
-            self.uid1 = uid
-        elif uid != self.uid1 and self.uid2 is None:
-            self.uid2 = uid
+            self.uid1 = int(uid)
+        elif int(uid) != self.uid1 and self.uid2 is None:
+            self.uid2 = int(uid)
 
     def get_paddle_by_user(self, user_id):
-        if self.uid1 == user_id:
+        if self.uid1 == int(user_id):
             return self.leftPaddle
-        elif self.uid2 == user_id:
+        elif self.uid2 == int(user_id):
             return self.rightPaddle
 
     # def set_user(self, user_id, value):
@@ -53,8 +53,8 @@ class Room:
     #         self.uid2 = value
 
     def delete_user(self, user_id):
-        if user_id in self.channel_names:
-            del self.channel_names[user_id]
+        if int(user_id) in self.channel_names:
+            del self.channel_names[int(user_id)]
 
     # def howManyUser(self):
     #     x = 0

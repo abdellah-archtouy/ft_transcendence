@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
-import { useLocation } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { useParams } from 'react-router-dom';
 import Room from './room';
 
 const ManagedRoom = () => {
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+    const { room } = useParams();
+    const [currentRoom, setCurrentRoom] = useState(room);
 
-  // Access specific query parameters
-    const data = {
-        room: queryParams.get('room')
-    }
+    useEffect(() => {
+        setCurrentRoom(room); // Update state when `room` changes
+    }, [room]);
+
+    const data = { room: currentRoom };
     const [mode] = useState("friends");
     return (
         <>

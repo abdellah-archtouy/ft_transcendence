@@ -231,7 +231,7 @@ const Room = ({ data, mode }) => {
     if (gamemode === "Remote")
       return `ws://${host}:8000/ws/game/Remote/${userData.id}`;
     else if (gamemode === "bot")
-      return `ws://${host}:8000/ws/game/bot/${botMode}/${userData.id}`;
+      return `ws://${host}:8000/ws/game/bot/${data?.botmode}/${userData.id}`;
     else if (gamemode === "friends")
       return `ws://${host}:8000/ws/game/friends/${data.room}/${userData.id}`;
     return null;
@@ -240,7 +240,6 @@ const Room = ({ data, mode }) => {
   useEffect(() => {
     if (!userData) return;
     const url = getWSUrl();
-    console.log(url)
     if (url) {
       WSocket = new WebSocket(url);
 
@@ -306,7 +305,7 @@ const Room = ({ data, mode }) => {
         WSocket.close();
       };
     }
-  }, [userData, navigate]);
+  }, [userData, navigate, botMode]);
 
   useEffect(() => {
     /**************************************/
@@ -316,7 +315,6 @@ const Room = ({ data, mode }) => {
     if (mode) setGamemode(mode);
 
     if (data !== undefined) {
-      if (gamemode === "bot") setBotMode(data.botmode);
       if (gamemode === "friends") {
         setRoomName(data.room);
       }

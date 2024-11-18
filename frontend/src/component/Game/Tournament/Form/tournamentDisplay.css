@@ -75,7 +75,16 @@
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(20px);
-    box-shadow: 0 0 10px 5px #ffffff40;
+    font-size: 2em;
+    transition: all 2 linear;
+    p {
+        line-height: 1;
+        height: 0.9em;
+    }
+}
+
+.player-card:has(.playercard-img) {
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.25);
 }
 
 .playercard-img {
@@ -83,7 +92,7 @@
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     border: 2px solid #636262;
-    box-shadow: 0 0 20px 0px rgb(189, 189, 189, 0.25);
+    box-shadow: 0 0 20px 15px rgb(189, 189, 189, 0.25);
 }
 
 .round {
@@ -107,13 +116,6 @@
     position: relative;
     height: 100px;
     width: 100px;
-    display: flex;
-    background-color: rgb(34, 34, 34, 0.8);
-    border-radius: 20px;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 10px 5px #ffffff40;
 }
 
 .crown {

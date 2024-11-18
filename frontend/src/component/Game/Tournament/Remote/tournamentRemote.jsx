@@ -18,6 +18,7 @@ const TournamentRemote = () => {
   const [cancle, setCancle] = useState(false);
   const [joinCard, setJoinCard] = useState(null);
   const [user, setUser] = useState(null);
+  const [tournamentUsers, setTournamentUsers] = useState(null);
   const navigate = useNavigate();
   let socketRef = useRef(null);
 
@@ -118,13 +119,20 @@ const TournamentRemote = () => {
 
       socketRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (!data?.error)
-          {
-            setTournamentData(data);
-            setTournamentSearch(data);
-            if (data?.joined)
-              setJoin(data?.joined);
-          }
+        if (!data?.error) {
+          setTournamentData(data?.tournaments_data);
+          setTournamentSearch(data?.tournaments_data);
+          if (data?.tournament_users)
+            setTournamentUsers((prev) => {
+              const round = data?.round || null;
+              let obj = {
+                ...prev,
+                [round]: data?.tournament_users,
+              };
+              return obj;
+            });
+          if (data?.joined !== undefined) setJoin(() => data?.joined);
+        }
         if (data?.error) {
           console.log(data?.error);
         }
@@ -165,13 +173,14 @@ const TournamentRemote = () => {
         socketRef.current &&
         socketRef.current.readyState === WebSocket.OPEN
       )
-        console.log(joinCard)
         socketRef.current.send(
           JSON.stringify({
             type: "leave",
             name: joinCard,
           })
         );
+        setJoinCard(null);
+        setCancle((prev) => !prev);
     }
   }, [cancle]);
 
@@ -185,17 +194,17 @@ const TournamentRemote = () => {
     // Find the next content item based on the current scroll position
     for (let i = 1; i < contentItemsRef.current.length; i++) {
       const item = contentItemsRef.current[i];
-      if (item.offsetLeft > currentScrollPosition) {
-        console.log(item.offsetLeft)
+      if (item.offsetLeft - 10 > currentScrollPosition) {
+        let offset = item.offsetLeft - 10;
         draggableContentRef.current.scrollTo({
-          left: item.offsetLeft,
+          left: offset,
           behavior: "smooth", // Smooth scroll to the next item
         });
         break;
       }
     }
   };
-  
+
   const handlePrevClick = () => {
     // Get the current scroll position of the container
     const currentScrollPosition = draggableContentRef.current.scrollLeft;
@@ -205,7 +214,7 @@ const TournamentRemote = () => {
       const item = contentItemsRef.current[i];
       if (item.offsetLeft < currentScrollPosition) {
         draggableContentRef.current.scrollTo({
-          left: item.offsetLeft,
+          left: item.offsetLeft - 10,
           behavior: "smooth", // Smooth scroll to the next item
         });
         break;
@@ -223,8 +232,8 @@ const TournamentRemote = () => {
       );
     }
     setTournamentSearch(filteredData);
-    if (!searchTerm) setTournamentSearch(tournamentData)
-  }, [searchTerm, tournamentData])
+    if (!searchTerm) setTournamentSearch(tournamentData);
+  }, [searchTerm, tournamentData]);
 
   if (!tournamentData) return <>Loading ...</>;
   return (
@@ -306,38 +315,40 @@ const TournamentRemote = () => {
               <button
                 className="tournament-display-addButton"
                 onClick={() => setNoTournament(true)}
-                >
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
                   className="addButton_icon"
-                  >
+                >
                   <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
                 </svg>
                 <p>Add Tournament</p>
               </button>
             </div>
-              <div className="tournament-cards" ref={draggableContentRef}>
-                {tournamentData.length &&
-                  tournamentSearch.map((tournament, index) => (
-                    <div
-                      key={index}
-                      ref={(el) => {contentItemsRef.current[index] = el}}
-                      className={`carousel-item`}
-                    >
-                      <TournamentCard setJoin={setJoinCard} data={tournament}/>
-                    </div>
-                  ))}
-              </div>
+            <div className="tournament-cards" ref={draggableContentRef}>
+              {tournamentData.length &&
+                tournamentSearch.map((tournament, index) => (
+                  <div
+                    key={index}
+                    ref={(el) => {
+                      contentItemsRef.current[index] = el;
+                    }}
+                    className={`carousel-item`}
+                  >
+                    <TournamentCard setJoin={setJoinCard} data={tournament} />
+                  </div>
+                ))}
+            </div>
             <div className="scroll-buttons">
-              <button className="slide-left" onClick={handlePrevClick}/>
-              <button className="slide-right" onClick={handleNextClick}/>
+              <button className="slide-left" onClick={handlePrevClick} />
+              <button className="slide-right" onClick={handleNextClick} />
             </div>
           </div>
         </div>
       ) : (
         <>
-          <TournamentDisplay setCancel={setCancle}/>
+          <TournamentDisplay setCancel={setCancle} players={tournamentUsers} />
         </>
       )}
     </div>

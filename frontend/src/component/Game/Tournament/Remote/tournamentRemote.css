@@ -43,7 +43,7 @@
     font-weight: bold;
     font-size: clamp(2rem, 2.465vw + 1.422rem, 3rem);
     line-height: 0.5;
-    padding-top: 50px;
+    padding-top: clamp(1.25rem, 4.386vw + 0.318rem, 3.125rem);
 }
 
 .noTournament-text {
@@ -81,7 +81,7 @@
 
 .addButton_icon {
     height: 12px;
-    width: auto;
+    width: 12px;
 }
 
 /* ******************************* */
@@ -283,7 +283,6 @@
     height: clamp(14.75rem, 23.977vw + 9.655rem, 25rem);
     --width: calc( clamp(14.75rem, 23.977vw + 9.655rem, 25rem) * 7 / 12);
     box-sizing: content-box;
-    padding: 0 calc(50% - (var(--width) / 2));
 }
 
 .scroll-buttons {
@@ -351,9 +350,10 @@
 .tournament-search {
     width: clamp(18.75rem, 73.099vw + 3.216rem, 50rem);
     color: #DFDFDF;
+    font-size: 10px;
     background: none;
     border-radius: 8px;
-    padding: clamp(0.5rem, 1.023vw + 0.283rem, 0.938rem);
+    padding: 15px;
     padding-right: calc(clamp(0.5rem, 1.023vw + 0.283rem, 0.938rem) * 3);
     border: #B2B2B2 1px solid;
     background-image: url("../asset/search.svg");
@@ -384,7 +384,22 @@
 }
 
 @media (max-width: 600px) {
-    .main:has(.remote-AddTournament-Container) {
+    .tournament-on-hold {
+        justify-content: center;
+        p {
+            display: none;
+        }
+    }
+
+    .tournament-display-addButton {
+        padding: 8px;
+    }
+
+    .tournament-on-hold > h3 {
+        display: none;
+    }
+
+    .main.tournamentRemote-container {
         margin-bottom: 0;
     }
     .remote-AddTournament-Container {

@@ -22,7 +22,7 @@ function gameRouting({ error }) {
         <Route path="tournament/remote" element={<TournamentRemote />} />
         <Route path="friend" element={<Friend />} />
         <Route path="friend/remote" element={<Remote />} />
-        <Route path="friend/managedroom" element={<ManagedRoom />} />
+        <Route path="friend/managedroom/:room" element={<ManagedRoom />} />
         <Route path="friend/local" element={<LocalGame />} />
     </Routes>
   )

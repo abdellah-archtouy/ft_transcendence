@@ -1,18 +1,17 @@
 .TournamentCard-container {
     height: 100%;
     max-height: 400px;
-    font-size: 1rem;
     aspect-ratio: 7 / 12;
     background-image: url("../asset/lord4.svg");
     background-size: cover;
     background-position: center;
-    border-radius: clamp(1.25rem, 1.462vw + 0.939rem, 1.875rem);
+    border-radius: clamp(0.625rem, 2.924vw + 0.004rem, 1.875rem);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
     gap: clamp(0.75rem, 1.17vw + 0.501rem, 1.25rem);
-    padding: calc(clamp(1.25rem, 1.462vw + 0.939rem, 1.875rem) + 10px) clamp(1.25rem, 1.462vw + 0.939rem, 1.875rem);
+    padding: calc(clamp(0.625rem, 2.924vw + 0.004rem, 1.875rem) + 10px) clamp(0.625rem, 2.924vw + 0.004rem, 1.875rem);
     box-shadow: 0 0 clamp(0.5rem, 0.585vw + 0.376rem, 0.75rem) 0 rgb(255, 255, 255, 0.3);
     position: relative;
     animation: fade-in 0.4s linear;
@@ -20,17 +19,17 @@
 
 .TournamentCard-numusers {
     font-weight: 200;
-    font-size: 0.875em; /* 0.875em makes it slightly smaller than the base size */
+    font-size: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
     position: absolute;
-    top: 1em; /* Positioned 1em from the top, scales with the parent font-size */
-    right: 1em;
+    top: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
+    right: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
 }
 
 .TournamentCard-name {
     text-transform: capitalize;
     font-weight: 600;
     color: #E9E5DC;
-    font-size: 18px;
+    font-size: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
 }
 
 .TournamentCard-join {
@@ -40,7 +39,7 @@
     color: #E9E5DC;
     background: black;
     padding: 8px 32px;
-    font-size: 17px;
+    font-size: clamp(0.625rem, 1.023vw + 0.408rem, 1.063rem);
     font-weight: 500;
     border-radius: 10px;
     transition: transform 0.3s ease;

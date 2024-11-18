@@ -13,18 +13,17 @@ import math
 boardWidth = 1000
 boardHeight = 550
 
+BOT_SETTINGS = {
+    "easy": {"speed": 5, "fallibility": 0.08},
+    "medium": {"speed": 7, "fallibility": 0.2},
+    "hard": {"speed": 9, "fallibility": 0.5},
+}
+
 def bot_room_infos_set(room, ConsumerObj):
-    if ConsumerObj.botmode == "easy":
-        room.ball.set_attribute("speed", 5)
-        room.fallibility = 0.08
-    if ConsumerObj.botmode == "medium":
-        room.ball.set_attribute("speed", 7)
-        room.fallibility = 0.2
-    if ConsumerObj.botmode == "hard":
-        room.ball.set_attribute("speed", 9)
-        room.fallibility = 0.5
-    speed = room.ball.get_attribute("speed")
-    room.ball.set_attribute("velocityY", speed * math.sin(((3 * math.pi) / 4) * 0.4))
+    settings = BOT_SETTINGS.get(ConsumerObj.botmode, {})
+    room.ball.set_attribute("speed", settings["speed"])
+    room.fallibility = settings["fallibility"]
+    room.ball.set_attribute("velocityY", settings["speed"] * math.sin(math.pi / 6)) # / 4
 
 
 async def broadcast(ConsumerObj, room, stat, data=None):
@@ -37,20 +36,22 @@ async def broadcast(ConsumerObj, room, stat, data=None):
     except Exception as e:
         print(f"broadcast: {e}")
 
+user_cache = {}
+last_keypress_time = {}
+
 async def get_user_from_db(user_id: int, room) -> dict:
+    if user_id in user_cache:
+        user_cache[user_id]["goals"] = room.user1_goals if room.uid1 == user_id else room.user2_goals
+        return user_cache[user_id]
+
     user_obj = await User.objects.aget(id=user_id)
     user_data = UserSerializer(user_obj).data
-    goals = 0
-    if room.uid1 == user_id:
-        goals = room.user1_goals
-    elif room.uid2 == user_id:
-        goals = room.user2_goals
-    result = {
+    user_cache[user_id] = {
         "username": user_data["username"],
         "avatar": user_data["avatar"],
-        "goals": goals,
+        "goals": room.user1_goals if room.uid1 == user_id else room.user2_goals,
     }
-    return result
+    return user_cache[user_id]
 
 
 def create_local_info(username: str, room) -> dict:
@@ -114,6 +115,7 @@ class RoomManager:
                         if room.howManyUser() == 2:
                             room.disconnected_at = datetime.now()
                         room.delete_user(user_id)
+                        user_cache.pop(ConsumerObj.user_id)
                         channels_list = self.get_channel_name(user_id)
                         for channel in channels_list:
                             await channel_layer.send(channel, {"type": "chat_message", "stat": "close"})
@@ -133,7 +135,7 @@ class RoomManager:
             if ConsumerObj.gamemode != "bot":
                 user2 = await get_user_from_db(room.uid2, room)
             else:
-                user2 = create_local_info("Bot")
+                user2 = create_local_info("Bot", room)
             return user2
         except Exception as e:
             print(f"return_user2: {e}")
@@ -195,8 +197,8 @@ class RoomManager:
 
     async def send_periodic_updates(self, ConsumerObj):
         room = self.rooms[ConsumerObj.room_group_name]
-        if ConsumerObj.connection_type == None:
-            await self.start_game(ConsumerObj)
+        # if ConsumerObj.connection_type == None:
+        #     await self.start_game(ConsumerObj)
         while room and room.keep_updating and not room.winner:
             if room:
                 await start(room)
@@ -299,6 +301,10 @@ class GameConsumer(AsyncWebsocketConsumer):
         key = data.get("key")
 
         if action_type == "keypress":
+            now = datetime.now()
+            if self.user_id in last_keypress_time and (now - last_keypress_time[self.user_id]).total_seconds() < 0.1:
+                return  # Ignore if less than 100ms since last keypress
+            last_keypress_time[self.user_id] = now
             paddle = room.get_paddle_by_user(self.user_id)
             speed = paddle.speed
             if key == "KeyW" or key == "ArrowUp":
