@@ -1,9 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./notification.css";
+import axios from "axios";
 
-const Notification = ({ setShowNotifications, notificationData }) => {
+const Notification = ({ setShowNotifications, notificationData, setNotificationData }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
+
+  const [errors, setErrors] = React.useState({});
+
+
   const navigate = useNavigate();
 
   function avatarUrl(name, notif) {
@@ -11,6 +16,63 @@ const Notification = ({ setShowNotifications, notificationData }) => {
       return `${apiUrl}` + name;
     return name;
   }
+
+  const handleFetchError = (error, retryFunction) => {
+    if (error.response) {
+      if (error.response.status === 401) {
+        const refresh = localStorage.getItem("refresh");
+        if (refresh) {
+          axios
+            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .then((refreshResponse) => {
+              const { access: newAccess } = refreshResponse.data;
+              localStorage.setItem("access", newAccess);
+              retryFunction();
+            })
+            .catch(() => {
+              localStorage.removeItem("access");
+              localStorage.removeItem("refresh");
+              setErrors({ general: "Session expired. Please log in again." });
+              window.location.reload();
+              navigate("/");
+            });
+        } else {
+          setErrors({ general: "No refresh token available. Please log in." });
+        }
+      } else {
+        setErrors({ general: "Error fetching data. Please try again." });
+      }
+    } else {
+      setErrors({ general: "An unexpected error occurred. Please try again." });
+    }
+  };
+
+  const handleFriendRequest = async (id, action, notif) => {
+    const token = localStorage.getItem("access");
+
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/users/friends/${id}/${action}/`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.message) {
+        console.log(response.data.message);
+        setNotificationData((prevData) =>
+          prevData.filter((notification) => notification.id !== notif.id)
+        );
+      }
+    } catch (error) {
+      handleFetchError(error, () => handleFriendRequest(id, action));
+    }
+  };
+
 
   function positionOfNth(str, n) {
     const l = str.length;
@@ -122,6 +184,27 @@ const Notification = ({ setShowNotifications, notificationData }) => {
                   {returnTime(notif?.time)}
                 </div>
               </div>
+              {/* add accept and deny buttons only in the case where the notification is a friend request */}
+              {notif?.notification_type === "FRIEND_REQUEST" && (
+                <div className="notification-buttons">
+                  <button
+                    className="accept-deny"
+                    onClick={(e) => {
+                      handleFriendRequest(notif.sender, "accept", notif);
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="accept-deny-icon"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                  </button>
+                  <button
+                    className="accept-deny"
+                    onClick={(e) => {
+                      handleFriendRequest(notif.sender, "deny", notif);
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="accept-deny-icon"><path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg>
+                  </button>
+                </div>
+              )}
             </div>
           ))
         ) : (

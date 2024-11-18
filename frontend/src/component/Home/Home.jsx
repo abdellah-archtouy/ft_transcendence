@@ -18,113 +18,49 @@ const Home = () => {
   const [history, setHistory] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
-
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const access = localStorage.getItem("access");
+  const fetchUserData = async () => {
+    try {
+      const access = localStorage.getItem("access");
+      const response = await axios.get(`${apiUrl}/api/users/profile/`, {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+      setUser(response.data);
+      fetchSuggestedFriends();
+      fetchTop5();
+    } catch (error) {
+      handleFetchError(error, fetchUserData);
+    }
+  };
 
-        const response = await axios.get(
-          `${apiUrl}/api/users/profile/`,
-          {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          }
-        );
+  const fetchSuggestedFriends = async () => {
+    try {
+      const access = localStorage.getItem("access");
+      const response = await axios.get(`${apiUrl}/api/users/suggest_friends/`, {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+      setFriends(response.data);
+    } catch (error) {
+      handleFetchError(error, fetchSuggestedFriends);
+    }
+  };
 
-        setUser(response.data);
-        fetchSuggestedFriends(); // Fetch friends after getting user data
-        fetchTop5();
-      } catch (error) {
-        handleFetchError(error);
-      }
-    };
-
-    const fetchSuggestedFriends = async () => {
-      try {
-        const access = localStorage.getItem("access");
-
-        const response = await axios.get(
-          `${apiUrl}/api/users/suggest_friends/`,
-          {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          }
-        );
-
-        setFriends(response.data); // Set the suggested friends
-      } catch (error) {
-        handleFetchError(error);
-      }
-    };
-
-    const fetchTop5 = async () => {
-      try {
-        const access = localStorage.getItem("access");
-
-        const response = await axios.get(`${apiUrl}/game/top5`, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
-        setTop5(response.data); // Set the top 5
-
-        const response1 = await axios.get(
-          `${apiUrl}/game/history`,
-          {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          }
-        );
-        setHistory(response1.data); // Set the top 5
-      } catch (error) {
-        handleFetchError(error);
-      }
-    };
-
-    const handleFetchError = (error) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          const refresh = localStorage.getItem("refresh");
-
-          if (refresh) {
-            axios
-              .post(`${apiUrl}/api/token/refresh/`, { refresh })
-              .then((refreshResponse) => {
-                const { access: newAccess } = refreshResponse.data;
-                localStorage.setItem("access", newAccess);
-                fetchUserData(); // Retry fetching user data
-              })
-              .catch((refreshError) => {
-                localStorage.removeItem("access");
-                localStorage.removeItem("refresh");
-                console.log("you have captured the error");
-                setErrors({ general: "Session expired. Please log in again." });
-                // refreh the page
-                window.location.reload();
-                navigate("/");
-              });
-          } else {
-            setErrors({
-              general: "No refresh token available. Please log in.",
-            });
-          }
-        } else {
-          setErrors({ general: "Error fetching data. Please try again." });
-        }
-      } else {
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    };
-    fetchUserData(); // Initial fetch for user data
-  }, []);
+  const fetchTop5 = async () => {
+    try {
+      const access = localStorage.getItem("access");
+      const response = await axios.get(`${apiUrl}/game/top5`, {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+      setTop5(response.data);
+      const response1 = await axios.get(`${apiUrl}/game/history`, {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+      setHistory(response1.data);
+    } catch (error) {
+      handleFetchError(error, fetchTop5);
+    }
+  };
 
   const handleAddFriend = async (friendId) => {
     try {
@@ -138,13 +74,42 @@ const Home = () => {
         friends.map((friend) =>
           friend.id === friendId ? { ...friend, added: true } : friend
         )
-      ); // Mark friend as added
+      );
     } catch (error) {
-      // handleFetchError(error);
-      console.error("Error adding friend:", error);
-      setErrors({ general: "Error adding friend. Please try again." });
+      handleFetchError(error, () => handleAddFriend(friendId));
     }
   };
+
+  const handleFetchError = (error, retryFunction) => {
+    if (error.response && error.response.status === 401) {
+      const refresh = localStorage.getItem("refresh");
+
+      if (refresh) {
+        axios
+          .post(`${apiUrl}/api/token/refresh/`, { refresh })
+          .then((refreshResponse) => {
+            const { access: newAccess } = refreshResponse.data;
+            localStorage.setItem("access", newAccess);
+            retryFunction(); // Retry the original function
+          })
+          .catch((refreshError) => {
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            setErrors({ general: "Session expired. Please log in again." });
+            window.location.reload();
+            navigate("/");
+          });
+      } else {
+        setErrors({ general: "No refresh token available. Please log in." });
+      }
+    } else {
+      setErrors({ general: "An unexpected error occurred. Please try again." });
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const handleSeeMore = (e) => {
     e.preventDefault();
@@ -157,25 +122,25 @@ const Home = () => {
     <div className="home-div">
       <div className="home-dive-welcome">
         <div className="home-div-welcome-text">
-        {user ? (
-          <>
-            <h2 className="home-div-welcome-text-name">
-              Hello,{" "}
-              {user.username.length > 9
-                ? `${user.username.substring(0, 9)}...`
-                : user.username}
-            </h2>
-            <p >Welcome back to our game</p>
-          </>
-        ) : (
-          <p>Loading...</p>
-        )}
-        <button
-          className="home-dive-welcome-btn"
-          onClick={() => navigate("/game")}
-        >
-          Play now
-        </button>
+          {user ? (
+            <>
+              <h2 className="home-div-welcome-text-name">
+                Hello,{" "}
+                {user.username.length > 9
+                  ? `${user.username.substring(0, 9)}...`
+                  : user.username}
+              </h2>
+              <p>Welcome back to our game</p>
+            </>
+          ) : (
+            <p>Loading...</p>
+          )}
+          <button
+            className="home-dive-welcome-btn"
+            onClick={() => navigate("/game")}
+          >
+            Play now
+          </button>
         </div>
       </div>
       <div className="suggestions">

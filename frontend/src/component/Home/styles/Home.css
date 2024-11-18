@@ -60,7 +60,7 @@ svg {
   background-size: contain;
   background-position: right;
   border-radius: 30px;
-  box-shadow: rgba(244, 244, 244, 0.35) 0px 0px 10px 5px;
+  box-shadow: rgba(244, 244, 244, 0.35) 0px 0px clamp(1.25rem, 0.9925rem + 1.2876vw, 3.125rem) 0px;
   height: 500px;
   width: 50vw;
   flex-shrink: 0;
@@ -306,7 +306,7 @@ svg {
 
   .stats {
     display: flex;
-    gap: 3em;
+    gap: 2em;
     flex-direction: column;
     height: 750px;
     width: 90vw;
@@ -323,7 +323,7 @@ svg {
   }
 
   .matches-list-item {
-    padding: 1rem;
+    padding: 0.8rem;
   }
 
   .matches-container {
@@ -375,7 +375,7 @@ svg {
   }
 
   .matches-list-item {
-    padding: 0.8rem;
+    padding: 0.7rem;
   }
 
 

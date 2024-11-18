@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import check from "./images/Vector.svg";
 
-const AuthForm = ({ setShowPopup, handleLogin }) => {
+const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isOtpRequired, setIsOtpRequired] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -136,7 +136,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
         });
         setIsForgotPassword(false);
       } catch (error) {
-        setErrors({ email: "Error sending reset email." });
+        setErrors({ email: error.response.data.error });
       }
     } else {
       setErrors(formErrors);
@@ -263,8 +263,9 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
   };
 
   const handle42Login = async () => {
-    console.log("42 login function called");
 
+    console.log("42 login function called");
+    // setLoading(true);
     const redirectUri = encodeURIComponent(
       `${api_callback}/api/auth/callback/`
     );
@@ -275,31 +276,31 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
     window.location.href = url;
   };
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const code = urlParams.get("code");
 
-    if (code) {
-      // Call the backend to exchange the code for tokens
-      const fetchTokens = async () => {
-        try {
-          const response = await axios.get(
-            `${apiUrl}/api/auth/callback/?code=${code}`
-          );
-          const { access, refresh } = response.data;
+  //   if (code) {
+  //     // Call the backend to exchange the code for tokens
+  //     const fetchTokens = async () => {
+  //       try {
+  //         const response = await axios.get(
+  //           `${apiUrl}/api/auth/callback/?code=${code}`
+  //         );
+  //         const { access, refresh } = response.data;
 
-          // Save tokens in local storage
-          localStorage.setItem("access", access);
-          localStorage.setItem("refresh", refresh);
-          handleLogin(access, refresh); // Call handleLogin with the access token
-          navigate("/"); // Navigate to the home page or desired page
-        } catch (error) {
-          console.error("Error fetching tokens: ", error);
-        }
-      };
-      fetchTokens();
-    }
-  }, [handleLogin]);
+  //         // Save tokens in local storage
+  //         localStorage.setItem("access", access);
+  //         localStorage.setItem("refresh", refresh);
+  //         handleLogin(access, refresh); // Call handleLogin with the access token
+  //         navigate("/"); // Navigate to the home page or desired page
+  //       } catch (error) {
+  //         console.error("Error fetching tokens: ", error);
+  //       }
+  //     };
+  //     fetchTokens();
+  //   }
+  // }, [handleLogin]);
 
   return (
     <>
@@ -421,7 +422,7 @@ const AuthForm = ({ setShowPopup, handleLogin }) => {
               type="email"
               name="email"
               placeholder={errors.email || "Email"}
-              value={email}
+              value={errors.email ? "" : email}
               onChange={handleChange(setEmail)}
               onKeyDown={(e) => handleKeyDown(e, 0)}
             />

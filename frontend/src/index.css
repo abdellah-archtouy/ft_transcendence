@@ -40,6 +40,7 @@ body {
   flex-direction: column;
   flex: 1; /* Ensures it takes up the remaining height */
   width: 100%;
+  position: relative;
 }
 
 .fixed-height {
@@ -136,4 +137,37 @@ body {
 
 @media (max-width: 1024px) {
   
+}
+
+@media (max-width: 640px) {
+  .pop-container {
+    top: 10px;
+  }
+}
+
+.tournament-popup {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  right: -100%;
+  background-color: rgb(34, 34, 34, 0.8);
+  padding: 10px;
+  border-right: 5px solid rgba(209, 209, 209, 0.5);
+  transition: all 1s ease-in-out;
+  z-index: 1000;
+}
+
+.tournament-popup.appeare {
+  right: 0%;
+  opacity: 1;
+  animation: fade-out 2s ease-in-out 2s;
+}
+
+.pop-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 50px;
+  width: 100%;
+  overflow: hidden;
 }

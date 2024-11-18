@@ -13,13 +13,15 @@ import { useState, useEffect } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
 import LandingPage from "./component/Landing_page/Landing_page";
+import AuthCallBack from "./component/AuthCallBack/AuthCallBack";
+
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem('jwt'));
-  // const [scroll, setScroll] = useState(false);
+  const [error, setError] = useState(null);
   const location = useLocation();
   const bgImage = auth && {
     background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`
@@ -67,6 +69,15 @@ function App() {
     setAuth(true);
   };
 
+  useEffect(() => {
+    if (error)
+      {
+        setTimeout(() => {
+          setError(null)
+        }, 2500)
+      }
+  },[error])
+
   const scroll = (location.pathname !== "/" && location.pathname !== "/profile") && {
         height: `100%`
     }
@@ -79,19 +90,29 @@ function App() {
         <>
           <Navbar />
           <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
+          <div className="pop-container">
+            <div className={`tournament-popup ${error ? 'appeare' : ''}`}>
+                <p className='tournament-popup-p'>{error}</p>
+            </div>
+          </div>
             <Routes>
               <Route exact path="/" element={<Home />} />
-              <Route exact path="/game/*" element={<GameRouting />} />
+              <Route exact path="/game/*" element={<GameRouting error={setError} />} />
               <Route exact path="/chat" element={<Chat />} />
               <Route exact path="/leaderboard" element={<Leaderboard />} />
-              <Route exact path="/setting" element={<Setting />} />
+              <Route exact path="/setting" element={<Setting error={setError}/>} />
               <Route exact path="/profile" element={<Profile />} />
               <Route exact path="/user/:username" element={<OthersProfile />} />
             </Routes>
           </div>
         </>
       ) : (
-        <LandingPage setAuth={handleLogin} />
+        <>
+          <Routes>
+                <Route path="/api/auth/callback" element={<AuthCallBack setAuth={handleLogin} />} />
+                <Route path="*" element={<LandingPage setAuth={handleLogin} />} />
+            </Routes>
+        </>
       )}
     </div>
   );

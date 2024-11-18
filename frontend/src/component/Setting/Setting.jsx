@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import LoadingPage from "../loadingPage/loadingPage";
 import { useState } from "react";
 
-const Setting = () => {
+const Setting = ({error}) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const [user, setUser] = React.useState(null);
   const [errors, setErrors] = React.useState({});
@@ -32,7 +32,7 @@ const Setting = () => {
     return `http://localhost:8000${cover}`;
   }
 
-  const handleFetchError = (error) => {
+  const handleFetchError = (error, retryFunction) => {
     if (error.response) {
       if (error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
@@ -42,7 +42,7 @@ const Setting = () => {
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
-              fetchUserData(); // Retry fetching user data
+              retryFunction();
             })
             .catch(() => {
               localStorage.removeItem("access");
@@ -87,7 +87,7 @@ const Setting = () => {
         setlogin42(true);
       }
     } catch (error) {
-      handleFetchError(error);
+      handleFetchError(error, fetchUserData);
     }
   };
 
@@ -127,14 +127,14 @@ const Setting = () => {
             const aspectRatio = img.width / img.height;
             if (aspectRatio < 1.77 || aspectRatio > 1.79) {
               newErrors.cover = 'Image must have a 16:9 aspect ratio.';
-              console.log('Cover image must have a 16:9 aspect ratio.');
+              error('Cover image must have a 16:9 aspect ratio.');
               return;
             }
   
             // Check if the image resolution is within the 1920x1080 range
             if (img.width < 1920 || img.height < 1080 || img.width > 1920 || img.height > 1080) {
               newErrors.cover = 'Image resolution must be 1920x1080 pixels.';
-              console.log('Cover image resolution must be 1920x1080 pixels.');
+              error('Cover image resolution must be 1920x1080 pixels.');
               return;
             }
   
@@ -142,7 +142,7 @@ const Setting = () => {
             const maxFileSize = 5 * 1024 * 1024; // 5MB
             if (file.size > maxFileSize) {
               newErrors.cover = 'Cover image file size must not exceed 5MB.';
-              console.log('Cover image file size exceeds the 5MB limit.');
+              error('Cover image file size must not exceed 5MB.');
               return;
             }
   
@@ -190,19 +190,19 @@ const Setting = () => {
           img.onload = () => {
             if (img.width !== img.height) {
               newErrors.avatar = 'Image must have a 1:1 aspect ratio.';
-              console.log('Avatar image must be square (1:1 aspect ratio).');
+              error('Avatar image must have a 1:1 aspect ratio.');
               return;
             }
             if (img.width < 500 || img.height < 500 || img.width > 800 || img.height > 800) {
               newErrors.avatar = 'Image resolution must be between 500x500 and 800x800 pixels.';
-              console.log('Avatar image resolution must be between 500x500 and 800x800 pixels.');
+              error('between 500x500 and 800x800 pixels.');
               return;
             }
           
             const maxFileSize = 2 * 1024 * 1024; // 2MB max size
             if (file.size > maxFileSize) {
               newErrors.avatar = 'Image file size must not exceed 2MB.';
-              console.log('Avatar image file size exceeds the 2MB limit.');
+              error('Avatar image file size must not exceed 2MB.');
               return;
             }
           
@@ -277,7 +277,8 @@ const Setting = () => {
   
     // check if the new password is the same as the current password
     if (!newErrors.newPassword && currentPassword === newPassword) {
-      newErrors.newPassword = "New password must be different from current password.";
+      newErrors.newPassword = "must be different from current password.";
+      newErrors.retypePassword = "must be different from current password.";
     }
   
     // check if retypePassword matches newPassword
@@ -317,7 +318,14 @@ const Setting = () => {
         window.location.reload();
       } catch (error) {
         setLoading(false);
-        handleFetchError(error);
+        handleFetchError(error, handleGeneralSubmit);
+        if (error.response.data.error === "Username already taken.") {
+          setErrors({ username: error.response.data.error });
+        }
+        else if (error.response.data.error === "Bio must be 150 characters or less.") {
+          setErrors({ bio: error.response.data.error });
+        }
+        
       }
     } else {
       setErrors(generalErrors);
@@ -339,9 +347,15 @@ const Setting = () => {
           }
         );
         setLoading(false);
+        window.location.reload();
       } catch (error) {
         setLoading(false);
-        handleFetchError(error);
+        handleFetchError(error, handleSecuritySubmit);
+        if (error.response.data.error == "Old password is incorrect.") {
+          setErrors({ currentPassword: error.response.data.error });
+        } else {
+          setErrors({ currentPassword: error.response.data.error }, { newPassword: error.response.data.error }, { retypePassword: error.response.data.error });
+        }
       }
     } else {
       setErrors(securityErrors);
@@ -430,7 +444,7 @@ const Setting = () => {
                     type="text"
                     id="username"
                     name="username"
-                    value={username}
+                    value={errors.username ? '' : username}
                     onChange={handleInputChange(setUsername, 'username')}
                     className={`form-input ${errors.username ? 'input-error shake' : ''}`}
                     placeholder={errors.username || ''}
@@ -441,7 +455,7 @@ const Setting = () => {
                   <textarea
                     id="bio"
                     name="bio"
-                    value={bio}
+                    value={errors.bio ? '' : bio}
                     onChange={handleInputChange(setBio, 'bio')}
                     className={`form-input-bio ${errors.bio ? 'input-error shake' : ''}`}
                     placeholder={errors.bio || ''}
