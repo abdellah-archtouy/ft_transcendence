@@ -3,7 +3,6 @@ import Baner from './Baner'
 import React, { useEffect ,useState } from 'react';
 import axios from 'axios';
 import './profile.css';
-// import { createContext } from 'react';
 
 import { useNavigate , useParams } from "react-router-dom";
 import Avatar from './Avatar';
@@ -21,8 +20,7 @@ const OthersProfile = () => {
   const [avatarImg, setavatarImg] = useState();
   const [loading, setLoading] = useState(true);  
   const [errors, setErrors] = useState({});
-  // const [achievement , setAchievement] = useState([]);
-  const [achievement, setAchievement] = useState([]);  // Default to an empty array
+  const [achievement, setAchievement] = useState([]);
 
   const navigate = useNavigate();
   const { username } = useParams();
@@ -32,7 +30,10 @@ const OthersProfile = () => {
   const [loss24 , setLoss24] = useState([]);
   const [win7 , setWin7] = useState([]);
   const [loss7 , setLoss7] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [time, setTime] = useState("hour");
+  const apiUrl = process.env.REACT_APP_API_URL;
+
 
 
   useEffect(() => {
@@ -47,17 +48,17 @@ const OthersProfile = () => {
           withCredentials: true,
         });
     
-        // console.log('Full Response:', response); 
     
        
         setUserData(response.data); 
         setBanerImg(response.data.cover); 
         setavatarImg(response.data.avatar); 
         setAchievement(response.data.achievement_images);
+        console.log('response:', response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
         setErrors(errors); 
-        handleFetchError(error);
+        handleFetchError(error, () => fetchData());
       } finally {
         setLoading(false);
       }
@@ -78,54 +79,16 @@ const OthersProfile = () => {
         setLoss24(response.data.last_lose_24_hours);
         setWin7(response.data.this_week_win_summary);
         setLoss7(response.data.this_week_lose_summary);
+        fetchSuggestedFriends();
       } catch (error) {
         console.error('Error fetching user data:', error);
         setErrors(errors); 
-        handleFetchError(error);
+        handleFetchError(error, () => fetcwin_loss());
       } finally {
         setLoading(false);
       }
     };
 
-    
-    const handleFetchError = (error) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          const refresh = localStorage.getItem("refresh");
-          console.log(refresh);
-          if (refresh) {
-            axios
-            .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
-            .then((refreshResponse) => {
-              const { access: newAccess } = refreshResponse.data;
-              localStorage.setItem("access", newAccess);
-              fetchData(); // Retry fetching user data
-              fetcwin_loss();
-            })
-            .catch((refreshError) => {
-              localStorage.removeItem("access");
-              localStorage.removeItem("refresh");
-              console.log("you have captured the error");
-              setErrors({ general: "Session expired. Please log in again." });
-              // refreh the page
-              window.location.reload();
-              navigate("/");
-            });
-          } else {
-            setErrors({
-              general: "No refresh token available. Please log in.",
-            });
-          }
-        } else {
-          setErrors({ general: "Error fetching data. Please try again." });
-        }
-      } else {
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    };
-    
     fetchData();
     fetcwin_loss();
   }, [navigate]);
@@ -161,6 +124,7 @@ const OthersProfile = () => {
   };
 
   const onmessagecklick = async () => {
+    try {
         const access = localStorage.getItem("access");
         const response = await axios.get(`http://${window.location.hostname}:8000/chat/ouser/getconv/${username}`, {
           headers: {
@@ -169,10 +133,73 @@ const OthersProfile = () => {
           },
           withCredentials: true,
         });
+        navigate(`/chat?username=${username}&convid=${response.data.id}`);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setErrors(errors); 
+        handleFetchError(error, () => onmessagecklick());
+      } finally {
+        setLoading(false);
+      }
 
-        console.log('response:', response.data.id);
+  };
 
-    navigate(`/chat?username=${username}&convid=${response.data.id}`);
+  const fetchSuggestedFriends = async () => {
+    try {
+      const access = localStorage.getItem("access");
+      const response = await axios.get(`${apiUrl}/api/users/suggest_friends/`, {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+      setFriends(response.data);
+    } catch (error) {
+      handleFetchError(error, fetchSuggestedFriends);
+    }
+  };
+
+  const handleFetchError = (error, retryFunction) => {
+    if (error.response && error.response.status === 401) {
+      const refresh = localStorage.getItem("refresh");
+
+      if (refresh) {
+        axios
+          .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+          .then((refreshResponse) => {
+            const { access: newAccess } = refreshResponse.data;
+            localStorage.setItem("access", newAccess);
+            retryFunction(); // Retry the original function
+          })
+          .catch((refreshError) => {
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            setErrors({ general: "Session expired. Please log in again." });
+            window.location.reload();
+            navigate("/");
+          });
+      } else {
+        setErrors({ general: "No refresh token available. Please log in." });
+      }
+    } else {
+      setErrors({ general: "An unexpected error occurred. Please try again." });
+    }
+  };
+
+  const handleAddFriend = async (friendId) => {
+    try {
+      const access = localStorage.getItem("access");
+      await axios.post(
+        `http://${window.location.hostname}:8000/api/users/add_friend/`,
+        { friend_id: friendId },
+        { headers: { Authorization: `Bearer ${access}` } }
+      );
+      setFriends(
+        friends.map((friend) =>
+          friend.id === friendId ? { ...friend, added: true } : friend
+        )
+      );
+    } catch (error) {
+      console.log('friends:', error);
+      handleFetchError(error, () => handleAddFriend(friendId));
+    }
   };
 
 
@@ -193,8 +220,8 @@ const OthersProfile = () => {
             <div className='online off'></div>
           </div>
           <div className='add-friend-message'>
-            <button onClick={onmessagecklick}>Message</button>
-            <button>Add Friend</button>
+            <button className='' onClick={onmessagecklick}>Message</button>
+            <button className='' onClick={() => handleAddFriend(userData.id)}>Add Friend</button>
           </div>
           <p className='bio'>{userData?.bio}</p>
           <div className='win-rank-score'>

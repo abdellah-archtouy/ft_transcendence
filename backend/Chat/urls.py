@@ -5,17 +5,17 @@ from .views import (
     ConvView,
     get_messages,
     post_message,
-    UsersView,
     get_user_data,
     get_user_win_and_lose,
     get_ouser_data,
     get_ouser_win_and_lose,
     ConverstationView,
     getconvView,
+    get_friends,
 )
 
 urlpatterns = [
-    path("users/", UsersView.as_view()),
+    path("users/", get_friends, name="get_friends"),
     path("conv/", ConvView),
     path("conversation/<str:convid>/", ConverstationView),
     path("msg/<str:username>/", get_messages),

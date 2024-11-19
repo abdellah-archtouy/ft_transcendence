@@ -1,6 +1,6 @@
 .conv_bar{
     background-color: #22222280;
-    /* position: relative; */
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 20px;
