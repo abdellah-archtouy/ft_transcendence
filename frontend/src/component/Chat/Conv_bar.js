@@ -20,9 +20,6 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [isEmptyObject, setisEmptyObject] = useState(true);
   const navigate = useNavigate();
   const socket = useContext(WebSocketContext);
-  const [tmp1, setTmp2] = useState([]);
-
-  // const [selectedConvId, setSelectedConvId] = useState(null);
 
   useEffect(() => {
 
@@ -37,7 +34,6 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
         }});
       if (response.data && response.data.length > 0) {
         setConv(response.data);
-        // console.log('data:', response.data);
       } else {
         setConv([]);
         console.log('No data found');
@@ -45,57 +41,44 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     } catch (error) {
       setError(error);
       console.log(error);
-      handleFetchError(error);
+      handleFetchError(error, () => fetchData());
       setConv([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFetchError = (error) => {
-    if (error.response) {
-      if (error.response.status === 401) {
-        const refresh = localStorage.getItem("refresh");
+  const handleFetchError = (error, retryFunction) => {
+    if (error.response && error.response.status === 401) {
+      const refresh = localStorage.getItem("refresh");
 
-        if (refresh) {
-          axios
-            .post("http://localhost:8000/api/token/refresh/", { refresh })
-            .then((refreshResponse) => {
-              const { access: newAccess } = refreshResponse.data;
-              localStorage.setItem("access", newAccess);
-              fetchData(); // Retry fetching user data
-            })
-            .catch((refreshError) => {
-              localStorage.removeItem("access");
-              localStorage.removeItem("refresh");
-              console.log("you have captured the error");
-              setErrors({ general: "Session expired. Please log in again." });
-              // refreh the page
-              window.location.reload();
-              navigate("/");
-            });
-        } else {
-          setErrors({
-            general: "No refresh token available. Please log in.",
+      if (refresh) {
+        axios
+          .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+          .then((refreshResponse) => {
+            const { access: newAccess } = refreshResponse.data;
+            localStorage.setItem("access", newAccess);
+            retryFunction(); // Retry the original function
+          })
+          .catch((refreshError) => {
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            setErrors({ general: "Session expired. Please log in again." });
+            window.location.reload();
+            navigate("/");
           });
-        }
       } else {
-        setErrors({ general: "Error fetching data. Please try again." });
+        setErrors({ general: "No refresh token available. Please log in." });
       }
     } else {
-      setErrors({
-        general: "An unexpected error occurred. Please try again.",
-      });
+      setErrors({ general: "An unexpected error occurred. Please try again." });
     }
   };
 
   fetchData();
 }, []);
 
-// console.log('conv:', conv);
-
   useEffect(() => {
-    // console.log('socket:', socket);
     if (!socket) return;
 
     
@@ -112,18 +95,9 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   }, [socket]);
 
   const handleClickconv = (conv) => {
-    console.log('conv:', conv);
     navigate(`/chat?username=${conv.conv_username}&convid=${conv.id}`);
     setConversationdata(conv);
   };
-
-
-  // useEffect(() => {
-  //   const sortedList = [...conv].sort((a, b) => new Date(a.last_message_time) - new Date(b.last_message_time));
-  //   // console.log('sortedList:', sortedList);
-  //   setConv(sortedList);
-  // }, []);
-
 
   useEffect(() => {
     if (selectedConvId !== 0)
@@ -133,7 +107,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   }, [selectedConvId]);
 
   if (loading) return <div>Loading...</div>;
-  // if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   const handleClickAdd = () => {
     setOn(false);
@@ -162,7 +136,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const handlesearchclick = (user) => {
     setSearch('');
     setisEmptyObject(true);
-    console.log('user:', user);
+    console.log('conv user:', user.conv_username);
     navigate(`/chat?username=${user.conv_username}&convid=${user.id}`);
     setconvid(user.id);
     setConversationdata(user);

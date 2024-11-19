@@ -8,8 +8,9 @@ from .serializer import (
     MessageSerializer,
     AchievementSerializer,
     GameSerializer,
+    FriendSerializer,
 )
-from User.models import User, Achievement
+from User.models import User, Achievement , Friend
 from Chat.models import Conversation, Message
 from django.contrib.auth import login
 import jwt, datetime
@@ -43,6 +44,28 @@ class UsersView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_friends(request):
+    try:
+        user = request.user
+        friends = Friend.objects.filter(user1=user) | Friend.objects.filter(user2=user)
+        data_return = [
+            {
+                'user': UserSerializer(friend.user1 if friend.user1 != user else friend.user2).data,
+            }
+            for friend in friends
+            if friend.accept
+        ]
+        serializer = FriendSerializer(friends, many=True)
+        # print(serializer.data)
+        # print(data_return)   
+        return Response(data_return)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        print("hnaaaayaaa 2 2", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
 
 
 from django.db.models import Q
@@ -78,7 +101,7 @@ def getconvView(request, username):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa 2", e)
+        print("hnaaaayaaa 2 3", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -109,18 +132,14 @@ def ConverstationView(request, convid):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def ConvView(request):
-    # Retrieves Conversation instances where either uid1 or uid2 matches the given id
     user = request.user
     conv_instances = Conversation.objects.filter(uid1=user.id) | Conversation.objects.filter(
         uid2=user.id
     )
 
-    # Check if any instances were found
-    conv_instances = conv_instances.order_by(
-        "-last_message_time"
-    )  # Order by last message
+    conv_instances = conv_instances.order_by("-last_message_time") 
     if not conv_instances.exists():
-        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response([])
     serializer = ConvSerializer(conv_instances, many=True)
     data_return = [
         {
@@ -135,7 +154,7 @@ def ConvView(request):
         for conv in serializer.data
     ]
 
-    return Response(data_return)  # Return the serialized data as Response
+    return Response(data_return)
 
 from django.db.models import Q
 
@@ -145,6 +164,7 @@ from django.db.models import Q
 def get_messages(request, username):
     try:
         user = request.user
+        # print("username", username)
         other_user = User.objects.get(username=username)
         if not other_user:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -157,7 +177,7 @@ def get_messages(request, username):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa 2", e)
+        print("hnaaaayaaa 2 4", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -182,8 +202,6 @@ def get_user_data(request):
         user = request.user
         achievements = Achievement.objects.filter(user=user.id)
         achievements_serialized = AchievementSerializer(achievements, many=True).data
-
-        # Mapping of achievement names to their respective image paths
         achievement_images = {
             "maestro": "Maestro",
             "downkeeper": "Downkeeper",
@@ -194,18 +212,13 @@ def get_user_data(request):
 
         image_paths = []
 
-        # Iterate over each achievement object in the serialized data
         for achievement in achievements_serialized:
             for field, has_achievement in achievement.items():
-                # Check if the field is an achievement with a value of True
                 if has_achievement and field in achievement_images:
                     image_path = achievement_images[field]
                     image_paths.append(image_path)
-
         avatar_url = user.avatar.url if user.avatar else None
         cover_url = user.cover.url if user.cover else None
-
-        # Return user data with achievements and associated image paths
         return Response(
             {
                 "id": user.id,
@@ -218,7 +231,7 @@ def get_user_data(request):
                 "win": user.win,
                 "rank": user.rank,
                 "achievement": achievements_serialized,
-                "achievement_images": image_paths,  # Added image paths
+                "achievement_images": image_paths,
             },
             status=status.HTTP_200_OK,
         )
@@ -232,14 +245,9 @@ def get_user_data(request):
 @permission_classes([IsAuthenticated])
 def get_ouser_data(request, username):
     try:
-        # Use .get() to retrieve a single user instance
         user = User.objects.get(username=username)
-
-        # Fetch achievements based on the user
         achievements = Achievement.objects.filter(user=user.id)
         achievements_serialized = AchievementSerializer(achievements, many=True).data
-
-        # Mapping of achievement names to their respective image paths
         achievement_images = {
             "maestro": "Maestro",
             "downkeeper": "Downkeeper",
@@ -247,21 +255,14 @@ def get_ouser_data(request, username):
             "thunder_strike": "Thunder_strike",
             "the_emperor": "The_emperor",
         }
-
         image_paths = []
-
-
-        # Iterate over each achievement object in the serialized data
         for achievement in achievements_serialized:
             for field, has_achievement in achievement.items():
                 if has_achievement and field in achievement_images:
                     image_path = achievement_images[field]
                     image_paths.append(image_path)
-
         avatar_url = user.avatar.url if user.avatar else None
         cover_url = user.cover.url if user.cover else None
-
-        # Return user data with achievements and associated image paths
         return Response(
             {
                 "id": user.id,
@@ -293,10 +294,7 @@ from django.http import JsonResponse
 
 
 def get_last_24_hours():
-    # Start from 12:00 noon (today)
     current_time = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0)
-    
-    # Generate hours from 12:00 to 00:00 (next day)
     last_24_hours = [
         {
             "hour": (current_time - timedelta(hours=i)).strftime('%H:00'),
@@ -305,14 +303,10 @@ def get_last_24_hours():
         for i in range(24)
     ]
     last_24_hours.sort(key=lambda x: x['hour'])
-    # print("hnaaaayaaa" ,last_24_hours)
     return last_24_hours
 
 def get_last_lose_24_hours():
-    # Start from 12:00 noon (today)
     current_time = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0)
-    
-    # Generate hours from 12:00 to 00:00 (next day)
     last_24_hours = [
         {
             "hour": (current_time - timedelta(hours=i)).strftime('%H:00'),
@@ -321,7 +315,6 @@ def get_last_lose_24_hours():
         for i in range(24)
     ]
     last_24_hours.sort(key=lambda x: x['hour'])
-    # print("hnaaaayaaa" ,last_24_hours)
     return last_24_hours
 
 def update_last_24_hours_with_matches(last_24_hours, matches_list):
@@ -349,10 +342,8 @@ from collections import defaultdict
 
 def get_weekly_summary(match_history):
     today = datetime.now()
-    start_of_week = today - timedelta(days=today.weekday())  # Start on Monday
-    end_of_week = start_of_week + timedelta(days=6)          # End on Sunday
-
-    # Initialize a dictionary to store data for each day of the current week
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
     days_of_week = {
         (start_of_week + timedelta(days=i)).strftime('%A').lower(): {
             "day": (start_of_week + timedelta(days=i)).strftime('%A').lower(),
@@ -360,26 +351,18 @@ def get_weekly_summary(match_history):
         }
         for i in range(7)
     }
-
-    # Process match history
     for match in match_history:
         match_end_str = match['end'].split("T")[0]
         match_date = datetime.fromisoformat(match_end_str)
         if start_of_week.date() <= datetime.strptime(match_end_str, '%Y-%m-%d').date() <= end_of_week.date():
-
-            day_name = match_date.strftime('%A').lower()  # Get the day of the match
-            days_of_week[day_name]["wins"] += 1  # Increment wins for the day
-            # if match["result"] == "win":
-
-    # Return results as a list
+            day_name = match_date.strftime('%A').lower()
+            days_of_week[day_name]["wins"] += 1
     return list(days_of_week.values())
 
 def get_weekly_lose_summary(match_history):
     today = datetime.now()
-    start_of_week = today - timedelta(days=today.weekday())  # Start on Monday
-    end_of_week = start_of_week + timedelta(days=6)          # End on Sunday
-
-    # Initialize a dictionary to store data for each day of the current week
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
     days_of_week = {
         (start_of_week + timedelta(days=i)).strftime('%A').lower(): {
             "day": (start_of_week + timedelta(days=i)).strftime('%A').lower(),
@@ -387,20 +370,13 @@ def get_weekly_lose_summary(match_history):
         }
         for i in range(7)
     }
-
-    # Process match history
     for match in match_history:
         match_end_str = match['end'].split("T")[0]
         match_date = datetime.fromisoformat(match_end_str)
         if start_of_week.date() <= datetime.strptime(match_end_str, '%Y-%m-%d').date() <= end_of_week.date():
-
-            day_name = match_date.strftime('%A').lower()  # Get the day of the match
-            days_of_week[day_name]["lose"] += 1  # Increment wins for the day
-            # if match["result"] == "win":
-
-    # Return results as a list
+            day_name = match_date.strftime('%A').lower()
+            days_of_week[day_name]["lose"] += 1 
     return list(days_of_week.values())
-
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -409,40 +385,32 @@ def get_user_win_and_lose(request):
         now = timezone.now()
         start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         user = request.user
-        # user = 2
-
         userwin = GameSerializer(Game.objects.filter(winner=user), many=True).data
         userlose = GameSerializer(Game.objects.filter(loser=user), many=True).data
         current_time = datetime.utcnow()
         time_24_hours_ago = current_time - timedelta(hours=24)
         filtered_win_matches = []
         filtered_lose_matches = []
-
         for match in userwin:
             match_end_str = match['end'].split("T")[0]
             match_end = datetime.strptime(match_end_str, '%Y-%m-%d').date()
             if match_end > time_24_hours_ago.date():
                 filtered_win_matches.append(match)
-
         for match in userlose:
             match_end_str = match['end'].split("T")[0]
             match_end = datetime.strptime(match_end_str, '%Y-%m-%d').date()
             if match_end > time_24_hours_ago.date():
                 filtered_lose_matches.append(match)
-
         hourly_win_counts = defaultdict(int)
         hourly_lose_counts = defaultdict(int)
-
         for match in filtered_win_matches:
             match_time = datetime.fromisoformat(match['end'].replace('Z', ''))
             hour_str = match_time.strftime('%H:00')
-            hourly_win_counts[hour_str] += 1
-    
+            hourly_win_counts[hour_str] += 1   
         for match in filtered_lose_matches:
             match_time = datetime.fromisoformat(match['end'].replace('Z', ''))
             hour_str = match_time.strftime('%H:00')
             hourly_lose_counts[hour_str] += 1
-    
         win_result = [{"hour": hour, "matches": count} for hour, count in sorted(hourly_win_counts.items())]
         lose_result = [{"hour": hour, "matches": count} for hour, count in sorted(hourly_lose_counts.items())]
         last_win_24_hours = get_last_24_hours()
@@ -472,40 +440,32 @@ def get_ouser_win_and_lose(request, username):
         now = timezone.now()
         start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         user = User.objects.get(username=username)
-        # user = 2
-
         userwin = GameSerializer(Game.objects.filter(winner=user), many=True).data
         userlose = GameSerializer(Game.objects.filter(loser=user), many=True).data
         current_time = datetime.utcnow()
         time_24_hours_ago = current_time - timedelta(hours=24)
         filtered_win_matches = []
         filtered_lose_matches = []
-
         for match in userwin:
             match_end_str = match['end'].split("T")[0]
             match_end = datetime.strptime(match_end_str, '%Y-%m-%d').date()
             if match_end > time_24_hours_ago.date():
                 filtered_win_matches.append(match)
-
         for match in userlose:
             match_end_str = match['end'].split("T")[0]
             match_end = datetime.strptime(match_end_str, '%Y-%m-%d').date()
             if match_end > time_24_hours_ago.date():
                 filtered_lose_matches.append(match)
-
         hourly_win_counts = defaultdict(int)
         hourly_lose_counts = defaultdict(int)
-
         for match in filtered_win_matches:
             match_time = datetime.fromisoformat(match['end'].replace('Z', ''))
             hour_str = match_time.strftime('%H:00')
             hourly_win_counts[hour_str] += 1
-    
         for match in filtered_lose_matches:
             match_time = datetime.fromisoformat(match['end'].replace('Z', ''))
             hour_str = match_time.strftime('%H:00')
             hourly_lose_counts[hour_str] += 1
-    
         win_result = [{"hour": hour, "matches": count} for hour, count in sorted(hourly_win_counts.items())]
         lose_result = [{"hour": hour, "matches": count} for hour, count in sorted(hourly_lose_counts.items())]
         last_win_24_hours = get_last_24_hours()

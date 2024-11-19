@@ -252,7 +252,7 @@ const OthersProfile = () => {
           </div>
           <div className='add-friend-message'>
             <button onClick={onmessagecklick}>Message</button>
-            <button onClick={handleAddFriend}>Add Friend</button>
+            <button onClick={() => handleAddFriend(userData.id)}>Add Friend</button>
           </div>
           <p className='bio'>{userData?.bio}</p>
           <div className='win-rank-score'>

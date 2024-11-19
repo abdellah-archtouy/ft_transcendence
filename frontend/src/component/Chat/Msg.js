@@ -26,13 +26,10 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
     const navigate = useNavigate();
     const [convname , setConvname] = useState('');
     const [conversationdata1, setConversationdata1] = useState(conversationdata);
-
     const location = useLocation();
     const socket = useContext(WebSocketContext);
-
     const queryParam = new URLSearchParams(location.search);
-    // queryParam.get('username');
-    
+    const divRef = useRef(null);
     
     useEffect(() => {
         if (!socket) return;
@@ -40,7 +37,6 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
 
             const  message1 = JSON.parse(event.data);
             const messag = message1.message;
-            
             const  parsmsg = JSON.parse(messag);
             if (parsmsg.conversation == queryParam.get('convid')) {
                 setData(data => [...data, parsmsg]);
@@ -52,7 +48,6 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
 
     useEffect(() => {
         setConvname(queryParam.get('username'));
-        // console.log('convid ', queryParam.get('convid'));
     }, [queryParam]);
 
     
@@ -75,8 +70,8 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
                     }});
                 setData(response.data);
             } catch (error) {  
-                setError(error);
-                handleFetchError(error);
+                // setError(error);
+                handleFetchError(error, () => fetchData());
                 console.log(error);
                 setData([]);
             } finally {  
@@ -84,46 +79,48 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
             }  
         };  
         
-        const handleFetchError = (error) => {
-            if (error.response) {
-              if (error.response.status === 401) {
-                const refresh = localStorage.getItem("refresh");
-      
-                if (refresh) {
-                  axios
-                    .post("http://localhost:8000/api/token/refresh/", { refresh })
-                    .then((refreshResponse) => {
-                      const { access: newAccess } = refreshResponse.data;
-                      localStorage.setItem("access", newAccess);
-                      fetchData(); // Retry fetching user data
-                    })
-                    .catch((refreshError) => {
-                      localStorage.removeItem("access");
-                      localStorage.removeItem("refresh");
-                      console.log("you have captured the error");
-                      setErrors({ general: "Session expired. Please log in again." });
-                      // refreh the page
-                      window.location.reload();
-                      navigate(`/chat?username=${queryParam.get('username')}&convid=${queryParam.get('convid')}`);
-                    });
-                } else {
-                  setErrors({
-                    general: "No refresh token available. Please log in.",
+        const handleFetchError = (error, retryFunction) => {
+            if (error.response && error.response.status === 401) {
+              const refresh = localStorage.getItem("refresh");
+        
+              if (refresh) {
+                axios
+                  .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+                  .then((refreshResponse) => {
+                    const { access: newAccess } = refreshResponse.data;
+                    localStorage.setItem("access", newAccess);
+                    retryFunction();
+                  })
+                  .catch((refreshError) => {
+                    localStorage.removeItem("access");
+                    localStorage.removeItem("refresh");
+                    setError({ general: "Session expired. Please log in again." });
+                    window.location.reload();
+                    navigate("/");
                   });
-                }
               } else {
-                setErrors({ general: "Error fetching data. Please try again." });
+                setError({ general: "No refresh token available. Please log in." });
               }
             } else {
-              setErrors({
-                general: "An unexpected error occurred. Please try again.",
-              });
+              setError({ general: "An unexpected error occurred. Please try again." });
             }
           };
+        
 
         fetchData();    
     }, [convname]);
 
+    const handleClickOutside = (event) => {
+        if (divRef.current && !divRef.current.contains(event.target)) {
+            setImogiclicked(false);
+        }
+    };
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     
 
@@ -170,7 +167,6 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
-    const isEmptyObject = Object.keys(conversationdata).length === 0;
     function avatarUrl(name) {
         return `http://${window.location.hostname}:8000` + name;
       }
@@ -217,7 +213,9 @@ const Msg = ({ userData , convid, convname1 , setSelectedConvId , conversationda
                     <div className={`message_bar`}>
                         <button ><PlayInv /></button>
                         <button onClick={handelemojiclick} ><Imoji /></button>
-                        <div className={`picker ${imogiclicked === true ? '' : 'hide'}`}>
+                        <div
+                            ref={divRef}
+                            className={`picker ${imogiclicked === true ? '' : 'hide'}`}>
                             {emojiData && <Picker emojiSize={20} emojiButtonSize={28} onEmojiSelect={addemoji} previewPosition={'none'} data={emojiData} />}
                         </div>
                         <form onSubmit={handleSubmit} className="search-container1">

@@ -90,7 +90,7 @@ const Home = () => {
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
-            retryFunction(); // Retry the original function
+            retryFunction();
           })
           .catch((refreshError) => {
             localStorage.removeItem("access");

@@ -79,35 +79,47 @@ class AddConvConsumer(WebsocketConsumer):
         user1_id_str = text_data_json.get('user1', '')
         user_id = int(user_id_str)
         user1_id = int(user1_id_str)
-
         user1 = User.objects.filter(id=user1_id).first()
         user2 = User.objects.filter(id=user_id).first()
-
         if user1 == user2:
             print("Cannot create conversation with self")
             return
-
-        # Query for conversation between user_id and user1_id in either direction
         conv = Conversation.objects.filter(
             (Q(uid1=user_id) & Q(uid2=user1_id)) |
             (Q(uid1=user1_id) & Q(uid2=user_id))
         ).first()
-
         if conv:
             print("Conversation already exists")
             serializer = ConvSerializer(conv)
             conv_data = serializer.data
-            print(f"Conversation data: {conv_data}")
-            response = {'conversation': conv_data}
+            # print(f"Conversation data: {conv_data}")
+            data_return =  {
+            "id": serializer.data["id"],
+            "uid1": serializer.data["uid1"],
+            "uid2": serializer.data["uid2"],
+            "last_message": serializer.data["last_message"],
+            "last_message_time": serializer.data["last_message_time"],
+            "uid2_info": serializer.data["uid2_info"] if serializer.data["uid1"] == user1.id else serializer.data["uid1_info"],
+            "conv_username": serializer.data["uid2_info"]["username"] if serializer.data["uid1"] == user1.id else serializer.data["uid1_info"]["username"],
+            }
+            response = {'conversation': data_return}
             self.send(text_data=json.dumps(response))
         else:
-        # Create new conversation
             conversation = Conversation(uid1=user1, uid2=user2, last_message='')
             conversation.save()
             serializer = ConvSerializer(conversation)
             conv_data = serializer.data
-            response = {'conversation': conv_data}
-            print(f"Created new conversation: {conversation}")
+            data_return =  {
+            "id": serializer.data["id"],
+            "uid1": serializer.data["uid1"],
+            "uid2": serializer.data["uid2"],
+            "last_message": serializer.data["last_message"],
+            "last_message_time": serializer.data["last_message_time"],
+            "uid2_info": serializer.data["uid2_info"] if serializer.data["uid1"] == user1.id else serializer.data["uid1_info"],
+            "conv_username": serializer.data["uid2_info"]["username"] if serializer.data["uid1"] == user1.id else serializer.data["uid1_info"]["username"],
+            }
+            response = {'conversation': data_return}
+            # print(f"Created new conversation: {conversation}")
 
             self.send( text_data=json.dumps(response))
 
@@ -118,12 +130,11 @@ class DataConsumer(WebsocketConsumer):
         access_token = self.scope['url_route']['kwargs']['accessToken']
 
         if access_token:
-            # get user id from the access token by decoding it
             user_id = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])["user_id"]
-            print(f"User id: {user_id}")
+            # print(f"User id: {user_id}")
 
             user = User.objects.get(id=user_id)
-            print(f"User: {user.username}")
+            # print(f"User: {user.username}")
 
 
         
@@ -141,14 +152,12 @@ class DataConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-
         message_i = text_data_json.get('message', '')
         conversation_id = text_data_json.get('conversation', '')
         user_id = text_data_json.get('user', '')
         if isinstance(text_data_json, dict):
             msg = Message(conversation_id=conversation_id, user_id=user_id, message=message_i)
             msg.save()
-
             try:
                 with transaction.atomic():
                     conversation = Conversation.objects.filter(id=conversation_id).first()
@@ -160,7 +169,6 @@ class DataConsumer(WebsocketConsumer):
                             user2_id = conversation.uid2.id
                         else:
                             user2_id = conversation.uid1.id
-                        # print(f"Updated conversation last message: {conversation.last_message}")
                     else:
                         print(f"Conversation with id {conversation_id} not found")
             except Exception as e:
@@ -169,6 +177,8 @@ class DataConsumer(WebsocketConsumer):
             print("Received data is not a dictionary")
         
         convdata = ConvSerializer(conversation , many=False)
+        user2 = User.objects.get(id=user2_id)
+        user1 = User.objects.get(id=user_id)
         conv_instances = Conversation.objects.filter(uid1=user_id) | Conversation.objects.filter(
         uid2=user_id
         )
@@ -184,11 +194,10 @@ class DataConsumer(WebsocketConsumer):
                 "last_message": conv["last_message"],
                 "last_message_time": conv["last_message_time"],
                 "uid2_info": conv["uid2_info"] if conv["uid1"] == user_id else conv["uid1_info"],
-                "conv_username": conv["uid2_info"]["username"] if conv["uid1"] == user_id else conv["uid1_info"]["username"],
+                "conv_username":  conv["uid2_info"]["username"] if conv["uid1"] == user_id else conv["uid1_info"]["username"],
             }
             for conv in serializer.data
         ]
-        user2 = User.objects.get(id=user2_id)
         conv_instances2 = Conversation.objects.filter(uid1=user2) | Conversation.objects.filter(
         uid2=user2
         )
@@ -203,8 +212,8 @@ class DataConsumer(WebsocketConsumer):
                 "uid2": conv["uid2"],
                 "last_message": conv["last_message"],
                 "last_message_time": conv["last_message_time"],
-                "uid2_info": conv["uid2_info"] if conv["uid1"] == user_id else conv["uid1_info"],
-                "conv_username": conv["uid2_info"]["username"] if conv["uid1"] == user_id else conv["uid1_info"]["username"],
+                "uid2_info": conv["uid2_info"] if conv["uid1"] != user_id else conv["uid1_info"],
+                "conv_username": conv["uid2_info"]["username"] if conv["uid1"] != user_id else conv["uid1_info"]["username"],
             }
             for conv in serializer2.data
         ]
@@ -228,8 +237,6 @@ class DataConsumer(WebsocketConsumer):
     def chat_message(self, event):
         message = event['message']
         data = event['data']
-
-        # Convert the dictionary to a JSON string
         self.send(text_data=json.dumps({
             'message': message,
             'data': data,

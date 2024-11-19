@@ -12,10 +12,11 @@ from .views import (
     get_ouser_win_and_lose,
     ConverstationView,
     getconvView,
+    get_friends,
 )
 
 urlpatterns = [
-    path("users/", UsersView.as_view()),
+    path("users/", get_friends, name="get_friends"),
     path("conv/", ConvView),
     path("conversation/<str:convid>/", ConverstationView),
     path("msg/<str:username>/", get_messages),

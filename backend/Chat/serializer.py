@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from User.models import User, Achievement
+from User.models import User, Achievement , Friend
 from Chat.models import Conversation
 from Chat.models import Message
 from Game.models import Game
@@ -28,6 +28,10 @@ class ConvSerializer(serializers.ModelSerializer):
             "uid2_info",
         )
 
+class FriendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Friend
+        fields = ("user1", "user2", "request", "accept", "block", "mute")
 
 class MessageSerializer(serializers.ModelSerializer):
     conversation_info = ConvSerializer(source="conversation", read_only=True)
