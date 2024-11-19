@@ -9,6 +9,7 @@ import traceback
 from .common_functions import start, join_room
 from django.db.models import Sum
 import math
+import gc
 
 boardWidth = 1000
 boardHeight = 550
@@ -44,11 +45,11 @@ async def get_user_from_db(user_id: int, room) -> dict:
         user_cache[user_id]["goals"] = room.user1_goals if room.uid1 == user_id else room.user2_goals
         return user_cache[user_id]
 
-    user_obj = await User.objects.aget(id=user_id)
-    user_data = UserSerializer(user_obj).data
+    user_obj = await User.objects.filter(id=user_id).values("username", "avatar").aget()
     user_cache[user_id] = {
-        "username": user_data["username"],
-        "avatar": user_data["avatar"],
+        "id": user_id,
+        "username": user_obj["username"],
+        "avatar": f"/media/{user_obj['avatar']}",
         "goals": room.user1_goals if room.uid1 == user_id else room.user2_goals,
     }
     return user_cache[user_id]
@@ -115,13 +116,14 @@ class RoomManager:
                         if room.howManyUser() == 2:
                             room.disconnected_at = datetime.now()
                         room.delete_user(user_id)
-                        user_cache.pop(ConsumerObj.user_id)
+                        if ConsumerObj.user_id in user_cache:
+                            user_cache.pop(ConsumerObj.user_id)
                         channels_list = self.get_channel_name(user_id)
                         for channel in channels_list:
                             await channel_layer.send(channel, {"type": "chat_message", "stat": "close"})
                         if user_id in self.channel_names:
                             del self.channel_names[user_id]
-                        if room.howManyUser() == 0:
+                        if room.howManyUser() == 0 and room.is_full:
                             del self.rooms[room_group_name]
                     else:
                         del self.rooms[room_group_name]
@@ -222,33 +224,24 @@ class RoomManager:
                 room.keep_updating = False
         if room and room.type == "Remote":
             if room.winner:
+                room.end = datetime.now()
                 await self.store_gamein_db(room)
             else:
                 await self.check_time(ConsumerObj)
 
     async def store_gamein_db(self, room):
-        loser = None
-        winner = None
-        if room.winner == self.user1:
-            winner = room.uid1
-            loser = room.uid2
-            loser_score = self.user2["goals"]
-        else:
-            winner = room.uid2
-            loser = room.uid1
-            loser_score = self.user1["goals"]
-        room.end = datetime.now()
-        if room.type == "Remote":
-            game = Game(
-                winner=await User.objects.aget(id=winner),
-                loser=await User.objects.aget(id=loser),
-                loser_score=loser_score,
-                winner_score=6,
-                created_at=room.created_at,
-                end=room.end,
-            )
-            await game.asave()
-            # self.assign_achievement(room)
+        user1 = await get_user_from_db(room.uid1, room)
+        loser_score = room.user2_goals if room.winner == user1["id"] else room.user1_goals
+        game = Game(
+            winner=await User.objects.aget(id=room.winner),
+            loser=await User.objects.aget(id=room.loser),
+            loser_score=loser_score,
+            winner_score=6,
+            created_at=room.created_at,
+            end=room.end,
+        )
+        await game.asave()
+        # self.assign_achievement(room)
 
     def assign_achievement(self, room):
         i = Game.objects.filter(winner=room.winner).aggregate(
@@ -272,7 +265,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             else:
                 await self.close()
                 return
-            self.user_id = self.scope["url_route"]["kwargs"]["uid"]
+            self.user_id = int(self.scope["url_route"]["kwargs"]["uid"])
             self.connection_type = None
             self.channel_name = self.channel_name
             self.room_group_name = await room_manager.join_or_create_room(self)
@@ -322,3 +315,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         elif action_type == "keydown":
             paddle = room.get_paddle_by_user(self.user_id)
             paddle.set_Player_attribute("velocityY", 0)
+        
+        elif action_type == "reset_all":
+            room.reset_all()

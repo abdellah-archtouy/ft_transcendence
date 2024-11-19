@@ -2,13 +2,6 @@ import traceback, asyncio, json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .common_functions import start, join_room
 
-def create_local_info(username: str) -> dict:
-    local_info = {
-        "username": username,
-        "avatar": "/media/avatars/botProfile.svg",
-        "goals": 0,
-    }
-    return local_info
 
 class LocalRoomManager():
     def __init__(self) -> None:
@@ -28,6 +21,15 @@ class LocalRoomManager():
             self.lock = asyncio.Lock()
         return self.lock
 
+    def create_local_info(self, username: str, room, obj) -> dict:
+        goals = room.user1_goals if obj.username1 == username else room.user2_goals
+        local_info = {
+            "username": username,
+            "avatar": "/media/avatars/botProfile.svg",
+            "goals": goals,
+        }
+        return local_info
+
     async def remove_room(self, LocalConsumer):
         lock = await self.get_lock()
         async with lock:
@@ -41,27 +43,30 @@ class LocalRoomManager():
                 print(f"remove_name: {e}")
 
     async def assign_users_info(self, LocalConsumer):
-        LocalConsumer.user1 = create_local_info(LocalConsumer.username1)
-        LocalConsumer.user2 = create_local_info(LocalConsumer.username2)
+        self.user1 = self.create_local_info(LocalConsumer.username1)
+        self.user2 = self.create_local_info(LocalConsumer.username2)
 
     async def start_periodic_updates(self, LocalConsumer):
         room = self.rooms.get(LocalConsumer.room_group_name)
-        await self.assign_users_info(LocalConsumer)
         room.keep_updating = True
         self.update_thread = asyncio.ensure_future(self.send_periodic_updates(LocalConsumer))
     
     async def send_periodic_updates(self, LocalConsumer):
         room = self.rooms[LocalConsumer.room_group_name]
+        username1 = LocalConsumer.username1
+        username2 = LocalConsumer.username2
         while room and room.keep_updating and not room.winner:
             if room:
-                await start(room, LocalConsumer.user1, LocalConsumer.user2)
+                self.user1 = self.create_local_info(username1, room, LocalConsumer)
+                self.user2 = self.create_local_info(username2, room, LocalConsumer)
+                await start(room)
                 await LocalConsumer.channel_layer.group_send(
                     LocalConsumer.room_group_name,
                     {
                         'type': 'chat_message',
                         'winner': room.winner,
-                        'user1': LocalConsumer.user1,
-                        'user2': LocalConsumer.user2,
+                        'user1': self.user1,
+                        'user2': self.user2,
                         'ballInfo': room.ball.attributes,
                         'rightPaddle': room.rightPaddle.attributes,
                         'leftPaddle': room.leftPaddle.attributes,
@@ -77,7 +82,6 @@ room_ma = LocalRoomManager()
 class LocalConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         try:
-            # self.user_id = None
             self.username1 = self.scope['url_route']['kwargs'].get('username1')
             self.username2 = self.scope['url_route']['kwargs'].get('username2')
             self.gamemode = "Local"

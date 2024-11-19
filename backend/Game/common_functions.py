@@ -1,7 +1,6 @@
 import math
 from .room import Room
 from datetime import datetime, timedelta
-from User.models import User, Achievement
 
 boardWidth = 1000
 boardHeight = 550
@@ -31,7 +30,7 @@ async def update(room):
         if room.user1_goals == 6 or room.user2_goals == 6:
             room.room_pause()
             room.winner = room.uid2 if room.user2_goals == 6 else room.uid1
-            room.room_paused = True
+            room.loser = room.uid1 if room.user2_goals == 6 else room.uid2
 
 
 def collision(a, b):
@@ -117,8 +116,8 @@ async def start(room):
         print(f"start: {e}")
 
 
-def room_naming(rooms):
-    filtered_keys = [key for key in rooms.keys() if key.startswith("room_") and key[5:].isdigit()]
+def room_naming(rooms : Room, start_with : str):
+    filtered_keys = [key for key in rooms.keys() if key.startswith(start_with) and key[5:].isdigit()]
     keys = sorted(filtered_keys)
     loop_list = [int(key[key.find("_") + 1 :]) for key in keys]
     missed = None
@@ -152,14 +151,15 @@ def join_remote_room(instance, rooms):
                     instance.connection_type = "Reconnection"
                     return room_name
 
-        for room_name, room in rooms.items():
+        for room_name, room in rooms.items(): # fill the room that needs one player
             if room.type == "Remote":
                 if room.uid1 and room.uid2 is None:
                     room.assign_user(instance.user_id)
                     room.channel_names[instance.user_id] = [instance.channel_name]
+                    room.is_full = True
                     return room_name
 
-    new_room_name = f"room_{room_naming(rooms)}"
+    new_room_name = f"room_{room_naming(rooms, 'room_')}"
     new_room = Room()
     new_room.type = instance.gamemode  # here i assign the room mode
     new_room.assign_user(instance.user_id)
@@ -170,9 +170,10 @@ def join_remote_room(instance, rooms):
 
 def join_local_room(instance, rooms):
     try:
-        new_room_name = f"Local_{room_naming(rooms)}"
+        new_room_name = f"Local_{room_naming(rooms, 'Local_')}"
         new_room = Room()
         new_room.type = instance.gamemode  # here i assign the room mode
+        new_room.is_full = True
         rooms[new_room_name] = new_room
         return new_room_name
     except Exception as e:

@@ -120,6 +120,15 @@ const Room = ({ data, mode }) => {
       );
     }
   }
+  
+  function reset_all() {
+    WSocket?.send(
+      JSON.stringify({
+        type: "reset_all",
+        key: "click",
+      })
+    );
+  }
 
   function stopPlayer(e) {
     if (
@@ -504,7 +513,7 @@ const Room = ({ data, mode }) => {
             className="pause"
             title="pause"
             onClick={() => {
-              handlePause();
+              reset_all();
             }}
           >
             <img src="/retry.svg" alt="" className="pauseIcons retry" />

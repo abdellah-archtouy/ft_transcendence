@@ -17,7 +17,9 @@ class Room:
         self.uid2 = user2
         self.user1_goals = 0
         self.user2_goals = 0
+        self.is_full = False
         self.winner = None
+        self.loser = None
         self.type = None
         self.created_at = datetime.now()
         self.end = None
@@ -26,8 +28,19 @@ class Room:
         self.tmp_uid = None
         self.disconnected_at = None
 
+    def reset_all(self):
+        self.ball = None
+        self.rightPaddle = None
+        self.leftPaddle = None
+        self.ball = Ball(boardWidth, boardHeight)
+        self.rightPaddle = RightPaddle(boardWidth, boardHeight)
+        self.leftPaddle = LeftPaddle(boardWidth, boardHeight)
+        self.room_paused = False
+        self.user1_goals = 0
+        self.user2_goals = 0
+
     def findUser(self, user_id):  # used to find user in the reconnection
-        if int(user_id) in {self.uid1, self.uid2}:
+        if user_id in {self.uid1, self.uid2}:
             return True
         return False
 
@@ -53,8 +66,8 @@ class Room:
     #         self.uid2 = value
 
     def delete_user(self, user_id):
-        if int(user_id) in self.channel_names:
-            del self.channel_names[int(user_id)]
+        if user_id in self.channel_names:
+            del self.channel_names[user_id]
 
     # def howManyUser(self):
     #     x = 0
@@ -75,6 +88,7 @@ class Room:
         self.ball.set_attribute("velocityY", 0)
         self.rightPaddle.set_Player_attribute("velocityY", 0)
         self.leftPaddle.set_Player_attribute("velocityY", 0)
+        self.room_paused == True
 
     def room_resume(self):
         vX = self.prevBVX
@@ -96,6 +110,10 @@ class Ball:
             "velocityY": math.sin(angle) * speed,
             "speed": speed,
         }
+    
+    def reset(self):
+        
+        pass
 
     def get_attribute(self, attribute):
         return self.attributes.get(attribute, None)

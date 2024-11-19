@@ -12,11 +12,11 @@ class Tournament():
         self.winner = None
         self.group_name = None
         self.users = []
-        self.round = "round1"
         self.rounds = []
         self.current_round = []
         self.round_winner = []
         self.rooms = {}
+        self.user_list = {}
         self.created_at = datetime.now()
         self.end = None
         self.users_num = 0
@@ -34,6 +34,9 @@ class Tournament():
         if self.users_num < 4:
             self.users.append(user)
             self.users_num = len(self.users)
+            avatars_dict = await sync_to_async(list)(User.objects.filter(id__in=self.users).values("avatar"))
+            avatars = [f"/media/{avatar['avatar']}" for avatar in avatars_dict if avatar['avatar']]
+            self.user_list["round1"] = avatars
             if len(self.users) == 4:
                 self.is_full = True
                 await self.start_event()
@@ -52,7 +55,9 @@ class Tournament():
                 await self.monitor_current_round()
 
                 if len(self.round_winners) == 1:
-                    self.round = "winner"
+                    avatars_dict = await sync_to_async(list)(User.objects.filter(id__in=self.round_winners).values("avatar"))
+                    avatars = [f"/media/{avatar['avatar']}" for avatar in avatars_dict if avatar['avatar']]
+                    self.user_list["winner"] = avatars
                     self.winner = self.round_winners[0]  # Tournament winner found
                     self.end = datetime.now()
                     print(f"Tournament winner is {self.winner}")
@@ -78,7 +83,10 @@ class Tournament():
                 
                 if len(current_winners) == len(self.current_round):
                     self.round_winners = current_winners
-                    self.round = "round2"
+                    avatars_dict = await sync_to_async(list)(User.objects.filter(id__in=current_winners).values("avatar"))
+                    if len(current_winners) == len(self.current_round) and not len(self.current_round) == 1:
+                        avatars = [f"/media/{avatar['avatar']}" for avatar in avatars_dict if avatar['avatar']]
+                        self.user_list["round2"] = avatars
                     break
                 
                 await asyncio.sleep(1)

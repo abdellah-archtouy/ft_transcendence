@@ -63,7 +63,6 @@ const Notification = ({ setShowNotifications, notificationData, setNotificationD
       );
 
       if (response.data.message) {
-        console.log(response.data.message);
         setNotificationData((prevData) =>
           prevData.filter((notification) => notification.id !== notif.id)
         );

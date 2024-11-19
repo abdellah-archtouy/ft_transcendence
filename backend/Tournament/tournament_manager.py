@@ -4,6 +4,7 @@ import asyncio
 from .tournament import Tournament
 from User.models import User
 from Game.room import Room
+from asgiref.sync import sync_to_async
 
 class TournamentRoomManager():
     def __init__(self) -> None:
@@ -25,6 +26,21 @@ class TournamentRoomManager():
                 await obj.channel_layer.group_add(tournament.group_name, obj.channel_name)
                 obj.joined = True
                 await self.send_tournament_updates(obj, tournament)
+            if tournament.is_full:
+                asyncio.create_task(self.monitor_tournament_status(obj, tournament))
+
+    async def monitor_tournament_status(self,obj , tournament):
+        try:
+            # Wait for the tournament to complete
+            while tournament.winner is None:
+                await asyncio.sleep(1)  # Check every second
+            
+            # Once we have a winner, handle tournament completion
+            if tournament.winner:
+                await self.send_tournament_updates(obj, obj.tournament)
+            #     del self.tournaments[tournament.name]
+        except Exception as e:
+            print(f"Error monitoring tournament {tournament.name}: {e}")
 
     def is_user_in_another_tournament(self, user):
         for tournament in self.tournaments.values():
@@ -50,18 +66,12 @@ class TournamentRoomManager():
         )
     
     async def send_tournament_updates(self, obj, tournament):
-        user_list = []
-        if tournament:
-            for user in tournament.users:
-                user_obj = await User.objects.aget(id=user)
-                user_list.append(user_obj.avatar.url)
             await obj.channel_layer.group_send(
                 tournament.group_name,
                 {
                     "type": "send_tournament",
                     "tournament": {
-                        "tournament_users": user_list,
-                        "round": tournament.round,
+                        "tournament_users": tournament.user_list,
                     }
                 }
             )
@@ -71,6 +81,9 @@ class TournamentRoomManager():
             name = obj.tournament.name
             tournament = obj.tournament
             tournament.kick_user(obj.user_id)
+            avatars_dict = await sync_to_async(list)(User.objects.filter(id__in=tournament.users).values("avatar"))
+            avatars = [f"/media/{avatar['avatar']}" for avatar in avatars_dict if avatar['avatar']]
+            tournament.user_list["round1"] = avatars
             await self.send_tournament_updates(obj, obj.tournament)
             await obj.channel_layer.group_discard(f"tournament_info_{obj.tournament.name}", obj.channel_name)
             if len(self.tournaments[name].users) == 0:

@@ -4,17 +4,17 @@ import Room from './room';
 
 const ManagedRoom = () => {
     const { room } = useParams();
-    const [currentRoom, setCurrentRoom] = useState(room);
+    const [currentRoom, setCurrentRoom] = useState(null);
 
     useEffect(() => {
-        setCurrentRoom(room); // Update state when `room` changes
+        setCurrentRoom(room);
     }, [room]);
 
     const data = { room: currentRoom };
     const [mode] = useState("friends");
     return (
         <>
-            <Room mode={mode} data={data}></Room>
+            <Room key={currentRoom} mode={mode} data={data}></Room>
         </>
     );
 }

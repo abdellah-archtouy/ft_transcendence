@@ -123,14 +123,17 @@ const TournamentRemote = () => {
           setTournamentData(data?.tournaments_data);
           setTournamentSearch(data?.tournaments_data);
           if (data?.tournament_users)
-            setTournamentUsers((prev) => {
-              const round = data?.round || null;
-              let obj = {
-                ...prev,
-                [round]: data?.tournament_users,
-              };
-              return obj;
-            });
+            {
+              setTournamentUsers((prev) => {
+                const round = data?.round || null;
+                let obj = {
+                  ...prev,
+                  ...data?.tournament_users,
+                };
+                return obj;
+              });
+              setTournamentData(data?.tournaments_users);
+            }
           if (data?.joined !== undefined) setJoin(() => data?.joined);
         }
         if (data?.error) {

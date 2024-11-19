@@ -18,17 +18,18 @@ class managed_room_consumer(AsyncWebsocketConsumer):
             if "ws/game/friends" in path:
                 self.gamemode = "friends"
             self.room_name = self.scope["url_route"]["kwargs"]["room"]
-            self.user_id = self.scope["url_route"]["kwargs"]["uid"]
+            self.user_id = int(self.scope["url_route"]["kwargs"]["uid"])
             self.room_group_name = self.room_name
             self.connection_type = None
             if self.room_group_name in pre_room_manager.rooms:
                 self.room = pre_room_manager.rooms[self.room_group_name]
-                print(self.room.findUser(self.user_id))
                 if self.room.findUser(self.user_id):
                     if self.user_id not in self.room.channel_names:
                         self.room.channel_names[self.user_id] = [self.channel_name]
                     else:
                         self.room.channel_names[self.user_id].append(self.channel_name)
+                    if len(self.room.channel_names) > 1:
+                        self.room.is_full = True
                     self.channel_name = self.channel_name
                     pre_room_manager.add_channel_name(self.channel_name, self.user_id)
                     await pre_room_manager.start_periodic_updates(self)

@@ -144,8 +144,6 @@ const Navbar = () => {
             Authorization: `Bearer ${access}`,
           },
         });
-        // print the response variable to see the data
-        console.log(response.data);
 
         setNotificationData(response.data);
       } catch (error) {

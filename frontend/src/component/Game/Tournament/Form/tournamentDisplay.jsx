@@ -21,7 +21,6 @@ const TournamentDisplay = ({ setCancel, players }) => {
   });
   const [winner] = useState(() => players?.winner !== undefined ? players?.winner : null);
 
-  console.log(players?.winner)
   const apiUrl = process.env.REACT_APP_API_URL;
   function image_renaming(name) {
     return `${apiUrl}` + name;
