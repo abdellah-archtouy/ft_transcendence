@@ -9,6 +9,7 @@ import traceback
 from .common_functions import start, join_room
 from django.db.models import Sum
 import math
+from .room import Room
 import gc
 
 boardWidth = 1000
@@ -92,6 +93,12 @@ class RoomManager:
             if ConsumerObj.gamemode == "bot":
                 bot_room_infos_set(self.rooms[room_name], ConsumerObj)
             return room_name
+    
+    def create_room(self, room_name, _type, uid1=None, uid2=None):
+        room = Room(uid1, uid2)
+        room.type = _type
+        self.rooms[room_name] = room
+        return room
 
     def get_channel_name(self, user_id):
         return self.channel_names.get(user_id, [])
@@ -222,8 +229,8 @@ class RoomManager:
                 await asyncio.sleep(0.02)
             else:
                 room.keep_updating = False
-        if room and room.type == "Remote":
-            if room.winner:
+        if room and room.type != "bot":
+            if room.winner and room.type != "tournament":
                 room.end = datetime.now()
                 await self.store_gamein_db(room)
             else:

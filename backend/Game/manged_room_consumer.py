@@ -23,6 +23,7 @@ class managed_room_consumer(AsyncWebsocketConsumer):
             self.connection_type = None
             if self.room_group_name in pre_room_manager.rooms:
                 self.room = pre_room_manager.rooms[self.room_group_name]
+                print("type: ", self.room.type)
                 if self.room.findUser(self.user_id):
                     if self.user_id not in self.room.channel_names:
                         self.room.channel_names[self.user_id] = [self.channel_name]

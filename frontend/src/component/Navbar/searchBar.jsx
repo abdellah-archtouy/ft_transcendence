@@ -4,8 +4,9 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 const SearchBar = ({ onStateChange }) => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   function avatarUrl(name) {
-    return `http://${window.location.hostname}:8000/media/` + name;
+    return `${apiUrl}/media/` + name;
   }
   const [users, setUsers] = useState([]);
 
@@ -54,7 +55,7 @@ const SearchBar = ({ onStateChange }) => {
 
           if (refresh) {
             axios
-              .post("http://localhost:8000/api/token/refresh/", { refresh })
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
@@ -89,7 +90,7 @@ const SearchBar = ({ onStateChange }) => {
         const access = localStorage.getItem("access");
 
         const response = await axios.get(
-          "http://localhost:8000/api/searchbar/",
+          `${apiUrl}/api/searchbar/`,
           {
             headers: {
               Authorization: `Bearer ${access}`,

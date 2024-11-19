@@ -97,22 +97,26 @@ class Tournament():
         # Reset the current round with winners from previous round
         self.current_round = []
         for i in range(0, len(self.round_winners), 2):
-            match = self.create_match(self.round_winners[i], self.round_winners[i+1])
-            room_name = f"tournament_{self.round_winners[i]}_{self.round_winners[i + 1]}"
-            pre_room_manager.rooms[room_name] = match
+            id1 = int(self.round_winners[i])
+            id2 = int(self.round_winners[i + 1])
+            room_name = f"tournament_{id1}_{id2}"
+            match = pre_room_manager.create_room(room_name, "tournament", id1, id2)
             self.current_round.append(match)
         self.rounds.append(self.current_round)
     
     async def create_first_round(self):
         try:
             for i in range(0, len(self.users), 2):
-                match = self.create_match(self.users[i], self.users[i+1])
-                room_name = f"tournament_{self.users[i]}_{self.users[i + 1]}"
-                pre_room_manager.rooms[room_name] = match
+                id1 = int(self.users[i])
+                id2 = int(self.users[i + 1])
+                room_name = f"tournament_{id1}_{id2}"
+                match = pre_room_manager.create_room(room_name, "tournament", id1, id2)
                 self.current_round.append(match)
             self.rounds.append(self.current_round)
         except Exception as e:
             print(f"create_first_round: {e}")
     
     def create_match(self, user1, user2):
-        return Room(user1=int(user1), user2=int(user2)) # return the created room
+        room = Room(user1=int(user1), user2=int(user2))
+        room.type = "tournament"
+        return room # return the created room
