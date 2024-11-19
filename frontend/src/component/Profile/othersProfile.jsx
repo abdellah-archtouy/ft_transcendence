@@ -54,10 +54,11 @@ const OthersProfile = () => {
         setBanerImg(response.data.cover); 
         setavatarImg(response.data.avatar); 
         setAchievement(response.data.achievement_images);
+        console.log('response:', response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
         setErrors(errors); 
-        handleFetchError(error);
+        handleFetchError(error, () => fetchData());
       } finally {
         setLoading(false);
       }
@@ -82,50 +83,12 @@ const OthersProfile = () => {
       } catch (error) {
         console.error('Error fetching user data:', error);
         setErrors(errors); 
-        handleFetchError(error);
+        handleFetchError(error, () => fetcwin_loss());
       } finally {
         setLoading(false);
       }
     };
 
-    
-    const handleFetchError = (error) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          const refresh = localStorage.getItem("refresh");
-          console.log(refresh);
-          if (refresh) {
-            axios
-            .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
-            .then((refreshResponse) => {
-              const { access: newAccess } = refreshResponse.data;
-              localStorage.setItem("access", newAccess);
-              fetchData(); // Retry fetching user data
-              fetcwin_loss();
-            })
-            .catch((refreshError) => {
-              localStorage.removeItem("access");
-              localStorage.removeItem("refresh");
-              console.log("you have captured the error");
-              setErrors({ general: "Session expired. Please log in again." });
-              window.location.reload();
-              navigate("/");
-            });
-          } else {
-            setErrors({
-              general: "No refresh token available. Please log in.",
-            });
-          }
-        } else {
-          setErrors({ general: "Error fetching data. Please try again." });
-        }
-      } else {
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
-      }
-    };
-    
     fetchData();
     fetcwin_loss();
   }, [navigate]);
@@ -161,6 +124,7 @@ const OthersProfile = () => {
   };
 
   const onmessagecklick = async () => {
+    try {
         const access = localStorage.getItem("access");
         const response = await axios.get(`http://${window.location.hostname}:8000/chat/ouser/getconv/${username}`, {
           headers: {
@@ -169,10 +133,15 @@ const OthersProfile = () => {
           },
           withCredentials: true,
         });
+        navigate(`/chat?username=${username}&convid=${response.data.id}`);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setErrors(errors); 
+        handleFetchError(error, () => onmessagecklick());
+      } finally {
+        setLoading(false);
+      }
 
-        console.log('response:', response.data.id);
-
-    navigate(`/chat?username=${username}&convid=${response.data.id}`);
   };
 
   const fetchSuggestedFriends = async () => {
@@ -251,8 +220,8 @@ const OthersProfile = () => {
             <div className='online off'></div>
           </div>
           <div className='add-friend-message'>
-            <button onClick={onmessagecklick}>Message</button>
-            <button onClick={() => handleAddFriend(userData.id)}>Add Friend</button>
+            <button className='' onClick={onmessagecklick}>Message</button>
+            <button className='' onClick={() => handleAddFriend(userData.id)}>Add Friend</button>
           </div>
           <p className='bio'>{userData?.bio}</p>
           <div className='win-rank-score'>

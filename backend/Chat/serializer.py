@@ -2,14 +2,14 @@ from rest_framework import serializers
 from User.models import User, Achievement , Friend
 from Chat.models import Conversation
 from Chat.models import Message
+from User.serializers import UserSerializer
 from Game.models import Game
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("id", "username", "email", "password", "cover", "avatar")
-        # , 'cover', 'avatar'
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = "__all__"
 
 
 class ConvSerializer(serializers.ModelSerializer):

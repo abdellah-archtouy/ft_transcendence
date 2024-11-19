@@ -5,7 +5,6 @@ from .views import (
     ConvView,
     get_messages,
     post_message,
-    UsersView,
     get_user_data,
     get_user_win_and_lose,
     get_ouser_data,
