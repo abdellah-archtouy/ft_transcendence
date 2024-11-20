@@ -7,7 +7,7 @@ export const WebSocketProvider = ({children1}) => {
 
   useEffect(() => {
     // Create WebSocket connection
-    const ws = new WebSocket(`ws://${window.location.hostname}:8000/api/data/`);
+    const ws = new WebSocket(`ws://${host}:8000/api/data/`);
 
     ws.onopen = () => {
       console.log('WebSocket connection established');

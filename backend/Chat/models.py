@@ -13,6 +13,8 @@ class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField(max_length=200)
     time = models.DateTimeField(auto_now_add=True)
+    msg_type = models.TextField(max_length=200)
+    invite_room_name = models.TextField(max_length=200, null=True, blank=True)
 
 class Block_mute(models.Model):
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocked_user1')

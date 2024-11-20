@@ -19,6 +19,8 @@ const Chat = () => {
   const [selectedConvId, setSelectedConvId] = useState(null);
   const [socket, setSocket] = useState(null);
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const host = process.env.REACT_APP_API_HOSTNAME;
   const location = useLocation();
 
   const queryParam = new URLSearchParams(location.search);
@@ -27,7 +29,7 @@ const Chat = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-          const response = await axios.get(`http://${window.location.hostname}:8000/chat/user/`, {
+          const response = await axios.get(`${apiUrl}/chat/user/`, {
               headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${access}`,
@@ -35,9 +37,7 @@ const Chat = () => {
               withCredentials: true,
           });
           setUserData(response.data);
-          console.log('userData:', response.data);
       } catch (error) {
-        console.log("hnaaaaya");
         handleFetchError(error, () => fetchData());
 
       }
@@ -49,7 +49,7 @@ const Chat = () => {
   
         if (refresh) {
           axios
-            .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -77,33 +77,36 @@ const Chat = () => {
   useEffect(() => {
     // Create WebSocket connection
     const access = localStorage.getItem("access");
-    const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/data/${access}/`);
-
-    ws.onopen = () => {
-      console.log('WebSocket connection established');
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    ws.onclose = (event) => {
-      console.log('WebSocket connection closed:', event);
-    };
-
-    setSocket(ws);
-
-    return () => {
-      ws.close();
-    };
-  }, []);
+    if (userData)
+    {
+      const ws = new WebSocket(`ws://${host}:8000/ws/api/data/${userData?.id}/`);
+  
+      ws.onopen = () => {
+        console.log('WebSocket connection established');
+      };
+  
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+  
+      ws.onclose = (event) => {
+        console.log('WebSocket connection closed:', event);
+      };
+  
+      setSocket(ws);
+  
+      return () => {
+        ws.close();
+      };
+    }
+  }, [userData]);
 
   if (!userData) {
     return <div>Loading...</div>;
   }
   return (
     <WebSocketContext.Provider value={socket}>
-      <div className={`chat_container ${selectedConvId === 0 ? 'null' : 'mobile-msg' }`}>
+      <div className={`chat_container ${queryParam.get("convid") === null ? 'null' : 'mobile-msg' }`}>
         <ConvBar userData={userData} setconvid={setconvid} selectedConvId={selectedConvId} setSelectedConvId={setSelectedConvId} setConversationdata={setConversationdata}/>
         <Msg userData={userData} convid={convid} setSelectedConvId={setSelectedConvId} conversationdata={conversationdata}/>
       </div>

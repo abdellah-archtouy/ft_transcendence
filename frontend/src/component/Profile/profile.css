@@ -23,7 +23,8 @@
     padding-top: 160px;
     /* border: red solid; */
     padding-bottom: 45px;
-    background-color: #22222280;
+    background-color: #222222cc;
+    backdrop-filter: blur(4px);
     width: 900px;
     z-index: 0;
 }
@@ -93,17 +94,18 @@
 
 
 .analytics-achievment .achievment{
-    background: #22222280;
+    background-color: #222222cc;
     border-radius: 30px;
-    width: 304px;
+    /* width: 304px; */
+    flex: 1 1;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
     /* padding: 24px; */
     padding-top: 34px;
     gap: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    backdrop-filter: blur(20px);
 }
 
 
@@ -239,6 +241,7 @@
     padding-left: 9px;
     border-radius: 9px;
     z-index: 0;
+
 }
 
 
@@ -339,7 +342,8 @@ maestro#A32B2850; */
 }
 
 .analytics-achievment .analytics{
-    background: #22222280;
+    background-color: #222222cc;
+    backdrop-filter: blur(4px);
     width: 577px;
     display: flex;
     align-items: center;
@@ -402,13 +406,14 @@ maestro#A32B2850; */
 
 .select{
     background: #22222280;
-    width: 100px;
-    height: 25px;
+    /* width: 100px; */
+    /* height: 25px; */
     color: #B0B0B0;
-    outline: none; 
-    border-radius: 4.71px;
-    /* border: #B0B0B0 solid 1px; */
-    box-shadow: 0px 0px 3px #B0B0B0;
+    outline: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    border: unset;
+    box-shadow: 0px 0px 3px #b0b0b058;
 }
 
 .hove{
@@ -435,4 +440,27 @@ maestro#A32B2850; */
 
 .off{
     background: #A46060;
+}
+
+.recharts-default-tooltip {
+    all: unset;
+    background-color: #00000042 !important;
+    backdrop-filter: blur(10px);
+    /* border: #ffffff3a solid 1px !important; */
+    border: unset !important;
+    display: block;
+    width: fit-content;
+    border: unset;
+    border-radius: 10%;
+}
+
+.recharts-tooltip-label {
+    font-weight: bold;
+    text-transform: capitalize;
+    font-size: 1em;
+}
+
+.recharts-tooltip-item {
+    font-style: italic;
+    font-weight: 500;
 }

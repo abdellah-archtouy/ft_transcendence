@@ -1,11 +1,9 @@
 import React from 'react'
 import The_emperor_icon from './icon/The_emperor_icon';
 
-function avatarUrl(name) {
-    return `http://${window.location.hostname}:8000/` + name;
-  }
 
 function The_emperor() {
+
   return (
     <div className='ach-the_emperor achivement'>
         <div className='the_emperor_icon ach-icon'>

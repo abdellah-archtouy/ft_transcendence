@@ -12,7 +12,8 @@ import Downkeeper from './Downkeeper';
 import The_emperor from './The_emperor';
 import Thunder_Strike from './Thunder_Strike';
 import PureComponent from './Chartline';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
+import {useError} from "../../App"
 
 const OthersProfile = () => {
   const [userData, setUserData] = useState(null);
@@ -32,6 +33,8 @@ const OthersProfile = () => {
   const [loss7 , setLoss7] = useState([]);
   const [friends, setFriends] = useState([]);
   const [time, setTime] = useState("hour");
+  const { setError } = useError();
+
   const apiUrl = process.env.REACT_APP_API_URL;
 
 
@@ -40,7 +43,14 @@ const OthersProfile = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`http://${window.location.hostname}:8000/chat/ouser/data/${username}`, {
+        const response2 = await axios.get(`${apiUrl}/chat/user/data/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access}`,
+          },
+          withCredentials: true,
+        });
+        const response = await axios.get(`${apiUrl}/chat/ouser/data/${username}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access}`,
@@ -49,25 +59,36 @@ const OthersProfile = () => {
         });
     
     
-       
+        if (response.data.id === response2.data.id)
+          {
+            navigate("/profile")
+            return;
+          }
         setUserData(response.data); 
         setBanerImg(response.data.cover); 
         setavatarImg(response.data.avatar); 
         setAchievement(response.data.achievement_images);
-        console.log('response:', response.data);
       } catch (error) {
-        console.error('Error fetching user data:', error);
-        setErrors(errors); 
+        if (error.status === 404)
+        {
+          setError(error.response.data.error);
+          navigate(-1);
+        }
+        // setErrors(errors); 
         handleFetchError(error, () => fetchData());
       } finally {
         setLoading(false);
       }
     };
 
+    fetchData();
+  }, [username]);
+  
+  useEffect (() => {
     const fetcwin_loss = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`http://${window.location.hostname}:8000/chat/ouser/chart/${username}`, {
+        const response = await axios.get(`${apiUrl}/chat/ouser/chart/${username}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access}`,
@@ -88,10 +109,9 @@ const OthersProfile = () => {
         setLoading(false);
       }
     };
-
-    fetchData();
-    fetcwin_loss();
-  }, [navigate]);
+    if (userData)
+      fetcwin_loss();
+  }, [userData])
   
   const [rateType, setRateType] = useState('wins');
   const [rateTypet, setRateTypet] = useState('7'); 
@@ -126,7 +146,7 @@ const OthersProfile = () => {
   const onmessagecklick = async () => {
     try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`http://${window.location.hostname}:8000/chat/ouser/getconv/${username}`, {
+        const response = await axios.get(`${apiUrl}/chat/ouser/getconv/${username}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access}`,
@@ -162,7 +182,7 @@ const OthersProfile = () => {
 
       if (refresh) {
         axios
-          .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+          .post(`${apiUrl}/api/token/refresh/`, { refresh })
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
@@ -187,7 +207,7 @@ const OthersProfile = () => {
     try {
       const access = localStorage.getItem("access");
       await axios.post(
-        `http://${window.location.hostname}:8000/api/users/add_friend/`,
+        `${apiUrl}/api/users/add_friend/`,
         { friend_id: friendId },
         { headers: { Authorization: `Bearer ${access}` } }
       );
@@ -202,12 +222,16 @@ const OthersProfile = () => {
     }
   };
 
+  if(!userData)
+  {
+    return <div>Loading...</div>;
+  }
 
   if (loading) {
     return <div>Loading...</div>;
   }
   return (
-    <div className='profile_user'>
+    <div className='profile_user' key={username}>
       {/* Profile */}
       <Baner banerImg={banerImg}></Baner>
       <div className='after-avatar'></div>

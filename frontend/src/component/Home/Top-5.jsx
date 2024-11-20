@@ -1,6 +1,8 @@
 //this is just for the demo obviously the data will be fetched from the server in real world scenario !!
+const apiUrl = process.env.REACT_APP_API_URL
+
 function avatarUrl(avatar) {
-  return `http://localhost:8000/media/${avatar}`;
+  return `${apiUrl}/media/${avatar}`;
 }
 
 function Top_5({ data }) {

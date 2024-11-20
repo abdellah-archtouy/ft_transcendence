@@ -9,20 +9,22 @@ import Setting from "./component/Setting/Setting";
 import Chat from "./component/Chat/Chat";
 import Leaderboard from "./component/Leaderboard/Leaderboard";
 import Home from "./component/Home/Home";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, createContext } from "react";
 import bg1 from "./icons/bg1.svg";
 import bg2 from "./icons/Group.svg";
 import LandingPage from "./component/Landing_page/Landing_page";
 import AuthCallBack from "./component/AuthCallBack/AuthCallBack";
 
-import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+export const ErrorContext = createContext();
 
+export const useError = () => useContext(ErrorContext);
 
 function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem('jwt'));
   const [error, setError] = useState(null);
   const location = useLocation();
+
+
   const bgImage = auth && {
     background: `url(${bg2}) center bottom / contain no-repeat, url(${bg1})`,
     backgroundSize: `100%, 500px`,
@@ -31,29 +33,29 @@ function App() {
   const souldApplyMargin = location.pathname !== "/chat";
 
 
-  const validateTokenWithServer = async (token) => {
-    try {
-      const response = await axios.post(
-        `http://${window.location.hostname}:8000/api/users/validate/`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("this part has been flaged");
-      return response.status === 200;
-    } catch (error) {
-      localStorage.removeItem('jwt');
-      localStorage.removeItem('refresh');
-      localStorage.removeItem('access');
-      // refreh the page
-      window.location.reload();
-      Navigate('/');
-      return false;
-    }
-  };
+  // const validateTokenWithServer = async (token) => {
+  //   try {
+  //     const response = await axios.post(
+  //       `http://${host}:8000/api/users/validate/`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("this part has been flaged");
+  //     return response.status === 200;
+  //   } catch (error) {
+  //     localStorage.removeItem('jwt');
+  //     localStorage.removeItem('refresh');
+  //     localStorage.removeItem('access');
+  //     // refreh the page
+  //     window.location.reload();
+  //     Navigate('/');
+  //     return false;
+  //   }
+  // };
 
   useEffect(() => {
     const token = localStorage.getItem('access');
@@ -99,6 +101,7 @@ function App() {
       {auth ? (
         <>
           <Navbar />
+          <ErrorContext.Provider value={{ error, setError }}>
           <div className="main" style={{ marginBottom: souldApplyMargin ? "clamp(6.875rem, 4.688vw + 5rem, 12.5rem)" : "0px" }}>
           <div className="pop-container">
             <div className={`tournament-popup ${error ? 'appeare' : ''}`}>
@@ -107,14 +110,18 @@ function App() {
           </div>
             <Routes>
               <Route exact path="/" element={<Home />} />
-              <Route exact path="/game/*" element={<GameRouting error={setError} />} />
+              <Route exact path="/game/*" element={<GameRouting />} />
               <Route exact path="/chat" element={<Chat />} />
               <Route exact path="/leaderboard" element={<Leaderboard />} />
-              <Route exact path="/setting" element={<Setting error={setError}/>} />
+              <Route exact path="/setting" element={<Setting />} />
               <Route exact path="/profile" element={<Profile />} />
               <Route exact path="/user/:username" element={<OthersProfile />} />
+              <Route path="*" element={<>
+                tozzzz!!!!!
+              </>} />
             </Routes>
           </div>
+          </ErrorContext.Provider>
         </>
       ) : (
         <>

@@ -7,10 +7,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 const Conv = ({ data }) => {
   const [last_message_time, setLast_message_time] = useState('');
   const location = useLocation();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const queryParam = new URLSearchParams(location.search);
 
   function avatarUrl(name) {
-    return `http://${window.location.hostname}:8000` + name;
+    return `${apiUrl}` + name;
   }
   
   useEffect(() => {

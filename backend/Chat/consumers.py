@@ -10,57 +10,58 @@ from django.db.models import Q
 import datetime
 from django.conf import settings
 import jwt
+from Notifications.views import create_notification
 
-class ChatConsumer(WebsocketConsumer):
-    def connect(self):
-        self.accept()
+# class ChatConsumer(WebsocketConsumer):
+#     def connect(self):
+#         self.accept()
 
-        self.room_name = self.scope['url_route']['kwargs']['conversation_id']
-        self.room_group_name = f'chat_{self.room_name}'
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name
-        )
+#         self.room_name = self.scope['url_route']['kwargs']['conversation_id']
+#         self.room_group_name = f'chat_{self.room_name}'
+#         async_to_sync(self.channel_layer.group_add)(
+#             self.room_group_name,
+#             self.channel_name
+#         )
 
-    def disconnect(self, close_code):
-        pass
+#     def disconnect(self, close_code):
+#         pass
 
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+#     def receive(self, text_data):
+#         text_data_json = json.loads(text_data)
+#         message = text_data_json['message']
 
-        message_i = text_data_json.get('message', '')
-        conversation_id = text_data_json.get('conversation', '')
-        user_id = text_data_json.get('user', '')
-        if isinstance(text_data_json, dict):
-            msg = Message(conversation_id=conversation_id, user_id=user_id, message=message_i)
-            msg.save()
+#         message_i = text_data_json.get('message', '')
+#         conversation_id = text_data_json.get('conversation', '')
+#         user_id = text_data_json.get('user', '')
+#         if isinstance(text_data_json, dict):
+#             msg = Message(conversation_id=conversation_id, user_id=user_id, message=message_i)
+#             msg.save()
 
-            try:
-                with transaction.atomic():
-                    conversation = Conversation.objects.filter(id=conversation_id).first()
-                    if conversation:
-                        conversation.last_message = message_i
-                        conversation.last_message_time = datetime.datetime.now()
-                        conversation.save()
-                        print(f"Updated conversation last message: {conversation.last_message}")
-                    else:
-                        print(f"Conversation with id {conversation_id} not found")
-            except Exception as e:
-                print(f"Error updating conversation: {e}")
-        else:
-            print("Received data is not a dictionary")
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': text_data
-            }
-        )
+#             try:
+#                 with transaction.atomic():
+#                     conversation = Conversation.objects.filter(id=conversation_id).first()
+#                     if conversation:
+#                         conversation.last_message = message_i
+#                         conversation.last_message_time = datetime.datetime.now()
+#                         conversation.save()
+#                         print(f"Updated conversation last message: {conversation.last_message}")
+#                     else:
+#                         print(f"Conversation with id {conversation_id} not found")
+#             except Exception as e:
+#                 print(f"Error updating conversation: {e}")
+#         else:
+#             print("Received data is not a dictionary")
+#         async_to_sync(self.channel_layer.group_send)(
+#             self.room_group_name,
+#             {
+#                 'type': 'chat_message',
+#                 'message': text_data
+#             }
+#         )
 
-    def chat_message(self, event):
-        message = event['message']
-        self.send(message)
+#     def chat_message(self, event):
+#         message = event['message']
+#         self.send(message)
 
 
 class AddConvConsumer(WebsocketConsumer):
@@ -126,43 +127,37 @@ class AddConvConsumer(WebsocketConsumer):
 class DataConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
-
-        access_token = self.scope['url_route']['kwargs']['accessToken']
-
-        if access_token:
-            user_id = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])["user_id"]
-            # print(f"User id: {user_id}")
-
-            user = User.objects.get(id=user_id)
-            # print(f"User: {user.username}")
-
-
-        
-
+        user_id = self.scope['url_route']['kwargs']['accessToken']
+        user = User.objects.get(id=user_id)
         self.room_name = user.username
         self.room_group_name = f'chat_{self.room_name}'
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
         )
-
     def disconnect(self, close_code):
         pass
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        message_i = text_data_json.get('message', '')
+        message = text_data_json.get('message', '')
+        # link
         conversation_id = text_data_json.get('conversation', '')
+        msg_type = text_data_json.get('msg_type', '')
         user_id = text_data_json.get('user', '')
+        if msg_type == 'invite':
+            link = message
+            message = "PLAY NOW !!"
+        else:
+            link = ""
         if isinstance(text_data_json, dict):
-            msg = Message(conversation_id=conversation_id, user_id=user_id, message=message_i)
+            msg = Message(conversation_id=conversation_id, user_id=user_id, message=message, msg_type=msg_type, invite_room_name=link)
             msg.save()
             try:
                 with transaction.atomic():
                     conversation = Conversation.objects.filter(id=conversation_id).first()
                     if conversation:
-                        conversation.last_message = message_i
+                        conversation.last_message = message
                         conversation.last_message_time = datetime.datetime.now()
                         conversation.save()
                         if user_id == conversation.uid1.id:
@@ -179,6 +174,8 @@ class DataConsumer(WebsocketConsumer):
         convdata = ConvSerializer(conversation , many=False)
         user2 = User.objects.get(id=user2_id)
         user1 = User.objects.get(id=user_id)
+        link = f"/chat?username={user1.username}&convid={convdata.data['id']}"
+        create_notification(user2, user1, "CHAT_MESSAGE", link=link)
         conv_instances = Conversation.objects.filter(uid1=user_id) | Conversation.objects.filter(
         uid2=user_id
         )

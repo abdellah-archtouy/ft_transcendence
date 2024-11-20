@@ -146,7 +146,6 @@ const Notification = ({ setShowNotifications, notificationData, setNotificationD
               key={index}
               style={{
                 animationName: "fade-in",
-                animationDuration: `${index + 0.5}s`,
                 animationTimingFunction: "ease-in-out",
                 animationFillMode: "forwards",
               }}

@@ -14,7 +14,7 @@ function App() {
           const token = document.cookie.split('=')[1];
 
           try {
-              const response = await fetch(`http://${window.location.hostname}:8000/api/user/`, {
+              const response = await fetch(`${apiUrl}/api/user/`, {
                   method: 'GET',
                   headers: {
                       'Content-Type': 'application/json',

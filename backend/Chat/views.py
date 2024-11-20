@@ -29,6 +29,8 @@ from rest_framework import status
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from Game.manged_room_consumer import pre_room_manager
+from Notifications.views import create_notification
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -69,6 +71,25 @@ def get_friends(request):
 
 
 from django.db.models import Q
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def setmatch(request, fid):
+    try:
+        friend_id = fid
+        user = request.user
+        friend_obj = User.objects.get(id=friend_id)
+        room_name = f"managed_{user.id}_{friend_id}"
+        link = f"/game/friend/managedroom/{room_name}"
+        pre_room_manager.create_room(room_name, "managed", user.id, friend_id)
+        create_notification(friend_obj, user, "MATCH_INVITE", link=link)
+        return Response(link)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        print("hnaaaayaaa 2 2", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -246,6 +267,8 @@ def get_user_data(request):
 def get_ouser_data(request, username):
     try:
         user = User.objects.get(username=username)
+        if not user:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         achievements = Achievement.objects.filter(user=user.id)
         achievements_serialized = AchievementSerializer(achievements, many=True).data
         achievement_images = {

@@ -17,6 +17,7 @@ class Game(models.Model):
 
         # Update the winner's score by adding the winner_score
         self.winner.score += (self.winner_score - self.loser_score) * 20
+        self.winner.win += 1
         self.winner.save()
         reset_ranks()
 

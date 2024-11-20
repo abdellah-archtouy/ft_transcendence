@@ -1,9 +1,10 @@
 import React from 'react'
 
 function Avatar(avatarImg) {
+  const apiUrl = process.env.REACT_APP_API_URL;
 
     function avatarUrl(name) {
-        return `http://${window.location.hostname}:8000` + name;
+        return `${apiUrl}` + name;
         }
 
   return (

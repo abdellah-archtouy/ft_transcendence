@@ -1,10 +1,6 @@
 import React from 'react'
 import Maestro_icon from './icon/Maestro_icon';
 
-function avatarUrl(name) {
-    return `http://${window.location.hostname}:8000/` + name;
-  }
-
 function Maestro() {
   return (
     <div className='ach-maestro achivement'>

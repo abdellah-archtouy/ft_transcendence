@@ -11,14 +11,14 @@ import Bot from "./bot/bot";
 import GameMode from "./bot/gameMode"
 import ManagedRoom from './rooms/managedRoom';
 
-function gameRouting({ error }) {
+function gameRouting() {
   return (
     <Routes>
         <Route path="/" element={<Game />} />
         <Route path="bot" element={<Bot />} />
         <Route path="gamemode" element={<GameMode />} />
         <Route path="tournament" element={<Tournament />} />
-        <Route path="tournament/local" element={<TournamentLocal error={error}/>} />
+        <Route path="tournament/local" element={<TournamentLocal />} />
         <Route path="tournament/remote" element={<TournamentRemote />} />
         <Route path="friend" element={<Friend />} />
         <Route path="friend/remote" element={<Remote />} />

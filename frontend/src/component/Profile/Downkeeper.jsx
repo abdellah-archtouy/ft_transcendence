@@ -1,10 +1,6 @@
 import React from 'react'
 import Downkeeper_icon from './icon/Downkeeper_icon';
 
-function avatarUrl(name) {
-    return `http://${window.location.hostname}:8000/` + name;
-  }
-
 function Downkeeper() {
   return (
     <div className='ach-downkeeper achivement'>

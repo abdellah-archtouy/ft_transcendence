@@ -38,8 +38,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ("conversation", "user", "message", "time", "conversation_info")
-
+        fields = "__all__"
 
 class AchievementSerializer(serializers.ModelSerializer):
     class Meta:

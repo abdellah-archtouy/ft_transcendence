@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 function Card({ friends, handleAddFriend}) {
   const nameRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -21,7 +22,7 @@ function Card({ friends, handleAddFriend}) {
     };
   }, []);
 
-  const avatarUrl = `http://localhost:8000${friends.avatar}`;
+  const avatarUrl = `${apiUrl}${friends.avatar}`;
 
   return (
     <div className="card-container" >

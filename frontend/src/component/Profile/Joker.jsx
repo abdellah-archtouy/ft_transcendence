@@ -1,11 +1,8 @@
 import React from 'react'
 import Joker_icon from './icon/Joker_icon';
 
-function avatarUrl(name) {
-    return `http://${window.location.hostname}:8000/` + name;
-  }
-
 function Joker() {
+
   return (
     <div className='ach-joker achivement'>
         {/* <img src={avatarUrl('media/achievement/bg_joker.png')} alt="joker background" /> */}

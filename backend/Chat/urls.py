@@ -12,6 +12,7 @@ from .views import (
     ConverstationView,
     getconvView,
     get_friends,
+    setmatch,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
     path("ouser/chart/<str:username>", get_ouser_win_and_lose, name="get_other_user_data"),
     path("ouser/getconv/<str:username>", getconvView, name="getcomanconv"),
     path("user/chart/", get_user_win_and_lose, name="get_user_data"),
+    path("game/<int:fid>", setmatch, name="setmatch"),
 ]

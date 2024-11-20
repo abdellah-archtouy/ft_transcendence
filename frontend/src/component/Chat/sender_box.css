@@ -15,6 +15,17 @@
     display: block;
     word-wrap: break-word;
 }
+
+.msg_box  .button-invite{
+    all: unset;
+    width: 180px;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    cursor:pointer;
+}
 .msg_box{
     display: flex;
     padding: 10px 15px;

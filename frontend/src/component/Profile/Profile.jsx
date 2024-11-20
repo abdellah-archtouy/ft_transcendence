@@ -12,8 +12,6 @@ import Downkeeper from './Downkeeper';
 import The_emperor from './The_emperor';
 import Thunder_Strike from './Thunder_Strike';
 import PureComponent from './Chartline';
-import dayjs from 'dayjs';
-import OthersProfile from './OthersProfile';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -23,7 +21,7 @@ const Profile = () => {
   const [errors, setErrors] = useState({});
   // const [achievement , setAchievement] = useState([]);
   const [achievement, setAchievement] = useState([]);  // Default to an empty array
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
   const [chartData, setChartData] = useState([]);
@@ -37,7 +35,7 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`http://${window.location.hostname}:8000/chat/user/data/`, {
+        const response = await axios.get(`${apiUrl}/chat/user/data/`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access}`,
@@ -64,7 +62,7 @@ const Profile = () => {
     const fetcwin_loss = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`http://${window.location.hostname}:8000/chat/user/chart/`, {
+        const response = await axios.get(`${apiUrl}/chat/user/chart/`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access}`,
@@ -92,10 +90,9 @@ const Profile = () => {
       if (error.response) {
         if (error.response.status === 401) {
           const refresh = localStorage.getItem("refresh");
-          console.log(refresh);
           if (refresh) {
             axios
-            .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -202,8 +199,8 @@ const Profile = () => {
                   <option value="lose">Lost</option>
                 </select>
                 <select className='select' onChange={handleSelectChangetime} value={rateTypet}>
-                  <option value="7">This Week</option>
-                  <option value="24">This day</option>
+                  <option value="7">Last 7 days</option>
+                  <option value="24">Last 24 hours</option>
                 </select>
             </div>
             <div className='chart '>

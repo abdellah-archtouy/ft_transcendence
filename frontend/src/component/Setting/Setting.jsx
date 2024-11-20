@@ -5,8 +5,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingPage from "../loadingPage/loadingPage";
 import { useState } from "react";
+import { useError } from "../../App";
 
-const Setting = ({error}) => {
+const Setting = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const [user, setUser] = React.useState(null);
   const [errors, setErrors] = React.useState({});
@@ -23,13 +24,14 @@ const Setting = ({error}) => {
   const [coverImageFile, setCoverImageFile] = useState(null); // To store the cover image file
   const [avatarImageFile, setAvatarImageFile] = useState(null); // To store the avatar image file
   const navigate = useNavigate();
+  const { setError } = useError()
 
   function avatarUrl(avatar) {
-    return `http://localhost:8000${avatar}`;
+    return `${apiUrl}${avatar}`;
   }
 
   function coverUrl(cover) {
-    return `http://localhost:8000${cover}`;
+    return `${apiUrl}${cover}`;
   }
 
   const handleFetchError = (error, retryFunction) => {
@@ -90,7 +92,7 @@ const Setting = ({error}) => {
       handleFetchError(error, fetchUserData);
     }
   };
-
+  
   useEffect(() => {
     fetchUserData();
   }, [apiUrl]);
@@ -127,14 +129,14 @@ const Setting = ({error}) => {
             const aspectRatio = img.width / img.height;
             if (aspectRatio < 1.77 || aspectRatio > 1.79) {
               newErrors.cover = 'Image must have a 16:9 aspect ratio.';
-              error('Cover image must have a 16:9 aspect ratio.');
+              setError('Cover image must have a 16:9 aspect ratio.');
               return;
             }
   
             // Check if the image resolution is within the 1920x1080 range
             if (img.width < 1920 || img.height < 1080 || img.width > 1920 || img.height > 1080) {
               newErrors.cover = 'Image resolution must be 1920x1080 pixels.';
-              error('Cover image resolution must be 1920x1080 pixels.');
+              setError('Cover image resolution must be 1920x1080 pixels.');
               return;
             }
   
@@ -142,7 +144,7 @@ const Setting = ({error}) => {
             const maxFileSize = 5 * 1024 * 1024; // 5MB
             if (file.size > maxFileSize) {
               newErrors.cover = 'Cover image file size must not exceed 5MB.';
-              error('Cover image file size must not exceed 5MB.');
+              setError('Cover image file size must not exceed 5MB.');
               return;
             }
   
@@ -190,19 +192,19 @@ const Setting = ({error}) => {
           img.onload = () => {
             if (img.width !== img.height) {
               newErrors.avatar = 'Image must have a 1:1 aspect ratio.';
-              error('Avatar image must have a 1:1 aspect ratio.');
+              setError('Avatar image must have a 1:1 aspect ratio.');
               return;
             }
             if (img.width < 500 || img.height < 500 || img.width > 800 || img.height > 800) {
               newErrors.avatar = 'Image resolution must be between 500x500 and 800x800 pixels.';
-              error('between 500x500 and 800x800 pixels.');
+              setError('between 500x500 and 800x800 pixels.');
               return;
             }
           
             const maxFileSize = 2 * 1024 * 1024; // 2MB max size
             if (file.size > maxFileSize) {
               newErrors.avatar = 'Image file size must not exceed 2MB.';
-              error('Avatar image file size must not exceed 2MB.');
+              setError('Avatar image file size must not exceed 2MB.');
               return;
             }
           
@@ -351,7 +353,7 @@ const Setting = ({error}) => {
       } catch (error) {
         setLoading(false);
         handleFetchError(error, handleSecuritySubmit);
-        if (error.response.data.error == "Old password is incorrect.") {
+        if (error.response.data.error === "Old password is incorrect.") {
           setErrors({ currentPassword: error.response.data.error });
         } else {
           setErrors({ currentPassword: error.response.data.error }, { newPassword: error.response.data.error }, { retypePassword: error.response.data.error });

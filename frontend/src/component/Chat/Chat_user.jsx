@@ -10,6 +10,7 @@ export const WebSocketContext = createContext(null);
 
 const Chat = () => {
   const { username } = useParams();
+  const apiUrl = process.env.REACT_APP_API_URL
 
   // const [className, setClassName] = useState(); 
   const [userData, setUserData] = useState(null);
@@ -26,7 +27,7 @@ const Chat = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-          const response = await axios.get(`http://${window.location.hostname}:8000/chat/user/`, {
+          const response = await axios.get(`${apiUrl}/chat/user/`, {
               headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${access}`,
@@ -53,7 +54,7 @@ const Chat = () => {
           console.log(refresh);
           if (refresh) {
             axios
-              .post("http://localhost:8000/api/token/refresh/", { refresh })
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
@@ -89,7 +90,7 @@ const Chat = () => {
   useEffect(() => {
     // Create WebSocket connection
     const access = localStorage.getItem("access");
-    const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/data/${access}/`);
+    const ws = new WebSocket(`ws://${host}:8000/ws/api/data/${access}/`);
 
     ws.onopen = () => {
       console.log('WebSocket connection established');

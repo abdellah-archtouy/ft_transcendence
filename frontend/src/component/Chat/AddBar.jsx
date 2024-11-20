@@ -22,9 +22,12 @@ function AddBar({setconvid , setConversationdata , conv, userData, setSelectedCo
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
-  const [error, setError] = useState(null);
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const [error, setError] = useState(null);
     const [ws, setWs] = useState(null);
     const divRef = useRef(null);
+
+    const host = process.env.REACT_APP_API_HOSTNAME;
 
     const handleKeyDown = (event) => {
         if (event.key === 'Escape' || event.keyCode === 27) {
@@ -49,7 +52,7 @@ function AddBar({setconvid , setConversationdata , conv, userData, setSelectedCo
         const fetchData = async () => {
             try {
                 const access = localStorage.getItem("access");
-              const response = await axios.get(`http://${window.location.hostname}:8000/chat/users/`, {
+              const response = await axios.get(`${apiUrl}/chat/users/`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${access}`,
@@ -79,7 +82,7 @@ function AddBar({setconvid , setConversationdata , conv, userData, setSelectedCo
         
               if (refresh) {
                 axios
-                  .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+                  .post(`${apiUrl}/api/token/refresh/`, { refresh })
                   .then((refreshResponse) => {
                     const { access: newAccess } = refreshResponse.data;
                     localStorage.setItem("access", newAccess);
@@ -113,7 +116,7 @@ function AddBar({setconvid , setConversationdata , conv, userData, setSelectedCo
     
     
     useEffect(() => {
-        const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/api/addconv/`);
+        const socket = new WebSocket(`ws://${host}:8000/ws/api/addconv/`);
         socket.onopen = () => {
             console.log('WebSocket connection established');
         };

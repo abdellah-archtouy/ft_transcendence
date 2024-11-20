@@ -1,7 +1,9 @@
 import dash from "./styles/dash.svg";
 
+const apiUrl = process.env.REACT_APP_API_URL
+
 function avatarUrl(avatar) {
-  return `http://localhost:8000/media/${avatar}`;
+  return `${apiUrl}/media/${avatar}`;
 }
 
 function Stats({ data }) {

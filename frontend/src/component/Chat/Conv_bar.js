@@ -19,6 +19,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [tmp, setTmp] = useState([]);
   const [isEmptyObject, setisEmptyObject] = useState(true);
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const socket = useContext(WebSocketContext);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     
     const access = localStorage.getItem("access");
     try {
-      const response = await axios.get(`http://${window.location.hostname}:8000/chat/conv/`, {
+      const response = await axios.get(`${apiUrl}/chat/conv/`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access}`,
@@ -54,7 +55,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
 
       if (refresh) {
         axios
-          .post(`http://${window.location.hostname}:8000/api/token/refresh/`, { refresh })
+          .post(`${apiUrl}/api/token/refresh/`, { refresh })
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);

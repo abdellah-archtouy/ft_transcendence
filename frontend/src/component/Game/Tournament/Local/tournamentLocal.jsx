@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./tournamentLocal.css";
 import LocalRoom from "../../rooms/localRoom";
+import { useError } from "../../../../App";
 
-const TournamentLocal = ({error}) => {
+const TournamentLocal = () => {
   const [addTournament, setAddTournament] = useState(false);
   const [tournamentComplete, setTournamentComplete] = useState(false);
   const [tournament, setTournament] = useState(false);
@@ -11,6 +12,8 @@ const TournamentLocal = ({error}) => {
   const [pair, setPair] = useState([]);
   const [matchIndex, setMatchIndex] = useState(0);
   const [players, setPlayers] = useState([null, null, null, null]);
+
+  const {setError} = useError()
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -29,9 +32,9 @@ const TournamentLocal = ({error}) => {
       }
     }
     if (!isFull)
-        error("You must Fill The Form!")
+        setError("You must Fill The Form!")
     else if (!isNotDuplicated)
-          error("Two Players Has The Same Name!")
+          setError("Two Players Has The Same Name!")
   }
 
   const handleChange = (e) => {

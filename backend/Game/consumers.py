@@ -206,8 +206,8 @@ class RoomManager:
 
     async def send_periodic_updates(self, ConsumerObj):
         room = self.rooms[ConsumerObj.room_group_name]
-        # if ConsumerObj.connection_type == None:
-        #     await self.start_game(ConsumerObj)
+        if ConsumerObj.connection_type == None:
+            await self.start_game(ConsumerObj)
         while room and room.keep_updating and not room.winner:
             if room:
                 await start(room)

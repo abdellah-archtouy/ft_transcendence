@@ -1,11 +1,8 @@
 import React from 'react'
 import Thunder_Strike_icon from './icon/Thunder_icon';
 
-function avatarUrl(name) {
-    return `http://${window.location.hostname}:8000/` + name;
-  }
-
 function Thunder_Strike() {
+
   return (
     <div className='ach-thunder_strike achivement'>
         <div className='thunder_strike_icon ach-icon'>
