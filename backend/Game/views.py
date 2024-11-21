@@ -32,6 +32,10 @@ def top5(request):
                 "total_matches",
             )
         )
+        my_sorted_list = [
+            {**user, "link": f"/user/{user['username']}" if user["username"] != request.user.username else f"/profile"}
+            for user in my_sorted_list
+        ]
         return Response(
             my_sorted_list,
             status=status.HTTP_200_OK,
@@ -82,7 +86,7 @@ def leaderboard(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     except TokenError as e:
-        print(f"top5: {e}")
+        print(f"leaderboard: {e}")
 
 
 @api_view(["GET"])

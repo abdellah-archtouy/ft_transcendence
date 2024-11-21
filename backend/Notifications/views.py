@@ -51,6 +51,7 @@ def create_notification(friend, user, n_type, link):
         channel_layer = get_channel_layer()
         avatar = get_avatar(notification_instance.sender)
         sent_data = {
+            "id": notification_instance.id,
             "sender_avatar": avatar,  # Access avatar URL
             "message": notification_instance.message,
             "notification_type": notification_instance.notification_type,
