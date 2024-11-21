@@ -23,6 +23,11 @@ class Tournament():
         self.is_full = False
         self.round_winners = []
         self.tournament_task = None
+    
+    def delete_tour_rooms(self):
+        matching_keys = [key for key in pre_room_manager.rooms.keys() if key.startswith(f"{self.name}_")]
+        for key in matching_keys:
+            del pre_room_manager[key]
 
     def kick_user(self, user):
         if user in self.users and not self.is_full:
@@ -71,7 +76,7 @@ class Tournament():
         # Determine winners of the current round and move to the next
         try:
             for _round in self.current_round:
-                room_name = f"tournament_{_round.uid1}_{_round.uid2}"
+                room_name = f"{self.name}_{_round.uid1}_{_round.uid2}"
                 user1 = await User.objects.aget(id=_round.uid1)
                 user2 = await User.objects.aget(id=_round.uid2)
                 link = f"/game/friend/managedroom/{room_name}"
@@ -99,8 +104,8 @@ class Tournament():
         for i in range(0, len(self.round_winners), 2):
             id1 = int(self.round_winners[i])
             id2 = int(self.round_winners[i + 1])
-            room_name = f"tournament_{id1}_{id2}"
-            match = pre_room_manager.create_room(room_name, "tournament", id1, id2)
+            room_name = f"{self.name}_{id1}_{id2}"
+            match = pre_room_manager.create_room(room_name, f"{self.name}_", id1, id2)
             self.current_round.append(match)
         self.rounds.append(self.current_round)
     
@@ -109,8 +114,8 @@ class Tournament():
             for i in range(0, len(self.users), 2):
                 id1 = int(self.users[i])
                 id2 = int(self.users[i + 1])
-                room_name = f"tournament_{id1}_{id2}"
-                match = pre_room_manager.create_room(room_name, "tournament", id1, id2)
+                room_name = f"{self.name}_{id1}_{id2}"
+                match = pre_room_manager.create_room(room_name, f"{self.name}_", id1, id2)
                 self.current_round.append(match)
             self.rounds.append(self.current_round)
         except Exception as e:

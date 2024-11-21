@@ -172,22 +172,22 @@ const Leaderboard = () => {
                 }}
                 >
                   <div className="Leaderboard-list-item-user">
-                    <img src={avatarUrl(row.avatar)} alt="user" />
+                    <img src={avatarUrl(row?.avatar)} alt="user" />
                   </div>
                   <div className="Leaderboard-list-item-name">
-                    <span>{row.username.substring(0, 5).toUpperCase()}</span>
+                    <span>{row?.username.substring(0, 5)}</span>
                   </div>
                   <div className="Leaderboard-list-item-rank">
-                    <span>#{row.rank}</span>
+                    <span>#{row?.rank}</span>
                   </div>
                   <div className="Leaderboard-list-item-score">
-                    <span>{row.score}xp</span>
+                    <span>{row?.score}xp</span>
                   </div>
                   <div className="Leaderboard-list-item-wins">
-                    <span>{row.matches_won}</span>
+                    <span>{row?.matches_won}</span>
                   </div>
                   <div className="Leaderboard-list-item-link">
-                    <button onClick={() => navigate(`/user/${row?.username}`)} style={{all:"unset", display:"flex", alignItems:"center", justifyContent:"center"}}>
+                    <button onClick={() => navigate(row?.link)} style={{all:"unset", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer"}}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 512 512"

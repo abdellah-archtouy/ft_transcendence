@@ -68,9 +68,10 @@ def leaderboard(request):
                 "total_matches",
             )
         )
-        # for item in my_sorted_list:
-        #     if item["username"] == user.username:
-        #         item["username"] = "Me"
+        my_sorted_list = [
+            {**user, "link": f"/user/{user['username']}" if user["username"] != request.user.username else f"/profile"}
+            for user in my_sorted_list
+        ]
         return Response(
             my_sorted_list,
             status=status.HTTP_200_OK,

@@ -131,7 +131,11 @@ class RoomManager:
                         if user_id in self.channel_names:
                             del self.channel_names[user_id]
                         if room.howManyUser() == 0 and room.is_full:
-                            del self.rooms[room_group_name]
+                            if room.type == "tournament":
+                                room.room_pause()
+                                room.winner = user_id
+                            else:
+                                del self.rooms[room_group_name]
                     else:
                         del self.rooms[room_group_name]
                     room.keep_updating = False

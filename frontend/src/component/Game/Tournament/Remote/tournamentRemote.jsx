@@ -5,6 +5,7 @@ import "./tournamentRemote.css";
 import { useRef } from "react";
 import TournamentCard from "./tournamentCard";
 import TournamentDisplay from "../Form/tournamentDisplay";
+import { useError } from "../../../../App"
 
 const TournamentRemote = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -21,11 +22,22 @@ const TournamentRemote = () => {
   const [tournamentUsers, setTournamentUsers] = useState(null);
   const navigate = useNavigate();
   let socketRef = useRef(null);
+  const {setError} = useError()
 
   function handleSubmit(e) {
     e.preventDefault();
     setNoTournament(false);
     const isFull = tournamentName ? true : false;
+    if (!isFull)
+      {
+        setError("The Tournament must have a name");
+        return;
+      }
+    if (!tournamentName.match(/^[0-9a-z]+$/))
+      {
+        setError("The tournament name can only include letters and numbers.")
+        return;
+      }
     if (
       isFull &&
       socketRef.current &&
@@ -38,8 +50,6 @@ const TournamentRemote = () => {
           name: tournamentName,
         })
       );
-    } else {
-      console.log("WebSocket is not open");
     }
   }
 
@@ -330,8 +340,8 @@ const TournamentRemote = () => {
               </button>
             </div>
             <div className="tournament-cards" ref={draggableContentRef}>
-              {tournamentData.length &&
-                tournamentSearch.map((tournament, index) => (
+              {tournamentData?.length &&
+                tournamentSearch?.map((tournament, index) => (
                   <div
                     key={index}
                     ref={(el) => {

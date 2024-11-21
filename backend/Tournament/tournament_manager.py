@@ -29,7 +29,7 @@ class TournamentRoomManager():
             if tournament.is_full:
                 asyncio.create_task(self.monitor_tournament_status(obj, tournament))
 
-    async def monitor_tournament_status(self,obj , tournament):
+    async def monitor_tournament_status(self, obj , tournament):
         try:
             # Wait for the tournament to complete
             while tournament.winner is None:
@@ -38,7 +38,8 @@ class TournamentRoomManager():
             # Once we have a winner, handle tournament completion
             if tournament.winner:
                 await self.send_tournament_updates(obj, obj.tournament)
-            #     del self.tournaments[tournament.name]
+                tournament.delete_tour_rooms()
+                # del self.tournaments[tournament.name]
         except Exception as e:
             print(f"Error monitoring tournament {tournament.name}: {e}")
 
