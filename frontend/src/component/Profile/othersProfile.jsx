@@ -237,6 +237,7 @@ const OthersProfile = () => {
       <div className='after-avatar'></div>
       <Avatar avatarImg={avatarImg} ></Avatar>
       <div className='userinfo'>
+          <div className='name-button'>
           <div className='name-status'>
             <h1 className='username'>
               {userData?.username ? userData.username : 'User'}
@@ -246,6 +247,7 @@ const OthersProfile = () => {
           <div className='add-friend-message'>
             <button className='' onClick={onmessagecklick}>Message</button>
             <button className='' onClick={() => handleAddFriend(userData.id)}>Add Friend</button>
+          </div>
           </div>
           <p className='bio'>{userData?.bio}</p>
           <div className='win-rank-score'>

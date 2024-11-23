@@ -9,30 +9,24 @@ from __future__ import annotations
 import os
 import re
 import shutil
-import stat
 import struct
 import sys
 import sysconfig
 import warnings
-from email.generator import BytesGenerator, Generator
-from email.policy import EmailPolicy
+from collections.abc import Iterable, Sequence
+from email.generator import BytesGenerator
 from glob import iglob
-from shutil import rmtree
-from typing import TYPE_CHECKING, Callable, Iterable, Literal, Sequence, cast
+from typing import Literal, cast
 from zipfile import ZIP_DEFLATED, ZIP_STORED
 
 from packaging import tags, version as _packaging_version
-from wheel.metadata import pkginfo_to_metadata
 from wheel.wheelfile import WheelFile
 
-from .. import Command, __version__
+from .. import Command, __version__, _shutil
 from ..warnings import SetuptoolsDeprecationWarning
 from .egg_info import egg_info as egg_info_cls
 
 from distutils import log
-
-if TYPE_CHECKING:
-    from _typeshed import ExcInfo
 
 
 def safe_name(name: str) -> str:
@@ -64,7 +58,7 @@ def _is_32bit_interpreter() -> bool:
 
 
 def python_tag() -> str:
-    return f"py{sys.version_info[0]}"
+    return f"py{sys.version_info.major}"
 
 
 def get_platform(archive_root: str | None) -> str:
@@ -110,25 +104,20 @@ def get_abi_tag() -> str | None:
     impl = tags.interpreter_name()
     if not soabi and impl in ("cp", "pp") and hasattr(sys, "maxunicode"):
         d = ""
-        m = ""
         u = ""
         if get_flag("Py_DEBUG", hasattr(sys, "gettotalrefcount"), warn=(impl == "cp")):
             d = "d"
 
-        if get_flag(
-            "WITH_PYMALLOC",
-            impl == "cp",
-            warn=(impl == "cp" and sys.version_info < (3, 8)),
-        ) and sys.version_info < (3, 8):
-            m = "m"
-
-        abi = f"{impl}{tags.interpreter_version()}{d}{m}{u}"
+        abi = f"{impl}{tags.interpreter_version()}{d}{u}"
     elif soabi and impl == "cp" and soabi.startswith("cpython"):
         # non-Windows
         abi = "cp" + soabi.split("-")[1]
     elif soabi and impl == "cp" and soabi.startswith("cp"):
         # Windows
         abi = soabi.split("-")[0]
+        if hasattr(sys, "gettotalrefcount"):
+            # using debug build; append "d" flag
+            abi += "d"
     elif soabi and impl == "pp":
         # we want something like pypy36-pp73
         abi = "-".join(soabi.split("-")[:2])
@@ -150,21 +139,6 @@ def safer_name(name: str) -> str:
 
 def safer_version(version: str) -> str:
     return safe_version(version).replace("-", "_")
-
-
-def remove_readonly(
-    func: Callable[..., object],
-    path: str,
-    excinfo: ExcInfo,
-) -> None:
-    remove_readonly_exc(func, path, excinfo[1])
-
-
-def remove_readonly_exc(
-    func: Callable[..., object], path: str, exc: BaseException
-) -> None:
-    os.chmod(path, stat.S_IWRITE)
-    func(path)
 
 
 class bdist_wheel(Command):
@@ -244,7 +218,7 @@ class bdist_wheel(Command):
 
     def initialize_options(self) -> None:
         self.bdist_dir: str | None = None
-        self.data_dir: str | None = None
+        self.data_dir = ""
         self.plat_name: str | None = None
         self.plat_tag: str | None = None
         self.format = "zip"
@@ -257,9 +231,9 @@ class bdist_wheel(Command):
         self.relative = False
         self.owner = None
         self.group = None
-        self.universal: bool = False
-        self.compression: int | str = "deflated"
-        self.python_tag: str = python_tag()
+        self.universal = False
+        self.compression: str | int = "deflated"
+        self.python_tag = python_tag()
         self.build_number: str | None = None
         self.py_limited_api: str | Literal[False] = False
         self.plat_name_supplied = False
@@ -390,9 +364,9 @@ class bdist_wheel(Command):
             supported_tags = [
                 (t.interpreter, t.abi, plat_name) for t in tags.sys_tags()
             ]
-            assert (
-                tag in supported_tags
-            ), f"would build wheel with unsupported tag {tag}"
+            assert tag in supported_tags, (
+                f"would build wheel with unsupported tag {tag}"
+            )
         return tag
 
     def run(self):
@@ -462,7 +436,7 @@ class bdist_wheel(Command):
             shutil.copytree(self.dist_info_dir, distinfo_dir)
             # Egg info is still generated, so remove it now to avoid it getting
             # copied into the wheel.
-            shutil.rmtree(self.egginfo_dir)
+            _shutil.rmtree(self.egginfo_dir)
         else:
             # Convert the generated egg-info into dist-info.
             self.egg2dist(self.egginfo_dir, distinfo_dir)
@@ -480,17 +454,14 @@ class bdist_wheel(Command):
         # Add to 'Distribution.dist_files' so that the "upload" command works
         getattr(self.distribution, "dist_files", []).append((
             "bdist_wheel",
-            "{}.{}".format(*sys.version_info[:2]),  # like 3.7
+            f"{sys.version_info.major}.{sys.version_info.minor}",
             wheel_path,
         ))
 
         if not self.keep_temp:
             log.info(f"removing {self.bdist_dir}")
             if not self.dry_run:
-                if sys.version_info < (3, 12):
-                    rmtree(self.bdist_dir, onerror=remove_readonly)
-                else:
-                    rmtree(self.bdist_dir, onexc=remove_readonly_exc)
+                _shutil.rmtree(self.bdist_dir)
 
     def write_wheelfile(
         self, wheelfile_base: str, generator: str = f"setuptools ({__version__})"
@@ -574,7 +545,7 @@ class bdist_wheel(Command):
         def adios(p: str) -> None:
             """Appropriately delete directory, file or link."""
             if os.path.exists(p) and not os.path.islink(p) and os.path.isdir(p):
-                shutil.rmtree(p)
+                _shutil.rmtree(p)
             elif os.path.exists(p):
                 os.unlink(p)
 
@@ -596,42 +567,30 @@ class bdist_wheel(Command):
 
             raise ValueError(err)
 
-        if os.path.isfile(egginfo_path):
-            # .egg-info is a single file
-            pkg_info = pkginfo_to_metadata(egginfo_path, egginfo_path)
-            os.mkdir(distinfo_path)
-        else:
-            # .egg-info is a directory
-            pkginfo_path = os.path.join(egginfo_path, "PKG-INFO")
-            pkg_info = pkginfo_to_metadata(egginfo_path, pkginfo_path)
+        # .egg-info is a directory
+        pkginfo_path = os.path.join(egginfo_path, "PKG-INFO")
 
-            # ignore common egg metadata that is useless to wheel
-            shutil.copytree(
-                egginfo_path,
-                distinfo_path,
-                ignore=lambda x, y: {
-                    "PKG-INFO",
-                    "requires.txt",
-                    "SOURCES.txt",
-                    "not-zip-safe",
-                },
-            )
-
-            # delete dependency_links if it is only whitespace
-            dependency_links_path = os.path.join(distinfo_path, "dependency_links.txt")
-            with open(dependency_links_path, encoding="utf-8") as dependency_links_file:
-                dependency_links = dependency_links_file.read().strip()
-            if not dependency_links:
-                adios(dependency_links_path)
-
-        pkg_info_path = os.path.join(distinfo_path, "METADATA")
-        serialization_policy = EmailPolicy(
-            utf8=True,
-            mangle_from_=False,
-            max_line_length=0,
+        # ignore common egg metadata that is useless to wheel
+        shutil.copytree(
+            egginfo_path,
+            distinfo_path,
+            ignore=lambda x, y: {
+                "PKG-INFO",
+                "requires.txt",
+                "SOURCES.txt",
+                "not-zip-safe",
+            },
         )
-        with open(pkg_info_path, "w", encoding="utf-8") as out:
-            Generator(out, policy=serialization_policy).flatten(pkg_info)
+
+        # delete dependency_links if it is only whitespace
+        dependency_links_path = os.path.join(distinfo_path, "dependency_links.txt")
+        with open(dependency_links_path, encoding="utf-8") as dependency_links_file:
+            dependency_links = dependency_links_file.read().strip()
+        if not dependency_links:
+            adios(dependency_links_path)
+
+        metadata_path = os.path.join(distinfo_path, "METADATA")
+        shutil.copy(pkginfo_path, metadata_path)
 
         for license_path in self.license_paths:
             filename = os.path.basename(license_path)

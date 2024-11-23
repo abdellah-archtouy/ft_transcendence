@@ -1,4 +1,4 @@
-asgi f==3.8.1
+# asgif==3.8.1
 attrs==24.2.0
 autobahn==24.4.2
 Automat==24.8.1
