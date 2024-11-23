@@ -18,7 +18,7 @@
     flex-direction: column;
     backdrop-filter: blur(15px);
     box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 5px 5px;
-    transition: all 0.3s ease;
+    transition: all 0.8s ease;
 }
 
 .settings-cover {

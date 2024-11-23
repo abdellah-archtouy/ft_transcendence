@@ -19,7 +19,6 @@ const GameMode = () => {
           <button
             className="botmode-button easy"
             onClick={() => {
-              // updatevalues(5, 0.01);
               updatevalues("easy");
             }}
             style={{ backgroundImage: 'url("/easy.png")' }}
@@ -29,7 +28,6 @@ const GameMode = () => {
           <button
             className="botmode-button medium"
             onClick={() => {
-              // updatevalues(7, 0.05);
               updatevalues("medium");
             }}
             style={{ backgroundImage: 'url("/medium.png")' }}
@@ -39,7 +37,6 @@ const GameMode = () => {
           <button
             className="botmode-button Hard"
             onClick={() => {
-              // updatevalues(9, 0.1);
               updatevalues("hard");
             }}
             style={{ backgroundImage: 'url("/hard.png")' }}

@@ -86,7 +86,8 @@ class TournamentRoomManager():
             avatars = [f"/media/{avatar['avatar']}" for avatar in avatars_dict if avatar['avatar']]
             tournament.user_list["round1"] = avatars
             await self.send_tournament_updates(obj, obj.tournament)
-            await obj.channel_layer.group_discard(f"tournament_info_{obj.tournament.name}", obj.channel_name)
+            if obj.channel_name:
+                await obj.channel_layer.group_discard(f"tournament_info_{obj.tournament.name}", obj.channel_name)
             if len(self.tournaments[name].users) == 0:
                 self.tournaments.pop(name)
             obj.joined = False

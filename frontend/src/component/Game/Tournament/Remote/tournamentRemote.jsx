@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./tournamentRemote.css";
@@ -7,9 +7,10 @@ import TournamentCard from "./tournamentCard";
 import TournamentDisplay from "../Form/tournamentDisplay";
 import { useError } from "../../../../App"
 
+const apiUrl = process.env.REACT_APP_API_URL;
+const hostName = process.env.REACT_APP_API_HOSTNAME;
+
 const TournamentRemote = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const hostName = process.env.REACT_APP_API_HOSTNAME;
 
   const [tournamentData, setTournamentData] = useState([]);
   const [noTournament, setNoTournament] = useState(null);
@@ -20,8 +21,17 @@ const TournamentRemote = () => {
   const [joinCard, setJoinCard] = useState(null);
   const [user, setUser] = useState(null);
   const [tournamentUsers, setTournamentUsers] = useState(null);
+
   const navigate = useNavigate();
+  const stableNavigate = useMemo(
+    () =>
+      (...args) =>
+        navigate(...args),
+    [navigate]
+  );
+
   let socketRef = useRef(null);
+
   const {setError} = useError()
 
   function handleSubmit(e) {
@@ -96,7 +106,7 @@ const TournamentRemote = () => {
                   general: "Session expired. Please log in again.",
                 });
                 window.location.reload();
-                navigate("/");
+                stableNavigate("/");
               });
           } else {
             console.log({
@@ -112,9 +122,9 @@ const TournamentRemote = () => {
         });
       }
     };
-
-    fetchUserData();
-  }, []);
+    if (!user)
+      fetchUserData();
+  }, [stableNavigate, user]);
 
   useEffect(() => {
     if (user) {
@@ -135,7 +145,6 @@ const TournamentRemote = () => {
           if (data?.tournament_users)
             {
               setTournamentUsers((prev) => {
-                const round = data?.round || null;
                 let obj = {
                   ...prev,
                   ...data?.tournament_users,
@@ -195,7 +204,7 @@ const TournamentRemote = () => {
         setJoinCard(null);
         setCancle((prev) => !prev);
     }
-  }, [cancle]);
+  }, [cancle, joinCard]);
 
   const draggableContentRef = useRef(null);
   const contentItemsRef = useRef([]);

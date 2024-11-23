@@ -30,33 +30,8 @@ function App() {
     backgroundSize: `100%, 500px`,
   };
 
-  const souldApplyMargin = location.pathname !== "/chat";
-
-
-  // const validateTokenWithServer = async (token) => {
-  //   try {
-  //     const response = await axios.post(
-  //       `http://${host}:8000/api/users/validate/`,
-  //       {},
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("this part has been flaged");
-  //     return response.status === 200;
-  //   } catch (error) {
-  //     localStorage.removeItem('jwt');
-  //     localStorage.removeItem('refresh');
-  //     localStorage.removeItem('access');
-  //     // refreh the page
-  //     window.location.reload();
-  //     Navigate('/');
-  //     return false;
-  //   }
-  // };
-
+  const souldApplyMargin = location.pathname === "/" || (window.innerWidth > 640 && location.pathname !== "/chat");
+  
   useEffect(() => {
     const token = localStorage.getItem('access');
     if (token) {
@@ -81,9 +56,9 @@ function App() {
       }
   },[error])
 
-  const scroll = (location.pathname !== "/" && location.pathname !== "/profile" && location.pathname !== "/user/:username") && {
-        height: `100%`
-    }
+  // const scroll = (location.pathname !== "/" && location.pathname !== "/profile" && location.pathname !== "/user/:username") && {
+  //       height: `100%`
+  //   }
 
   useEffect(() => {
     if (error)
@@ -95,7 +70,7 @@ function App() {
   },[error])
 
   return (
-    <div className={"App"} style={{ ...bgImage, ...scroll }}>
+    <div className={"App"} style={{ ...bgImage }}>
       {" "}
       {/* style={{...bgImage}} */}
       {auth ? (
@@ -116,9 +91,20 @@ function App() {
               <Route exact path="/setting" element={<Setting />} />
               <Route exact path="/profile" element={<Profile />} />
               <Route exact path="/user/:username" element={<OthersProfile />} />
-              <Route path="*" element={<>
-                tozzzz!!!!!
-              </>} />
+              <Route path="*" element={<div className="page-404">
+                <div className="page-404-container">
+                  <h1 className="page-404-container-h1">404</h1>
+                  <div style={{display: "inline-block",
+                    flex: "1,1",
+                  }}>
+                    <h2 style={{
+                      fontSize: "14px",
+                      fontWeight: "400",
+                      lineHeight: "28px",
+                      }}>Page Not Found</h2>
+                  </div>
+                </div>
+              </div>} />
             </Routes>
           </div>
           </ErrorContext.Provider>

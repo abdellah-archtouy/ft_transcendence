@@ -2,7 +2,6 @@ import traceback, asyncio, json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .common_functions import start, join_room
 
-
 class LocalRoomManager():
     def __init__(self) -> None:
         self.rooms = {}
@@ -13,7 +12,7 @@ class LocalRoomManager():
     async def join_Local_room(self, LocalConsumer):
         lock = await self.get_lock()
         async with lock:
-            name = join_room(LocalConsumer, self.rooms)
+            name = await join_room(LocalConsumer, self.rooms)
             return name
 
     async def get_lock(self):
@@ -37,7 +36,8 @@ class LocalRoomManager():
                 room = self.rooms.get(LocalConsumer.room_group_name)
                 if room:
                     del self.rooms[LocalConsumer.room_group_name]
-                    LocalConsumer.channel_layer.group_discard(LocalConsumer.room_group_name, LocalConsumer.channel_name)
+                    if LocalConsumer.room_group_name and LocalConsumer.channel_name:
+                        LocalConsumer.channel_layer.group_discard(LocalConsumer.room_group_name, LocalConsumer.channel_name)
                     room.keep_updating = False
             except Exception as e:
                 print(f"remove_name: {e}")
@@ -60,6 +60,8 @@ class LocalRoomManager():
                 self.user1 = self.create_local_info(username1, room, LocalConsumer)
                 self.user2 = self.create_local_info(username2, room, LocalConsumer)
                 await start(room)
+                # if room.user1_goals == 6 or room.user2_goals == 6:
+                #     room.winner = LocalConsumer.username2 if room.user2_goals == 6 else LocalConsumer.username1
                 await LocalConsumer.channel_layer.group_send(
                     LocalConsumer.room_group_name,
                     {

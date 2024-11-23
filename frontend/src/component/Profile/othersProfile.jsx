@@ -74,7 +74,6 @@ const OthersProfile = () => {
           setError(error.response.data.error);
           navigate(-1);
         }
-        // setErrors(errors); 
         handleFetchError(error, () => fetchData());
       } finally {
         setLoading(false);
@@ -102,7 +101,6 @@ const OthersProfile = () => {
         setLoss7(response.data.this_week_lose_summary);
         fetchSuggestedFriends();
       } catch (error) {
-        console.error('Error fetching user data:', error);
         setErrors(errors); 
         handleFetchError(error, () => fetcwin_loss());
       } finally {
@@ -155,7 +153,6 @@ const OthersProfile = () => {
         });
         navigate(`/chat?username=${username}&convid=${response.data.id}`);
       } catch (error) {
-        console.error('Error fetching user data:', error);
         setErrors(errors); 
         handleFetchError(error, () => onmessagecklick());
       } finally {
@@ -217,7 +214,6 @@ const OthersProfile = () => {
         )
       );
     } catch (error) {
-      console.log('friends:', error);
       handleFetchError(error, () => handleAddFriend(friendId));
     }
   };

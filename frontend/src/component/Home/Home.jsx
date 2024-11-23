@@ -77,6 +77,9 @@ const Home = () => {
       );
     } catch (error) {
       handleFetchError(error, () => handleAddFriend(friendId));
+      if (error.response?.data?.message === "Already friends") {
+        throw error;
+      }
     }
   };
 

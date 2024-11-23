@@ -11,25 +11,9 @@ import SearchBar from "./searchBar";
 import { useRef } from "react";
 import Notification from "./Notifications/notification";
 import axios from "axios";
+import { useCallback } from "react";
 
-const Navbar = () => {
-  const [activeElement, setActiveElement] = useState(null);
-  const [search, setSearch] = useState(false);
-  const [navDisplay, setNavDisplay] = useState(true);
-  const [newNotif, setNewNotif] = useState(false);
-  const location = useLocation();
-  const burgerMenuRef = useRef(null);
-
-  const [showNotifications, setShowNotifications] = useState(false);
-  const NotificationRef = useRef(null);
-  const [notificationData, setNotificationData] = useState(null);
-
-  const [user, setUser] = useState(null);
-
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const hostName = process.env.REACT_APP_API_HOSTNAME;
-
-  const array = [
+const array = [
     { index: 0, path: "/", activeElement: "Home" },
     { index: 1, path: "/game", activeElement: "Game" },
     { index: 2, path: "/chat", activeElement: "Chat" },
@@ -37,6 +21,25 @@ const Navbar = () => {
     { index: 4, path: "/setting", activeElement: "Setting" },
     { index: 5, path: "/profile", activeElement: "Profile" },
   ];
+
+const apiUrl = process.env.REACT_APP_API_URL;
+const hostName = process.env.REACT_APP_API_HOSTNAME;
+
+const Navbar = () => {
+  const [activeElement, setActiveElement] = useState(null);
+  const [search, setSearch] = useState(false);
+  const [navDisplay, setNavDisplay] = useState(true);
+  const [newNotif, setNewNotif] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationData, setNotificationData] = useState(null);
+  const [user, setUser] = useState(null);
+  
+  const burgerMenuRef = useRef(null);
+  const NotificationRef = useRef(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const stableNavigate = useCallback((...args) => navigate(...args), [navigate]);
 
   const handleClick = (element, index) => {
     setActiveElement(element);
@@ -46,8 +49,8 @@ const Navbar = () => {
     const itemOffsetLeft = navItems[index].offsetLeft;
     const itemOffsetTop = navItems[index].offsetTop;
     const coloredDiv = document.querySelector(".items");
-    let colorDivOffsetTop = coloredDiv.offsetTop
-    if (navDisplay) colorDivOffsetTop = itemOffsetTop
+    let colorDivOffsetTop = coloredDiv.offsetTop;
+    if (navDisplay) colorDivOffsetTop = itemOffsetTop;
     coloredDiv.style.transform = `translateX(${
       itemOffsetLeft - coloredDiv.offsetLeft
     }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
@@ -92,11 +95,13 @@ const Navbar = () => {
         itemOffsetLeft - coloredDiv.offsetLeft
       }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
     }
-  }, [location.pathname]);
+  }, [location.pathname, navDisplay]);
 
   const handleClickOutside = (event) => {
     if (burgerMenuRef.current && !burgerMenuRef.current.contains(event.target))
-      setNavDisplay(true);
+      setTimeout(() => {
+        setNavDisplay(true);
+      }, 500);
     if (
       NotificationRef.current &&
       !NotificationRef.current.contains(event.target)
@@ -115,8 +120,6 @@ const Navbar = () => {
     };
   }, []);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -131,7 +134,7 @@ const Navbar = () => {
         setUser(response.data);
         fetchNotification();
       } catch (error) {
-        handleFetchError(error);
+        handleFetchError(error, fetchUserData);
       }
     };
 
@@ -147,11 +150,11 @@ const Navbar = () => {
 
         setNotificationData(response.data);
       } catch (error) {
-        handleFetchError(error);
+        handleFetchError(error, fetchNotification);
       }
     };
 
-    const handleFetchError = (error) => {
+    const handleFetchError = (error, retryFunction) => {
       if (error.response) {
         if (error.response.status === 401) {
           const refresh = localStorage.getItem("refresh");
@@ -162,17 +165,16 @@ const Navbar = () => {
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
-                fetchUserData(); // Retry fetching user data
+                retryFunction(); // Retry fetching user data
               })
               .catch((refreshError) => {
                 localStorage.removeItem("access");
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
+                stableNavigate("/");
                 console.log({
                   general: "Session expired. Please log in again.",
                 });
-                window.location.reload();
-                navigate("/");
               });
           } else {
             console.log({
@@ -188,9 +190,9 @@ const Navbar = () => {
         });
       }
     };
-
-    fetchUserData();
-  }, []);
+    if (!user || Object.keys(user).length === 0)
+      fetchUserData();
+  }, [stableNavigate]);
 
   useEffect(() => {
     if (user) {
@@ -229,7 +231,7 @@ const Navbar = () => {
             onClick={() => {
               setSearch(false);
               handleClick("Home", 0);
-              navigate("/");
+              stableNavigate("/");
             }}
           />
         </div>
@@ -291,7 +293,7 @@ const Navbar = () => {
                   onClick={() => {
                     setSearch(false);
                     handleClick("Setting", 4);
-                    navigate("/setting");
+                    stableNavigate("/setting");
                   }}
                 >
                   <Icon.Setting />
@@ -335,7 +337,12 @@ const Navbar = () => {
               <img src={notifiedJarass} alt="" />
             )}
           </button>
-          <div className={showNotifications ? "Notification-div" : "Notification-div close"} ref={NotificationRef}>
+          <div
+            className={
+              showNotifications ? "Notification-div" : "Notification-div close"
+            }
+            ref={NotificationRef}
+          >
             <Notification
               setShowNotifications={setShowNotifications}
               notificationData={notificationData}

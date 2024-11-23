@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import LoadingPage from "../../loadingPage/loadingPage";
 import axios from "axios";
 import "./room.css";
@@ -32,6 +38,9 @@ let ball = {
 
 let WSocket;
 
+const host = process.env.REACT_APP_API_HOSTNAME;
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const Room = ({ data, mode }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -41,16 +50,19 @@ const Room = ({ data, mode }) => {
   const [countDown, setCountDown] = useState(0);
   const [pause, setPause] = useState(false);
   const [winner, setWinner] = useState(null);
+
   const animationRef = useRef(null);
+
   const navigate = useNavigate();
+  const stableNavigate = useMemo(
+    () =>
+      (...args) =>
+        navigate(...args),
+    [navigate]
+  );
 
   /* setting the bot mode, i used state for that */
-  const [botMode, setBotMode] = useState(null);
   const [gamemode, setGamemode] = useState(null);
-  const [roomName, setRoomName] = useState(null);
-
-  const host = process.env.REACT_APP_API_HOSTNAME;
-  const apiUrl = process.env.REACT_APP_API_URL;
 
   const drawRoundedRect = (ctx, x, y, width, height, radius, opacity) => {
     const scaleX = Board.width / boardWidth;
@@ -120,7 +132,7 @@ const Room = ({ data, mode }) => {
       );
     }
   }
-  
+
   function reset_all() {
     WSocket?.send(
       JSON.stringify({
@@ -155,13 +167,16 @@ const Room = ({ data, mode }) => {
     );
   }
 
-  function pauseGame(e) {
-    if (e.key === " " && !winner) {
-      handlePause();
-    }
-  }
+  const pauseGame = useCallback(
+    (e) => {
+      if (e.key === " " && !winner) {
+        handlePause();
+      }
+    },
+    [winner]
+  );
 
-  function update() {
+  const update = useCallback(() => {
     if (pause === false) animationRef.current = requestAnimationFrame(update);
     else cancelAnimationFrame(animationRef.current);
     if (!Context) return;
@@ -197,7 +212,7 @@ const Room = ({ data, mode }) => {
       10,
       1
     );
-  }
+  }, [pause]);
 
   function canvasResize() {
     Board = document.getElementById("Rcanvas");
@@ -236,25 +251,21 @@ const Room = ({ data, mode }) => {
     }
   };
 
-  function getWSUrl() {
-    if (gamemode === "Remote")
-      return `ws://${host}:8000/ws/game/Remote/${userData.id}`;
-    else if (gamemode === "bot")
-      return `ws://${host}:8000/ws/game/bot/${data?.botmode}/${userData.id}`;
-    else if (gamemode === "friends")
-      return `ws://${host}:8000/ws/game/friends/${data.room}/${userData.id}`;
-    return null;
-  }
-
   useEffect(() => {
+    function getWSUrl() {
+      if (gamemode === "Remote")
+        return `ws://${host}:8000/ws/game/Remote/${userData?.["id"]}`;
+      else if (gamemode === "bot")
+        return `ws://${host}:8000/ws/game/bot/${data?.["botmode"]}/${userData?.["id"]}`;
+      else if (gamemode === "friends")
+        return `ws://${host}:8000/ws/game/friends/${data?.["room"]}/${userData?.["id"]}`;
+      return null;
+    }
+
     if (!userData) return;
     const url = getWSUrl();
     if (url) {
       WSocket = new WebSocket(url);
-
-      WSocket.onopen = () => {
-        console.log("WebSocket connection established");
-      };
 
       function compaireObjects(a, b) {
         if (
@@ -288,13 +299,16 @@ const Room = ({ data, mode }) => {
           }
           return obj;
         });
-        setWinner(() => {
-          return tmp?.winner;
-        });
+        if (tmp?.winner !== null)
+          {
+            setWinner(() => {
+              return tmp?.winner;
+            });
+          }
         if (tmp?.stat === "close") {
           setClose(true);
           setTimeout(() => {
-            navigate(-1);
+            stableNavigate(-1);
           }, 1000);
         }
         tmp?.stat === "countdown"
@@ -302,19 +316,11 @@ const Room = ({ data, mode }) => {
           : setCountDown(() => 0);
       };
 
-      WSocket.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-
-      WSocket.onclose = (event) => {
-        console.log("WebSocket connection closed:", event);
-      };
-
       return () => {
         WSocket.close();
       };
     }
-  }, [userData, navigate, botMode]);
+  }, [userData, stableNavigate, data, gamemode]);
 
   useEffect(() => {
     /**************************************/
@@ -323,11 +329,6 @@ const Room = ({ data, mode }) => {
 
     if (mode) setGamemode(mode);
 
-    if (data !== undefined) {
-      if (gamemode === "friends") {
-        setRoomName(data.room);
-      }
-    }
     const fetchUserData = async () => {
       try {
         const access = localStorage.getItem("access");
@@ -339,11 +340,11 @@ const Room = ({ data, mode }) => {
         });
         setUserData(response.data);
       } catch (error) {
-        handleFetchError(error);
+        handleFetchError(error, fetchUserData);
       }
     };
 
-    const handleFetchError = (error) => {
+    const handleFetchError = (error, retryFunction) => {
       if (error.response) {
         if (error.response.status === 401) {
           const refresh = localStorage.getItem("refresh");
@@ -354,26 +355,18 @@ const Room = ({ data, mode }) => {
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
-                fetchUserData(); // Retry fetching user data
+                retryFunction(); // Retry fetching user data
               })
               .catch((refreshError) => {
                 localStorage.removeItem("access");
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
+                stableNavigate("/");
                 console.log({
                   general: "Session expired. Please log in again.",
                 });
-                // refreh the page
-                window.location.reload();
-                navigate("/");
               });
-          } else {
-            console.log({
-              general: "No refresh token available. Please log in.",
-            });
           }
-        } else {
-          console.log({ general: "Error fetching data. Please try again." });
         }
       } else {
         console.log({
@@ -381,9 +374,8 @@ const Room = ({ data, mode }) => {
         });
       }
     };
-
-    fetchUserData();
-  }, []);
+    if (!userData) fetchUserData();
+  }, [stableNavigate, mode, userData]);
 
   useEffect(() => {
     if (!pause) {
@@ -402,9 +394,9 @@ const Room = ({ data, mode }) => {
       window.removeEventListener("keydown", movePlayer);
       window.removeEventListener("keyup", stopPlayer);
     };
-  }, [pause, winner, countDown]);
+  }, [pause, winner, countDown, update]);
 
-  const gameRender = () => {
+  const gameRender = useCallback(() => {
     if (canvas) {
       canvasResize();
       Context = Board.getContext("2d");
@@ -417,7 +409,7 @@ const Room = ({ data, mode }) => {
       window.addEventListener("keydown", pauseGame);
       animationRef.current = requestAnimationFrame(update);
     }
-  };
+  }, [canvas, update, pauseGame]);
 
   useEffect(() => {
     gameRender();
@@ -427,7 +419,7 @@ const Room = ({ data, mode }) => {
       window.removeEventListener("keyup", stopPlayer);
       window.removeEventListener("keydown", pauseGame);
     };
-  }, [canvas]);
+  }, [canvas, gameRender, pauseGame]);
 
   function image_renaming(name) {
     return `${apiUrl}` + name;
@@ -476,10 +468,10 @@ const Room = ({ data, mode }) => {
             <p>{countDown}</p>
           </div>
         )}
-        {winner && (
+        {winner !== null && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>
-              <p>Winner is {winner.username}</p>
+              <p>You {winner === userData.id ? "Won" : "Lose"}</p>
             </div>
           </div>
         )}
@@ -508,7 +500,7 @@ const Room = ({ data, mode }) => {
             <img src={ima} alt="" className="pauseIcons" />
           </button>
         )}
-        {pause && gamemode !== "Remote" && (
+        {pause && gamemode !== "Remote" && gamemode !== "friends" && (
           <button
             className="pause"
             title="pause"

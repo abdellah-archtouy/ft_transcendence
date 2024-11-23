@@ -27,10 +27,10 @@ async def update(room):
             "velocityY", speed * math.sin(((3 * math.pi) / 4) * 0.4 * x)
         )
         resetballPosition(room.ball)
-        if room.user1_goals == 6 or room.user2_goals == 6:
+        if room.user1_goals == 1 or room.user2_goals == 1:
             room.room_pause()
-            room.winner = room.uid2 if room.user2_goals == 6 else room.uid1
-            room.loser = room.uid1 if room.user2_goals == 6 else room.uid2
+            room.winner = room.uid2 if room.user2_goals == 1 else room.uid1
+            room.loser = room.uid1 if room.user2_goals == 1 else room.uid2
 
 
 def collision(a, b):
@@ -116,7 +116,7 @@ async def start(room):
         print(f"start: {e}")
 
 
-def room_naming(rooms : Room, start_with : str):
+async def room_naming(rooms : Room, start_with : str):
     filtered_keys = [key for key in rooms.keys() if key.startswith(start_with) and key[5:].isdigit()]
     keys = sorted(filtered_keys)
     loop_list = [int(key[key.find("_") + 1 :]) for key in keys]
@@ -130,7 +130,7 @@ def room_naming(rooms : Room, start_with : str):
     return missed
 
 
-def join_remote_room(instance, rooms):
+async def join_remote_room(instance, rooms):
     if instance.gamemode == "Remote":
         for room_name, room in rooms.items():
             if room.type == "Remote" and room.howManyUser() == 1:
@@ -159,18 +159,18 @@ def join_remote_room(instance, rooms):
                     room.is_full = True
                     return room_name
 
-    new_room_name = f"room_{room_naming(rooms, 'room_')}"
-    new_room = Room()
+    new_room_name = f"room_{await room_naming(rooms, 'room_')}"
+
+    new_room = Room(instance.user_id, 0 if instance.gamemode == "bot" else None)
     new_room.type = instance.gamemode  # here i assign the room mode
-    new_room.assign_user(instance.user_id)
     new_room.channel_names[instance.user_id] = [instance.channel_name]
     rooms[new_room_name] = new_room
     return new_room_name
 
 
-def join_local_room(instance, rooms):
+async def join_local_room(instance, rooms):
     try:
-        new_room_name = f"Local_{room_naming(rooms, 'Local_')}"
+        new_room_name = f"Local_{await room_naming(rooms, 'Local_')}"
         new_room = Room()
         new_room.type = instance.gamemode  # here i assign the room mode
         new_room.is_full = True
@@ -180,9 +180,9 @@ def join_local_room(instance, rooms):
         print(f"Error in join Local or Bot: {e}")
 
 
-def join_room(gameconsumer, rooms):
+async def join_room(gameconsumer, rooms):
     if gameconsumer.gamemode == "Local":
-        room_name = join_local_room(gameconsumer, rooms)
+        room_name = await join_local_room(gameconsumer, rooms)
     else:
-        room_name = join_remote_room(gameconsumer, rooms)
+        room_name = await join_remote_room(gameconsumer, rooms)
     return room_name

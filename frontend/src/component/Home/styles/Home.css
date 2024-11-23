@@ -45,7 +45,7 @@ svg {
   flex-direction: column;
   align-items: center;
   gap: 3em;
-  transition: all 0.3s ease;
+  transition: all 0.8s ease;
 }
 
 
@@ -64,7 +64,7 @@ svg {
   height: 500px;
   width: 50vw;
   flex-shrink: 0;
-  transition: all 0.3s ease;
+  transition: all 0.8s ease;
 }
 
 .home-div-welcome-text {
@@ -131,7 +131,7 @@ svg {
   flex-direction: row;
   height: 500px;
   width: 50vw;
-  transition: all 0.3s ease;
+  transition: all 0.8s ease;
 }
 
 .last-matches {

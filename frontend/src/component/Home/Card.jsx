@@ -4,6 +4,7 @@ function Card({ friends, handleAddFriend}) {
   const nameRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL
+  const [AlreadyFriends, setAlreadyFriends] = useState(false);
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -21,6 +22,16 @@ function Card({ friends, handleAddFriend}) {
       window.removeEventListener("resize", checkOverflow);
     };
   }, []);
+
+  const handleAddFriendClick = async () => {
+    try {
+      await handleAddFriend(friends.id);
+    } catch (error) {
+      if (error.response?.data?.message === "Already friends") {
+        setAlreadyFriends(true); // Update local state for "Already friends"
+      }
+    }
+  };
 
   const avatarUrl = `${apiUrl}${friends.avatar}`;
 
@@ -41,10 +52,15 @@ function Card({ friends, handleAddFriend}) {
             <p className="added" disabled>
               Friend Added
             </p>
-          ) : (
+          ) : AlreadyFriends ? (
+            <p className="added" disabled>
+              Already Friends
+            </p>
+          )
+          : (
             <button
               className="card-btn"
-              onClick={() => handleAddFriend(friends.id)}
+              onClick={() => handleAddFriendClick()}
             >
               Add Friend
             </button>

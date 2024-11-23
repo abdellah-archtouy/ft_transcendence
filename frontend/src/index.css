@@ -31,6 +31,7 @@ body {
   align-items: center;
   flex-direction: column;
   font-family: 'URW Geometric';
+  position: relative;
   font-weight: 600;
   color: #B2B2B2;
 }
@@ -41,6 +42,44 @@ body {
   flex: 1; /* Ensures it takes up the remaining height */
   width: 100%;
   position: relative;
+}
+
+.main:has(.page-404) {
+  position: static;
+}
+
+.page-404 {
+  background-color: black;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 10000;
+}
+
+.page-404-container {
+  line-height: 48px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1.75);
+
+}
+
+.page-404-container-h1 {
+  display: inline-block;
+  margin: 0 20px 0 0;
+  padding-right: 23px;
+  font-size: 24px;
+  font-weight: 500;
+  vertical-align: top;
+  display: flex;
+  border-right: solid grey;
+  
 }
 
 .fixed-height {

@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import LoadingPage from "../../loadingPage/loadingPage";
 import "./room.css";
-import { useNavigate } from "react-router-dom";
 
-let ima = "/pause.svg";
 let Board;
 let boardWidth = 1000;
 let boardHeight = 550;
@@ -31,28 +29,22 @@ let ball = {
 };
 
 let WSocket;
-let gamemode = null;
 let modedata = null;
 
-const TournamentRoom = ({ theWinner, data, mode }) => {
+const host = process.env.REACT_APP_API_HOSTNAME;
+const apiUrl = process.env.REACT_APP_API_URL;
+
+const LocalRoom = ({ theWinner, data, mode }) => {
   const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null);
   const [ima, setIma] = useState("/pause.svg");
   const [roomData, setRoomData] = useState(null);
   const [canvas, setCanvas] = useState(false);
   const [countDown, setCountDown] = useState(0);
-  const [vsDisplay, setVsDisplay] = useState([]);
   const [pause, setPause] = useState(false);
   const [winner, setWinner] = useState(null);
   const animationRef = useRef(null);
-  const navigate = useNavigate();
-
-  if (mode) gamemode = mode;
 
   if (data) modedata = data;
-
-  const host = process.env.REACT_APP_API_HOSTNAME;
-  const apiUrl = process.env.REACT_APP_API_URL;
 
   const drawRoundedRect = (ctx, x, y, width, height, radius, opacity) => {
     const scaleX = Board.width / boardWidth;
@@ -137,13 +129,16 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
     );
   }
 
-  function pauseGame(e) {
-    if (e.key === " " && !winner) {
-      handlePause();
-    }
-  }
+  const pauseGame = useCallback(
+    (e) => {
+      if (e.key === " " && !winner) {
+        handlePause();
+      }
+    },
+    [winner]
+  );
 
-  function update() {
+  const update = useCallback(() => {
     if (pause === false) animationRef.current = requestAnimationFrame(update);
     else cancelAnimationFrame(animationRef.current);
     if (!Context) return;
@@ -179,7 +174,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
       10,
       1
     );
-  }
+  }, [pause]);
 
   function canvasResize() {
     Board = document.getElementById("Rcanvas");
@@ -187,23 +182,18 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
     Board.width = boardWidth;
   }
 
-  function getWSUrl() {
-    if (modedata.length === 2) {
-      let username1 = modedata[0];
-      let username2 = modedata[1];
-      return `ws://${host}:8000/ws/game/Local/${username1}/${username2}`;
-    } else return null;
-  }
-
   useEffect(() => {
+    function getWSUrl() {
+      if (modedata?.length === 2) {
+        let username1 = modedata[0];
+        let username2 = modedata[1];
+        return `ws://${host}:8000/ws/game/Local/${username1}/${username2}`;
+      } else return null;
+    }
+
     const url = getWSUrl();
     if (!url) return;
     WSocket = new WebSocket(url);
-    console.log(WSocket);
-
-    WSocket.onopen = () => {
-      console.log("WebSocket connection established");
-    };
 
     function compaireObjects(a, b) {
       if (
@@ -239,23 +229,16 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
         return obj;
       });
       if (mode === "TournamentLocal" && tmp?.winner) theWinner(tmp?.winner);
-      setWinner(() => {
-        return tmp?.winner;
-      });
-    };
-
-    WSocket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    WSocket.onclose = (event) => {
-      console.log("WebSocket connection closed:", event);
+      if (tmp?.winner !== null)
+        setWinner(() => {
+          return tmp?.winner;
+        });
     };
 
     return () => {
-      WSocket.close();
+      if (WSocket) WSocket.close();
     };
-  }, [userData, navigate]);
+  }, [mode, theWinner]);
 
   useEffect(() => {
     if (!pause) {
@@ -274,9 +257,9 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
       window.removeEventListener("keydown", movePlayer);
       window.removeEventListener("keyup", stopPlayer);
     };
-  }, [pause, winner]);
+  }, [pause, winner, update]);
 
-  const gameRender = () => {
+  const gameRender = useCallback(() => {
     if (canvas) {
       canvasResize();
       Context = Board.getContext("2d");
@@ -289,7 +272,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
       window.addEventListener("keydown", pauseGame);
       animationRef.current = requestAnimationFrame(update);
     }
-  };
+  }, [canvas, update, pauseGame]);
 
   useEffect(() => {
     gameRender();
@@ -299,7 +282,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
       window.removeEventListener("keyup", stopPlayer);
       window.removeEventListener("keydown", pauseGame);
     };
-  }, [canvas]);
+  }, [canvas, pauseGame, gameRender]);
 
   function image_renaming(name) {
     return `${apiUrl}` + name;
@@ -310,12 +293,9 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
       if (countDown > 0) setCountDown((e) => e - 1);
     }, 1000);
   }, [countDown]);
-
   if (!roomData) return <LoadingPage />;
   return (
-    <div
-      className={!winner ? "RoomContainer" : "RoomContainer fade-out"}
-    >
+    <div className={winner && mode !== "Local" ? "RoomContainer fade-out" : "RoomContainer"}>
       <div className="RoomFirst">
         <div className="room-userinfo">
           <div className="image">
@@ -348,7 +328,7 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
         {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>
-              <p>Winner is {winner.username}</p>
+              <p>Winner is {winner?.username}</p>
             </div>
           </div>
         )}
@@ -393,4 +373,4 @@ const TournamentRoom = ({ theWinner, data, mode }) => {
   );
 };
 
-export default TournamentRoom;
+export default LocalRoom;

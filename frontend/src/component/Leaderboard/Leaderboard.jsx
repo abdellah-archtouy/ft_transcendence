@@ -22,28 +22,27 @@ const Leaderboard = () => {
     /*     hna  remote game katbda        */
     /**************************************/
 
-    const handleFetchError = (error) => {
+    const handleFetchError = (error, retryFunction) => {
       if (error.response) {
         if (error.response.status === 401) {
           const refresh = localStorage.getItem("refresh");
 
           if (refresh) {
             axios
-              .post(`http://${apiUrl}:8000/api/token/refresh/`, { refresh })
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
-                fetchUserData();
+                retryFunction() // Retry fetching user data
               })
               .catch((refreshError) => {
                 localStorage.removeItem("access");
                 localStorage.removeItem("refresh");
                 console.log("you have captured the error");
+                navigate("/");
                 console.log({
                   general: "Session expired. Please log in again.",
                 });
-                window.location.reload();
-                navigate("/");
               });
           } else {
             console.log({
@@ -75,7 +74,7 @@ const Leaderboard = () => {
         setData(response.data);
         setRows(response.data);
       } catch (error) {
-        handleFetchError(error);
+        handleFetchError(error, fetchUserData);
       }
     };
 

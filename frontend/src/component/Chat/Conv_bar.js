@@ -13,7 +13,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
   const [conv, setConv] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [errors, setErrors] = useState({});
+  const [setErrors] = useState({});
   const [on, setOn] = useState(true);
   const [search, setSearch] = useState('');
   const [tmp, setTmp] = useState([]);
@@ -41,7 +41,6 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
       }
     } catch (error) {
       setError(error);
-      console.log(error);
       handleFetchError(error, () => fetchData());
       setConv([]);
     } finally {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./tournamentLocal.css";
 import LocalRoom from "../../rooms/localRoom";
 import { useError } from "../../../../App";
@@ -47,7 +47,6 @@ const TournamentLocal = () => {
   };
 
   useEffect(() => {
-    console.log(matchIndex)
     if (theWinner.length === 2 && isFirstRound) {
       const finalPair = [[theWinner?.[0]?.username, theWinner?.[1]?.username]];
       setTimeout(() => {
@@ -59,16 +58,16 @@ const TournamentLocal = () => {
     } else if (theWinner.length === 1 && !isFirstRound) {
       setTournamentComplete(true);
     }
-  }, [theWinner]);
+  }, [theWinner, isFirstRound]);
 
-  function handleMatchWinner(winner) {
+  const handleMatchWinner = useCallback((winner) => {
     setTheWinner((prevWinners) => [...prevWinners, winner]);
     if (isFirstRound)
-      if (matchIndex < pair.length - 1)
+      if (matchIndex < pair?.length - 1)
         setTimeout(() => {
           setMatchIndex((prevIndex) => prevIndex + 1);
         }, 3000);
-  }
+  }, [isFirstRound, matchIndex, pair])
 
   if (tournamentComplete) {
     return (

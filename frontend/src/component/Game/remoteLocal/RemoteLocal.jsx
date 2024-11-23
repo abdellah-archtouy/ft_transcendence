@@ -16,7 +16,6 @@ const RemoteLocal = ({header, links}) => {
       </h1>
       <div className="FriendContainer">
         <div className="friend-game-select">
-          {/*style={{width:"fit-content", height:"fit-content", border:"solid"}}>*/}
           <div
             className="PlayLocal"
             onClick={() => {

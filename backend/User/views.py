@@ -424,9 +424,6 @@ def add_friend(request):
         # Check if friend exists
         friend = User.objects.get(id=friend_id)
 
-        # posting in the Notification table
-        create_notification(friend, current_user, "FRIEND_REQUEST", link=None)
-
         # Check if friendship already exists
         if (
             Friend.objects.filter(user1=current_user, user2=friend).exists()
@@ -435,6 +432,9 @@ def add_friend(request):
             return Response(
                 {"message": "Already friends"}, status=status.HTTP_400_BAD_REQUEST
             )
+        
+        # posting in the Notification table
+        create_notification(friend, current_user, "FRIEND_REQUEST", link=None)
 
         # Create new friendship
         Friend.objects.create(user1=current_user, user2=friend, request=True)

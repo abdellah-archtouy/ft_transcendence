@@ -41,7 +41,8 @@ class managed_room_consumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         # Leave the group
         await pre_room_manager.remove_user_room(self)
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        if self.room_group_name and self.channel_name:
+            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps(event))

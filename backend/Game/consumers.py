@@ -89,7 +89,7 @@ class RoomManager:
     async def join_or_create_room(self, ConsumerObj):
         lock = await self.get_lock()
         async with lock:
-            room_name = join_room(ConsumerObj, self.rooms)
+            room_name = await join_room(ConsumerObj, self.rooms)
             if ConsumerObj.gamemode == "bot":
                 bot_room_infos_set(self.rooms[room_name], ConsumerObj)
             return room_name
@@ -279,6 +279,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.user_id = int(self.scope["url_route"]["kwargs"]["uid"])
             self.connection_type = None
             self.channel_name = self.channel_name
+            self.room_group_name = None
             self.room_group_name = await room_manager.join_or_create_room(self)
             room_manager.add_channel_name(self.channel_name, self.user_id)
             await room_manager.start_periodic_updates(self)
@@ -293,7 +294,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         await room_manager.remove_user_room(self)
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        if self.room_group_name and self.channel_name:
+            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)

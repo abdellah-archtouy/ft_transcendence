@@ -34,7 +34,8 @@ class tournament_consumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave the group
-        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        if self.group_name and self.channel_name:
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def send_tournament(self, event):
         # Send the notification to WebSocket

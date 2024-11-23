@@ -48,7 +48,7 @@ const SearchBar = ({ onStateChange }) => {
   }, [searchTerm, users]);
 
   useEffect(() => {
-    const handleFetchError = (error) => {
+    const handleFetchError = (error, retryFunction) => {
       if (error.response) {
         if (error.response.status === 401) {
           const refresh = localStorage.getItem("refresh");
@@ -59,7 +59,7 @@ const SearchBar = ({ onStateChange }) => {
               .then((refreshResponse) => {
                 const { access: newAccess } = refreshResponse.data;
                 localStorage.setItem("access", newAccess);
-                fetchUserData(); // Retry fetching user data
+                retryFunction() // Retry fetching user data
               })
               .catch((refreshError) => {
                 localStorage.removeItem("access");
@@ -99,9 +99,10 @@ const SearchBar = ({ onStateChange }) => {
         );
         setUsers(response.data);
       } catch (error) {
-        handleFetchError(error);
+        handleFetchError(error, fetchUserData);
       }
     };
+
     inputRef.current.focus();
     fetchUserData();
     document.addEventListener("keyup", keypress);

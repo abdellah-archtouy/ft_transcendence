@@ -88,7 +88,6 @@ const Msg = ({
       } catch (error) {
         // setError(error);
         handleFetchError(error, () => fetchData());
-        console.log(error);
         setData([]);
       } finally {
         setLoading(false);
@@ -154,9 +153,7 @@ const Msg = ({
         }
       );
       setRomeName(response.data);
-      console.log(response.data);
     } catch (error) {
-      // handleFetchError(error, () => postnewroom(friendId));
     } finally {
       setLoading(false);
     }

@@ -88,6 +88,7 @@
     border-radius: 15px;
     transition: all 0.4s ease-in;
     border: #5d5d5d00 solid 1px;
+    position: relative;
 }
 
 .notification-item:hover {
@@ -158,12 +159,11 @@
 /* accept deny buttons  */
 
 .notification-buttons {
-    gap: 10px;
     display: flex;
     align-items: center;
+    gap: 10px;
     justify-content: center;
     flex-direction: column;
-
 }
 
 .accept-deny {
@@ -180,6 +180,7 @@
     height: 18px;
     fill: #B2B2B2;
     transition: fill 0.5s;
+    
 }
 
 .accept-deny:hover .accept-deny-icon {
@@ -192,5 +193,9 @@
         border: none;
         border-radius: 0;
         background-color: hsla(0, 0%, 0%, 0.8);
+    }
+    .notification-buttons {
+        position: absolute;
+        right: 20px;
     }
 }

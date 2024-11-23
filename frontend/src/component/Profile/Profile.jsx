@@ -53,7 +53,7 @@ const Profile = () => {
       } catch (error) {
         console.error('Error fetching user data:', error);
         setErrors(errors); 
-        handleFetchError(error);
+        handleFetchError(error, fetchData);
       } finally {
         setLoading(false);
       }
@@ -79,45 +79,45 @@ const Profile = () => {
       } catch (error) {
         console.error('Error fetching user data:', error);
         setErrors(errors); 
-        handleFetchError(error);
+        handleFetchError(error, fetcwin_loss);
       } finally {
         setLoading(false);
       }
     };
 
     
-    const handleFetchError = (error) => {
+    const handleFetchError = (error, retryFunction) => {
       if (error.response) {
         if (error.response.status === 401) {
           const refresh = localStorage.getItem("refresh");
+
           if (refresh) {
             axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
-            .then((refreshResponse) => {
-              const { access: newAccess } = refreshResponse.data;
-              localStorage.setItem("access", newAccess);
-              fetchData(); // Retry fetching user data
-              fetcwin_loss();
-            })
-            .catch((refreshError) => {
-              localStorage.removeItem("access");
-              localStorage.removeItem("refresh");
-              console.log("you have captured the error");
-              setErrors({ general: "Session expired. Please log in again." });
-              // refreh the page
-              window.location.reload();
-              navigate("/");
-            });
+              .post(`${apiUrl}/api/token/refresh/`, { refresh })
+              .then((refreshResponse) => {
+                const { access: newAccess } = refreshResponse.data;
+                localStorage.setItem("access", newAccess);
+                retryFunction() // Retry fetching user data
+              })
+              .catch((refreshError) => {
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
+                console.log("you have captured the error");
+                navigate("/");
+                console.log({
+                  general: "Session expired. Please log in again.",
+                });
+              });
           } else {
-            setErrors({
+            console.log({
               general: "No refresh token available. Please log in.",
             });
           }
         } else {
-          setErrors({ general: "Error fetching data. Please try again." });
+          console.log({ general: "Error fetching data. Please try again." });
         }
       } else {
-        setErrors({
+        console.log({
           general: "An unexpected error occurred. Please try again.",
         });
       }
