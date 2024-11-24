@@ -27,10 +27,10 @@ async def update(room):
             "velocityY", speed * math.sin(((3 * math.pi) / 4) * 0.4 * x)
         )
         resetballPosition(room.ball)
-        if room.user1_goals == 1 or room.user2_goals == 1:
+        if room.user1_goals == 6 or room.user2_goals == 6:
             room.room_pause()
-            room.winner = room.uid2 if room.user2_goals == 1 else room.uid1
-            room.loser = room.uid1 if room.user2_goals == 1 else room.uid2
+            room.winner = room.uid2 if room.user2_goals == 6 else room.uid1
+            room.loser = room.uid1 if room.user2_goals == 6 else room.uid2
 
 
 def collision(a, b):

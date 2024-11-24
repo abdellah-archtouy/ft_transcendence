@@ -9,8 +9,6 @@ class TournamentSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "winner",
-            "users",
             "created_at",
             "end",
-            "users_num"
         ]

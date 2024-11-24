@@ -24,10 +24,10 @@ class Tournament():
         self.round_winners = []
         self.tournament_task = None
     
-    def delete_tour_rooms(self):
-        matching_keys = [key for key in pre_room_manager.rooms.keys() if key.startswith(f"{self.name}_")]
+    def delete_our_rooms(self):
+        matching_keys = [key for key in pre_room_manager.rooms.keys() if key.startswith(f"tournament_")]
         for key in matching_keys:
-            del pre_room_manager[key]
+            del pre_room_manager.rooms[key]
 
     def kick_user(self, user):
         if user in self.users and not self.is_full:
@@ -65,7 +65,6 @@ class Tournament():
                     self.user_list["winner"] = avatars
                     self.winner = self.round_winners[0]  # Tournament winner found
                     self.end = datetime.now()
-                    print(f"Tournament winner is {self.winner}")
                     break
                 else:
                     await self.setup_next_round()
@@ -105,7 +104,7 @@ class Tournament():
             id1 = int(self.round_winners[i])
             id2 = int(self.round_winners[i + 1])
             room_name = f"{self.name}_{id1}_{id2}"
-            match = pre_room_manager.create_room(room_name, f"{self.name}_", id1, id2)
+            match = pre_room_manager.create_room(room_name, "tournament", id1, id2)
             self.current_round.append(match)
         self.rounds.append(self.current_round)
     
@@ -115,7 +114,7 @@ class Tournament():
                 id1 = int(self.users[i])
                 id2 = int(self.users[i + 1])
                 room_name = f"{self.name}_{id1}_{id2}"
-                match = pre_room_manager.create_room(room_name, f"{self.name}_", id1, id2)
+                match = pre_room_manager.create_room(room_name, "tournament", id1, id2)
                 self.current_round.append(match)
             self.rounds.append(self.current_round)
         except Exception as e:

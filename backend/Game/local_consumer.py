@@ -60,8 +60,8 @@ class LocalRoomManager():
                 self.user1 = self.create_local_info(username1, room, LocalConsumer)
                 self.user2 = self.create_local_info(username2, room, LocalConsumer)
                 await start(room)
-                # if room.user1_goals == 6 or room.user2_goals == 6:
-                #     room.winner = LocalConsumer.username2 if room.user2_goals == 6 else LocalConsumer.username1
+                if room.user1_goals == 6 or room.user2_goals == 6:
+                    room.winner = LocalConsumer.username2 if room.user2_goals == 6 else LocalConsumer.username1
                 await LocalConsumer.channel_layer.group_send(
                     LocalConsumer.room_group_name,
                     {

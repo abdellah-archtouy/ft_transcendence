@@ -84,6 +84,9 @@
 .game_Tournament img{
     width: auto;
     height: 100%;
+    right: 0;
+    bottom: 0;
+    position: absolute;
 }
 
 .game_first {
@@ -113,9 +116,11 @@
 }
 
 .game_friend img{
-    border-radius: 30px;
     width: auto;
     height: 100%;
+    right: 0;
+    bottom: -2%;
+    position: absolute;
 }
 
 .game_bot {
@@ -132,8 +137,11 @@
 }
 
 .game_bot img{
-    width: auto;
-    height: 100%;
+    width: 100%;
+    height: auto;
+    right: 0;
+    bottom: 0;
+    position: absolute;
 }
 
 .game{

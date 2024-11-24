@@ -252,6 +252,8 @@
     mask-image: unset;
 }
 
+
+
 @media (max-height: 49vw) and (max-width: 600px) {
 
     .AddTournament-formatContainer {
@@ -315,4 +317,29 @@
         width: 100%;
         text-shadow: 0 0 6px #9E857F;
     }
+}
+
+.tournament-complete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.winner-avatar {
+    height: 100px;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.winner-avatar::before {
+    border: solid;
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    z-index: -1;
+    background-image: var(--bgurl);
+    transform: rotate(45deg);
 }

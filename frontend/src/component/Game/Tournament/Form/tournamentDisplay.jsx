@@ -1,7 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import { useState } from "react";
 import "./tournamentDisplay.css";
-const TournamentDisplay = ({ setCancel, players }) => {
+
+const TournamentDisplay = memo(({ setCancel, players }) => {
   const [round1] = useState(() => {
     const filledArray = Array(4).fill(null);
     if (players?.round1 && Array.isArray(players?.round1))
@@ -118,6 +119,6 @@ const TournamentDisplay = ({ setCancel, players }) => {
       </div>
     </div>
   );
-};
+});
 
 export default TournamentDisplay;

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import TournamentVector from "../../../icons/Vector1.svg";
-import BotVector from "../../../icons/Vector2.svg";
-import FriendVector from "../../../icons/Vector.svg";
+// import TournamentVector from "../../../icons/Vector1.svg";
+import TournamentVector from "../../../icons/TournamentVector.svg";
+// import BotVector from "../../../icons/Vector2.svg";
+import BotVector from "../../../icons/BotVector.svg";
+// import FriendVector from "../../../icons/Vector.svg";
+import FriendVector from "../../../icons/FriendVector.svg";
 import "./Game.css";
 
 const Game = () => {
@@ -73,7 +76,7 @@ const Game = () => {
             onMouseEnter={hoverPlay}
             onClick={(event) => handleClick(event, '/game/friend')}
           >
-            <h1>Friends</h1>
+            <h1>1 vs 1</h1>
             <img src={FriendVector} alt="" />
           </Link>
         </div>

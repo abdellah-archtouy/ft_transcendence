@@ -471,7 +471,7 @@ const Room = ({ data, mode }) => {
         {winner !== null && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>
-              <p>You {winner === userData.id ? "Won" : "Lose"}</p>
+              <p>You {winner === userData.id ? "Win" : "Lose"}</p>
             </div>
           </div>
         )}

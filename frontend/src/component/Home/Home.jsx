@@ -102,8 +102,10 @@ const Home = () => {
             window.location.reload();
             navigate("/");
           });
-      } else {
-        setErrors({ general: "No refresh token available. Please log in." });
+        } else {
+          setErrors({ general: "No refresh token available. Please log in." });
+          window.location.reload();
+          navigate("/");
       }
     } else {
       setErrors({ general: "An unexpected error occurred. Please try again." });

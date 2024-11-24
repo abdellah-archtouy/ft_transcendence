@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import asyncio
 from .tournament import Tournament
+from .models import Tournaments
 from User.models import User
 from Game.room import Room
 from asgiref.sync import sync_to_async
@@ -38,8 +39,15 @@ class TournamentRoomManager():
             # Once we have a winner, handle tournament completion
             if tournament.winner:
                 await self.send_tournament_updates(obj, obj.tournament)
-                tournament.delete_tour_rooms()
-                # del self.tournaments[tournament.name]
+                tournament.delete_our_rooms() # => error kayn hna
+                tournament_obj = Tournaments(
+                    name=tournament.name,
+                    winner=await User.objects.aget(id=tournament.winner),
+                    created_at=tournament.created_at,
+                    end=tournament.end,
+                )
+                await tournament_obj.asave()
+                del self.tournaments[tournament.name]
         except Exception as e:
             print(f"Error monitoring tournament {tournament.name}: {e}")
 

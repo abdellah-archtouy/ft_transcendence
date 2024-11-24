@@ -328,7 +328,7 @@ const LocalRoom = ({ theWinner, data, mode }) => {
         {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>
-              <p>Winner is {winner?.username}</p>
+              <p>Winner is {winner}</p>
             </div>
           </div>
         )}

@@ -5,14 +5,14 @@ import { useError } from "../../../../App";
 
 const TournamentLocal = () => {
   const [addTournament, setAddTournament] = useState(false);
-  const [tournamentComplete, setTournamentComplete] = useState(false);
+  const [tournamentComplete, setTournamentComplete] = useState(true);
   const [tournament, setTournament] = useState(false);
   const [isFirstRound, setIsFirstRound] = useState(true);
   const [theWinner, setTheWinner] = useState([]);
   const [pair, setPair] = useState([]);
   const [matchIndex, setMatchIndex] = useState(0);
   const [players, setPlayers] = useState([null, null, null, null]);
-
+  
   const {setError} = useError()
 
   function handleSubmit(e) {
@@ -48,7 +48,7 @@ const TournamentLocal = () => {
 
   useEffect(() => {
     if (theWinner.length === 2 && isFirstRound) {
-      const finalPair = [[theWinner?.[0]?.username, theWinner?.[1]?.username]];
+      const finalPair = [[theWinner?.[0], theWinner?.[1]]];
       setTimeout(() => {
         setMatchIndex(0);
         setPair(finalPair);
@@ -73,7 +73,7 @@ const TournamentLocal = () => {
     return (
       <div className="tournament-complete">
         <h1>Tournament Complete!</h1>
-        <h2>Winner: {theWinner[0]?.usename}</h2>
+        <h2>Winner is: {theWinner[0]}</h2>
         <button
           onClick={() => {
             setAddTournament(false);

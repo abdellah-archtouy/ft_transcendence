@@ -13,13 +13,11 @@ from django.db.models import Count, F
 @permission_classes([IsAuthenticated])
 def top5(request):
     try:
-        # my_sorted_list = User.objects.all().filter(score__gt=0).order_by("-score")[:5].values("id", "avatar", "username", "rank", "score")
         my_sorted_list = (
             User.objects.annotate(
-                matches_won=Count("user1_game", distinct=True),
-                matches_lost=Count("user2_game", distinct=True),
-                total_matches=Count("user1_game", distinct=True)
-                + Count("user2_game", distinct=True),
+                matches_won=F("win"),
+                matches_lost=F("lose"),
+                total_matches=F("win") + F("lose"),
             )
             .order_by("rank")[:5]
             .values(
@@ -52,14 +50,12 @@ def top5(request):
 @permission_classes([IsAuthenticated])
 def leaderboard(request):
     try:
-        # my_sorted_list = User.objects.all().filter(score__gt=0).order_by("-score")[:5].values("id", "avatar", "username", "rank", "score")
         user = request.user
         my_sorted_list = (
             User.objects.annotate(
-                matches_won=Count("user1_game", distinct=True),
-                matches_lost=Count("user2_game", distinct=True),
-                total_matches=Count("user1_game", distinct=True)
-                + Count("user2_game", distinct=True),
+                matches_won=F("win"),
+                matches_lost=F("lose"),
+                total_matches=F("win") + F("lose"),
             )
             .order_by("rank")
             .values(

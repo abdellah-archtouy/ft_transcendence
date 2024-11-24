@@ -237,7 +237,7 @@ class RoomManager:
             if room.winner and room.type != "tournament":
                 room.end = datetime.now()
                 await self.store_gamein_db(room)
-            else:
+            elif room.type != "tournament":
                 await self.check_time(ConsumerObj)
 
     async def store_gamein_db(self, room):

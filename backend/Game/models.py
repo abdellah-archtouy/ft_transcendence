@@ -18,10 +18,8 @@ class Game(models.Model):
         # Update the winner's score by adding the winner_score
         self.winner.score += (self.winner_score - self.loser_score) * 20
         self.winner.win += 1
+        self.loser.lose += 1
+        self.loser.save()
         self.winner.save()
         reset_ranks()
-
-    # def set_achievement(self):
-    #     # setting Downkeeper
-    #     get_all_matchs = self.winner.user1_game.loser_score
             
