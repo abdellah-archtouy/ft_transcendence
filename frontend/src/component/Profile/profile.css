@@ -186,6 +186,11 @@
     align-items: center;
 }
 
+.request{
+    background-color: transparent;
+    border: red solid;
+}
+
 .ach-info{
     position: relative;
     display: flex;
@@ -399,6 +404,12 @@ maestro#A32B2850; */
     background: #767373;
     border: red solid;
 }
+.add-friend-message .request{
+    border: #797979 solid;
+    color: #797979;
+    background-color: #79797940;
+}
+
 .add-friend-message button{
     all: unset;
     outline: none; 
@@ -456,11 +467,20 @@ maestro#A32B2850; */
 }
 
 @media screen and (max-width: 1024px){
+    .profile_user{
+        gap: 0;
+        margin: 0;
+    }
     .cover-profile{
-        width: 80%;
+        width: 100%;
+        max-width: 600px;
+        border-radius: clamp(0rem, 4.451vw - 0.974rem, 1.875rem) clamp(0rem, 4.451vw - 0.974rem, 1.875rem) 0 0;
+        height: clamp(9.375rem, 4.451vw + 8.401rem, 11.25rem);
     }
     .userinfo{
-        width: 80%;
+        border-radius:  0 0 30px 30px;
+        width: 100%;
+        max-width: 600px;
         padding-top: clamp(5rem, 11.869vw + 2.404rem, 10rem);
         height: fit-content;
     }
@@ -473,36 +493,18 @@ maestro#A32B2850; */
     }
 
     .userinfo::before {
-        content: "";
-        position: absolute;
-        width: 30px;
-        height: 30px;
-        left: clamp(2.5rem, 33.828vw - 4.9rem, 16.75rem);
-        border-radius: 0 30px 0 0;
-        box-shadow: 7px -7px 0 7px rgb(0, 0, 0);
-        top: -0px;
-        /* border: solid red; */
-        z-index: 1;
+        all: unset;
     }
     .userinfo::after {
-        content: "";
-        position: absolute;
-        width: 30px;
-        height: 30px;
-        right: clamp(2.5rem, 33.828vw - 4.9rem, 16.75rem);
-        border-radius: 30px 0 0 0;
-        box-shadow: -7px -7px 0 7px rgb(0, 0, 0);
-        top: -0px;
-        /* border: solid red; */
-        z-index: 1;
+        all: unset;
     }
     
     .avatar-profile{
         position: absolute;
         /* border: solid red; */
-        top: calc(255px - (clamp(8.75rem, 10.823vw + 8.074rem, 15rem) / 2));
-        width: clamp(8.75rem, 10.823vw + 8.074rem, 15rem);
-        height: clamp(8.75rem, 10.823vw + 8.074rem, 15rem);
+        top: calc(clamp(9.375rem, 4.451vw + 8.401rem, 11.25rem) - (clamp(6.25rem, 7.418vw + 4.627rem, 9.375rem) / 2));
+        width: clamp(6.25rem, 7.418vw + 4.627rem, 9.375rem);
+        height: clamp(6.25rem, 7.418vw + 4.627rem, 9.375rem);
         background: black;
         border-radius: 50%;
         /* top: clamp(10rem, -4.451vw + 10.974rem, 8.125rem); */
@@ -515,7 +517,7 @@ maestro#A32B2850; */
 
     .avatar-profile img{
         border: #636262 solid;
-        width: 80%;
+        width: 100%;
         height: auto;
         align-self: center;
         justify-self: center;
@@ -524,7 +526,9 @@ maestro#A32B2850; */
         object-fit: cover;
     }
     .analytics-achievment{
-        width: 80%;
+        margin-top: 10px;
+        width: 100%;
+        max-width: 600px;
         flex-direction: column;
         height: 720px;
     }

@@ -1,7 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 import json
-from .serializer import MessageSerializer , Conversation ,UserSerializer , ConvSerializer
-from Chat.models import Message , Conversation
+from .serializer import MessageSerializer , Conversation ,UserSerializer , ConvSerializer , BlockMuteSerializer
+from Chat.models import Message , Conversation , Block_mute
 from User.models import User
 from asgiref.sync import async_to_sync
 from django.core.serializers import serialize
@@ -175,7 +175,10 @@ class DataConsumer(WebsocketConsumer):
         user2 = User.objects.get(id=user2_id)
         user1 = User.objects.get(id=user_id)
         link = f"/chat?username={user1.username}&convid={convdata.data['id']}"
-        create_notification(user2, user1, "CHAT_MESSAGE", link=link)
+        muteins = Block_mute.objects.filter(user1=user2, user2=user1).first()
+        muteserialzer = BlockMuteSerializer(muteins)
+        if muteserialzer.data["mute"] == False:
+            create_notification(user2, user1, "CHAT_MESSAGE", link=link)
         conv_instances = Conversation.objects.filter(uid1=user_id) | Conversation.objects.filter(
         uid2=user_id
         )
