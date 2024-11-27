@@ -12,58 +12,6 @@ from django.conf import settings
 import jwt
 from Notifications.views import create_notification
 
-# class ChatConsumer(WebsocketConsumer):
-#     def connect(self):
-#         self.accept()
-
-#         self.room_name = self.scope['url_route']['kwargs']['conversation_id']
-#         self.room_group_name = f'chat_{self.room_name}'
-#         async_to_sync(self.channel_layer.group_add)(
-#             self.room_group_name,
-#             self.channel_name
-#         )
-
-#     def disconnect(self, close_code):
-#         pass
-
-#     def receive(self, text_data):
-#         text_data_json = json.loads(text_data)
-#         message = text_data_json['message']
-
-#         message_i = text_data_json.get('message', '')
-#         conversation_id = text_data_json.get('conversation', '')
-#         user_id = text_data_json.get('user', '')
-#         if isinstance(text_data_json, dict):
-#             msg = Message(conversation_id=conversation_id, user_id=user_id, message=message_i)
-#             msg.save()
-
-#             try:
-#                 with transaction.atomic():
-#                     conversation = Conversation.objects.filter(id=conversation_id).first()
-#                     if conversation:
-#                         conversation.last_message = message_i
-#                         conversation.last_message_time = datetime.datetime.now()
-#                         conversation.save()
-#                         print(f"Updated conversation last message: {conversation.last_message}")
-#                     else:
-#                         print(f"Conversation with id {conversation_id} not found")
-#             except Exception as e:
-#                 print(f"Error updating conversation: {e}")
-#         else:
-#             print("Received data is not a dictionary")
-#         async_to_sync(self.channel_layer.group_send)(
-#             self.room_group_name,
-#             {
-#                 'type': 'chat_message',
-#                 'message': text_data
-#             }
-#         )
-
-#     def chat_message(self, event):
-#         message = event['message']
-#         self.send(message)
-
-
 class AddConvConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
@@ -216,6 +164,7 @@ class DataConsumer(WebsocketConsumer):
                 "conv_username": conv["uid2_info"]["username"] if conv["uid1"] != user_id else conv["uid1_info"]["username"],
             }
             for conv in serializer2.data
+                if conv['last_message'] != ""
         ]
         async_to_sync(self.channel_layer.group_send)(
             f'chat_{user2.username}',

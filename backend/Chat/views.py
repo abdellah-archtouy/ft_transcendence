@@ -112,10 +112,6 @@ def getconvView(request, username):
         user = request.user
         user2 = User.objects.get(username=username)
 
-        # if user == user2:
-        #     print("Cannot create conversation with self")
-        #     return
-
         conv = Conversation.objects.filter(
             (Q(uid1=user.id) & Q(uid2=user2.id)) |
             (Q(uid1=user2.id) & Q(uid2=user.id))
@@ -124,14 +120,10 @@ def getconvView(request, username):
             serializer = ConvSerializer(conv)
             conv_data = serializer.data
         else:
-        # Create new conversation
-            print("conversation not found")
             conversation = Conversation(uid1=user, uid2=user2, last_message='')
             conversation.save()
             serializer = ConvSerializer(conversation)
             conv_data = serializer.data
-
-            # serializer = ConvSerializer(conv , many=False)
         return Response(conv_data)
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -176,8 +168,11 @@ def ConvView(request):
     if not conv_instances.exists():
         return Response([])
     serializer = ConvSerializer(conv_instances, many=True)
-    data_return = [
-        {
+    result = []
+    for conv in serializer.data:
+        if conv['uid1'] != user.id and conv["last_message"] == "":
+                 continue
+        data_return =  {
             "id": conv["id"],
             "uid1": conv["uid1"],
             "uid2": conv["uid2"],
@@ -186,10 +181,8 @@ def ConvView(request):
             "uid2_info": conv["uid2_info"] if conv["uid1"] == user.id else conv["uid1_info"],
             "conv_username": conv["uid2_info"]["username"] if conv["uid1"] == user.id else conv["uid1_info"]["username"],
         }
-        for conv in serializer.data
-    ]
-
-    return Response(data_return)
+        result.append(data_return)
+    return Response(result)
 
 from django.db.models import Q
 

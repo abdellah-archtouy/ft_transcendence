@@ -12,7 +12,6 @@ import Downkeeper from './Downkeeper';
 import The_emperor from './The_emperor';
 import Thunder_Strike from './Thunder_Strike';
 import PureComponent from './Chartline';
-// import dayjs from 'dayjs';
 import {useError} from "../../App"
 
 const OthersProfile = () => {
@@ -76,7 +75,6 @@ const OthersProfile = () => {
           setError(error.response.data.error);
           navigate(-1);
         }
-        // setErrors(errors); 
         handleFetchError(error, () => fetchData());
       } finally {
         setLoading(false);
