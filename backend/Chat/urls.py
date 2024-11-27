@@ -13,6 +13,10 @@ from .views import (
     getconvView,
     get_friends,
     setmatch,
+    get_friend,
+    mute_friend,
+    get_mute_friend,
+    block_friend,
 )
 
 urlpatterns = [
@@ -27,5 +31,9 @@ urlpatterns = [
     path("ouser/chart/<str:username>", get_ouser_win_and_lose, name="get_other_user_data"),
     path("ouser/getconv/<str:username>", getconvView, name="getcomanconv"),
     path("user/chart/", get_user_win_and_lose, name="get_user_data"),
+    path("ouser/friendreq/<str:username>", get_friend, name="get_friend"),
     path("game/<int:fid>", setmatch, name="setmatch"),
+    path('mute/<str:username>/', mute_friend, name='mutefriend'),
+    path('block/<str:username>/', block_friend, name='blockfriend'),
+    path('mute/get/<str:username>/', get_mute_friend, name='getmutefriend'),
 ]

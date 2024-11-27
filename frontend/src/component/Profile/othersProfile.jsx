@@ -12,7 +12,6 @@ import Downkeeper from './Downkeeper';
 import The_emperor from './The_emperor';
 import Thunder_Strike from './Thunder_Strike';
 import PureComponent from './Chartline';
-// import dayjs from 'dayjs';
 import {useError} from "../../App"
 
 const OthersProfile = () => {
@@ -25,6 +24,8 @@ const OthersProfile = () => {
 
   const navigate = useNavigate();
   const { username } = useParams();
+  const [isNotFriend, setIsNotFriend] = useState(true);
+  const [isFriend, setIsFriend] = useState(true);
 
   const [chartData, setChartData] = useState([]);
   const [win24 , setWin24] = useState([]);
@@ -168,10 +169,48 @@ const OthersProfile = () => {
         headers: { Authorization: `Bearer ${access}` },
       });
       setFriends(response.data);
+      // console.log('friends:', response.data);
     } catch (error) {
       handleFetchError(error, fetchSuggestedFriends);
     }
   };
+
+  useEffect(() => {
+    const fetchfriendreq = async () => {
+      try {
+        const access = localStorage.getItem("access");
+        const response = await axios.get(`${apiUrl}/chat/ouser/friendreq/${username}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access}`,
+          },
+          withCredentials: true,
+        });
+        if (response.data.accept === false)
+        {
+            setIsNotFriend(false);
+            setIsFriend(false);
+        }
+        else if (response.data.request === true)
+        {
+            setIsNotFriend(true);
+            setIsFriend(false);
+        }
+      } catch (error) {
+        // setErrors(errors);
+        if (error.response.status === 404)
+          {
+            setIsNotFriend(true);
+            setIsFriend(false);
+          }
+        else
+          handleFetchError(error, () => fetchfriendreq());
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchfriendreq();
+  }, [friends]);
 
   const handleFetchError = (error, retryFunction) => {
     if (error.response && error.response.status === 401) {
@@ -228,11 +267,11 @@ const OthersProfile = () => {
   }
   return (
     <div className='profile_user' key={username}>
-      {/* Profile */}
       <Baner banerImg={banerImg}></Baner>
       <div className='after-avatar'></div>
       <Avatar avatarImg={avatarImg} ></Avatar>
       <div className='userinfo'>
+          <div className='name-button'>
           <div className='name-status'>
             <h1 className='username'>
               {userData?.username ? userData.username : 'User'}
@@ -240,8 +279,18 @@ const OthersProfile = () => {
             <div className='online off'></div>
           </div>
           <div className='add-friend-message'>
+            {isFriend ? 
             <button className='' onClick={onmessagecklick}>Message</button>
-            <button className='' onClick={() => handleAddFriend(userData.id)}>Add Friend</button>
+            : 
+            <>
+              {isNotFriend === false ?
+                <button className='request'>request sent</button>
+                :
+                <button className='' onClick={() => handleAddFriend(userData.id)}>Add Friend</button>
+              }
+            </>
+            }
+          </div>
           </div>
           <p className='bio'>{userData?.bio}</p>
           <div className='win-rank-score'>

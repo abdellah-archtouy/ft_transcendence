@@ -16,8 +16,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    justify-content: end;
+    /* gap: 20px; */
+    justify-content: space-between;
     align-items: center;
     border-radius: 30px;
     padding-top: 160px;
@@ -34,7 +34,7 @@
     position: absolute;
     width: 30px;
     height: 30px;
-    right: 303px;
+    right: 308px;
     border-radius: 30px 0 0 0;
     box-shadow: -7px -7px 0 7px rgb(0, 0, 0);
     top: -0px;
@@ -47,7 +47,7 @@
     position: absolute;
     width: 30px;
     height: 30px;
-    left: 303px;
+    left: 308px;
     border-radius: 0 30px 0 0;
     box-shadow: 7px -7px 0 7px rgb(0, 0, 0);
     top: -0px;
@@ -62,7 +62,7 @@
     height: 240px;
     background: black;
     border-radius: 50%;
-    top: 150px;
+    top:  calc(255px - (240px / 2));
     z-index: 1;
     /* border: red solid; */
     overflow: hidden;         
@@ -184,6 +184,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.request{
+    background-color: transparent;
+    border: red solid;
 }
 
 .ach-info{
@@ -308,30 +313,9 @@ maestro#A32B2850; */
 
 .ach-icon >svg{
     width: auto;
-    /* align-self: center;
-    justify-self: center; */
     height: 100%;
     z-index: 1;
 }
-
-/* .ach-joker .joker_icon > svg{
-    z-index: 1;
-    width: auto;
-    height: 100%;
-}
-
-.ach-maestro .maestro_icon > svg{
-    z-index: 1;
-    width: auto;
-    height: 100%;
-} */
-
-/* .ach-downkeeper .downkeeper_icon > svg{
-    z-index: 1;
-    border: red solid;
-    width: auto;
-    height: 100%;
-} */
 
 .ach-info > p{
     text-align: start;
@@ -420,6 +404,12 @@ maestro#A32B2850; */
     background: #767373;
     border: red solid;
 }
+.add-friend-message .request{
+    border: #797979 solid;
+    color: #797979;
+    background-color: #79797940;
+}
+
 .add-friend-message button{
     all: unset;
     outline: none; 
@@ -463,4 +453,92 @@ maestro#A32B2850; */
 .recharts-tooltip-item {
     font-style: italic;
     font-weight: 500;
+}
+
+.name-button{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    /* width: 100%;
+    height: 100%; */
+    /* border: red solid;   */
+}
+
+@media screen and (max-width: 1024px){
+    .profile_user{
+        gap: 0;
+        margin: 0;
+    }
+    .cover-profile{
+        width: 100%;
+        max-width: 600px;
+        border-radius: clamp(0rem, 4.451vw - 0.974rem, 1.875rem) clamp(0rem, 4.451vw - 0.974rem, 1.875rem) 0 0;
+        height: clamp(9.375rem, 4.451vw + 8.401rem, 11.25rem);
+    }
+    .userinfo{
+        border-radius:  0 0 30px 30px;
+        width: 100%;
+        max-width: 600px;
+        padding-top: clamp(5rem, 11.869vw + 2.404rem, 10rem);
+        height: fit-content;
+    }
+    .win-rank-score{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 10px;
+        margin:  34px 0;
+    }
+
+    .userinfo::before {
+        all: unset;
+    }
+    .userinfo::after {
+        all: unset;
+    }
+    
+    .avatar-profile{
+        position: absolute;
+        /* border: solid red; */
+        top: calc(clamp(9.375rem, 4.451vw + 8.401rem, 11.25rem) - (clamp(6.25rem, 7.418vw + 4.627rem, 9.375rem) / 2));
+        width: clamp(6.25rem, 7.418vw + 4.627rem, 9.375rem);
+        height: clamp(6.25rem, 7.418vw + 4.627rem, 9.375rem);
+        background: black;
+        border-radius: 50%;
+        /* top: clamp(10rem, -4.451vw + 10.974rem, 8.125rem); */
+        z-index: 1;
+        overflow: hidden;         
+        display: flex;          
+        align-items: center;     
+        justify-content: center;  
+    }
+
+    .avatar-profile img{
+        border: #636262 solid;
+        width: 100%;
+        height: auto;
+        align-self: center;
+        justify-self: center;
+        box-shadow: 0px 0px 40px rgb(189, 189, 189, 0.25);
+        border-radius: 100%;
+        object-fit: cover;
+    }
+    .analytics-achievment{
+        margin-top: 10px;
+        width: 100%;
+        max-width: 600px;
+        flex-direction: column;
+        height: 720px;
+    }
+    .analytics-achievment .analytics{
+        width: 100%;
+        height: 350px;
+        
+    }
+    .analytics-achievment .achievment{
+        width: 100%;
+        height: 350px;
+    }
 }

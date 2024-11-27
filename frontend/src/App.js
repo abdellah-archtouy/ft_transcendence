@@ -4,7 +4,7 @@ import "./index.css";
 import Navbar from "./component/Navbar/Navbar";
 import GameRouting from "./component/Game/gameRouting";
 import Profile from "./component/Profile/Profile";
-import OthersProfile from "./component/Profile/OthersProfile";
+import OthersProfile from "./component/Profile/othersProfile";
 import Setting from "./component/Setting/Setting";
 import Chat from "./component/Chat/Chat";
 import Leaderboard from "./component/Leaderboard/Leaderboard";

@@ -11,6 +11,8 @@ import Picker from "@emoji-mart/react";
 import Back from "./icons/back";
 import { WebSocketContext } from "./Chat";
 import { useNavigate, useLocation } from "react-router-dom";
+import {useError} from "../../App"
+
 
 const Msg = ({
   userData,
@@ -22,12 +24,14 @@ const Msg = ({
   const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setErrors] = useState(null);
   const [clicked, setClicked] = useState(false);
   const [imogiclicked, setImogiclicked] = useState(false);
+  const [mute, setMute] = useState(false);
+  const [Block, setBlock] = useState(false);
   const messagesEndRef = useRef(null);
-  const [errors, setErrors] = useState({});
   const [ws, setWs] = useState(null);
+  const [friendBlock, setFriendBlock] = useState([]);
   const navigate = useNavigate();
   const [convname, setConvname] = useState("");
   const [conversationdata1, setConversationdata1] = useState(conversationdata);
@@ -38,6 +42,7 @@ const Msg = ({
   const MuteBlk = useRef(null);
   const apiUrl = process.env.REACT_APP_API_URL;
   const [romeName, setRomeName] = useState("");
+  const { setError } = useError();
 
   useEffect(() => {
     if (!socket) return;
@@ -84,9 +89,8 @@ const Msg = ({
           }
         );
         setData(response.data);
-        console.log("responce:", response.data);
       } catch (error) {
-        // setError(error);
+        // setErrors(error);
         handleFetchError(error, () => fetchData());
         setData([]);
       } finally {
@@ -114,17 +118,18 @@ const Msg = ({
           .catch((refreshError) => {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
-            setError({ general: "Session expired. Please log in again." });
+            setErrors({ general: "Session expired. Please log in again." });
             window.location.reload();
             navigate("/");
           });
       } else {
-        setError({ general: "No refresh token available. Please log in." });
+        setErrors({ general: "No refresh token available. Please log in." });
       }
     } else {
-      setError({ general: "An unexpected error occurred. Please try again." });
+      setErrors({ general: "An unexpected error occurred. Please try again." });
     }
   };
+
   const handleClickOutside = (event) => {
     if (divRef.current && !divRef.current.contains(event.target)) {
       setImogiclicked(false);
@@ -160,7 +165,18 @@ const Msg = ({
   };
 
   const handleSubmit = (e) => {
+    fetchmute();
     e.preventDefault();
+    if (friendBlock.block === true) {
+      setError("You are blocked by the user");
+      setMessage("");
+      return;
+    }
+    else if (Block === true) {
+      setError("You are blocked the user");
+      setMessage("");
+      return;
+    }
     if (ws) {
       const msg = {
         conversation: conversationdata1.id,
@@ -170,36 +186,122 @@ const Msg = ({
         conversation_info: conversationdata1.conversation_info,
       };
       ws.send(JSON.stringify(msg));
-
+      
       setMessage("");
     }
   };
 
   useEffect(() => {
-          const handelinvite = () => {
-            //   e.preventDefault();
-              if (ws) {
-                  // postnewroom(conversationdata1.uid2_info.id);
-                  console.log(romeName);
-                  const msg = {
-                        conversation: conversationdata1.id,
-                        user: userData.id,
-                        message: romeName,
-                        msg_type: "invite",
-                        conversation_info: conversationdata1.conversation_info,
-                        invite_room_name : romeName,
-                      };
-                      ws.send(JSON.stringify(msg));
-                      setMessage("");
-                  }
+    const handelinvite = () => {
+            fetchmute();
+            if (friendBlock.block === true) {
+              setError("You are blocked by the user");
+              setMessage("");
+              return;
+            }
+            else if (Block === true) {
+              setError("You are blocked the user");
+              setMessage("");
+              return;
+            }
+            if (ws) {
+                const msg = {
+                      conversation: conversationdata1.id,
+                      user: userData.id,
+                      message: romeName,
+                      msg_type: "invite",
+                      conversation_info: conversationdata1.conversation_info,
+                      invite_room_name : romeName,
+                    };
+                    ws.send(JSON.stringify(msg));
+                    setMessage("");
+                }
               };
         handelinvite();
   }, [romeName]);
-// useEffect = (()=>{
 
-    
-        
-//     }, [romeName]);
+
+  const fetchmute = async () => {
+    try {
+      const access = localStorage.getItem("access");
+      if (queryParam.get("username") === null) return;
+      const response2 = await axios.get(
+        `${apiUrl}/chat/mute/get/${queryParam.get("username")}/`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access}`,
+          },
+        }
+      );
+      setFriendBlock(response2.data.data);
+      if (response2.data.data1.mute === true) {
+        setMute(true);
+      }
+      if (response2.data.data1.block === true) {
+        setBlock(true);
+      }
+    } catch (error) {
+      handleFetchError(error, () => fetchmute());
+      console.log(error);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+const handelmute = async () => {
+  const access = localStorage.getItem("access");
+  try {
+    if (queryParam.get("username") === null) return;
+    const response = await axios.get(
+      `${apiUrl}/chat/mute/${queryParam.get("username")}/`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access}`,
+        },
+      }
+    );
+    if (mute === true) {
+      setMute(false);
+    }
+    else
+    setMute(true);
+  } catch (error) {
+    handleFetchError(error, () => handelmute());
+    console.log(error);
+    setData([]);
+  } finally {
+    setLoading(false);
+  }
+}
+const handelblock = async () => {
+  const access = localStorage.getItem("access");
+  try {
+    if (queryParam.get("username") === null) return;
+    const response = await axios.get(
+      `${apiUrl}/chat/block/${queryParam.get("username")}/`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access}`,
+        },
+      }
+    );
+    if (Block === true) {
+      setBlock(false);
+    }
+    else
+      setBlock(true);
+  } catch (error) {
+    handleFetchError(error, () => handelmute());
+    console.log(error);
+    setData([]);
+  } finally {
+    setLoading(false);
+  }
+}
   const handelsetclick = () => {
     setClicked(!clicked);
   };
@@ -253,8 +355,13 @@ const Msg = ({
               </button>
               <div ref={MuteBlk} className={`set_dropdown ${clicked === true ? "" : "hide"}`}>
                 <ul>
-                  <li>Block</li>
-                  <li>Mute</li>
+                  {Block === true ? <li onClick={handelblock}>Unblock</li> :
+                  <li onClick={handelblock}>Block</li>
+                  }
+                  {mute === true ? <li  onClick={handelmute}>Unmute</li> :
+                  <li onClick={handelmute}>Mute</li>
+                   }
+
                   <li onClick={handelcloseChat}>Close Chat</li>
                 </ul>
               </div>

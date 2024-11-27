@@ -19,5 +19,7 @@ class Message(models.Model):
 class Block_mute(models.Model):
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocked_user1')
     user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocked_user2')
+    block1 = models.BooleanField(default=False)
     block = models.BooleanField(default=False)
     mute = models.BooleanField(default=False)
+    mute1 = models.BooleanField(default=False)

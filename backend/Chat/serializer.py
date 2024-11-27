@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from User.models import User, Achievement , Friend
-from Chat.models import Conversation
+from Chat.models import Conversation , Block_mute 
 from Chat.models import Message
 from User.serializers import UserSerializer
 from Game.models import Game
@@ -11,6 +11,11 @@ from Game.models import Game
 #         model = User
 #         fields = "__all__"
 
+
+class BlockMuteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Block_mute
+        fields = ("user1", "user2", "block1", "block", "mute1", "mute")
 
 class ConvSerializer(serializers.ModelSerializer):
     uid1_info = UserSerializer(source="uid1")

@@ -9,9 +9,10 @@ from .serializer import (
     AchievementSerializer,
     GameSerializer,
     FriendSerializer,
+    BlockMuteSerializer,
 )
 from User.models import User, Achievement , Friend
-from Chat.models import Conversation, Message
+from Chat.models import Conversation, Message , Block_mute
 from django.contrib.auth import login
 import jwt, datetime
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
@@ -60,8 +61,6 @@ def get_friends(request):
             if friend.accept
         ]
         serializer = FriendSerializer(friends, many=True)
-        # print(serializer.data)
-        # print(data_return)   
         return Response(data_return)
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -90,6 +89,21 @@ def setmatch(request, fid):
         print("hnaaaayaaa 2 2", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_friend(request, username):
+    try:
+        user = request.user
+        friend = User.objects.get(username=username)
+        friend_obj = Friend.objects.filter(Q(user1=user, user2=friend) | Q(user1=friend, user2=user)).first()
+        if not friend_obj:
+            return Response({"error": "Friend not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(FriendSerializer(friend_obj).data)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -97,10 +111,6 @@ def getconvView(request, username):
     try:
         user = request.user
         user2 = User.objects.get(username=username)
-
-        # if user == user2:
-        #     print("Cannot create conversation with self")
-        #     return
 
         conv = Conversation.objects.filter(
             (Q(uid1=user.id) & Q(uid2=user2.id)) |
@@ -110,14 +120,10 @@ def getconvView(request, username):
             serializer = ConvSerializer(conv)
             conv_data = serializer.data
         else:
-        # Create new conversation
-            print("conversation not found")
             conversation = Conversation(uid1=user, uid2=user2, last_message='')
             conversation.save()
             serializer = ConvSerializer(conversation)
             conv_data = serializer.data
-
-            # serializer = ConvSerializer(conv , many=False)
         return Response(conv_data)
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -162,8 +168,11 @@ def ConvView(request):
     if not conv_instances.exists():
         return Response([])
     serializer = ConvSerializer(conv_instances, many=True)
-    data_return = [
-        {
+    result = []
+    for conv in serializer.data:
+        if conv['uid1'] != user.id and conv["last_message"] == "":
+                 continue
+        data_return =  {
             "id": conv["id"],
             "uid1": conv["uid1"],
             "uid2": conv["uid2"],
@@ -172,10 +181,8 @@ def ConvView(request):
             "uid2_info": conv["uid2_info"] if conv["uid1"] == user.id else conv["uid1_info"],
             "conv_username": conv["uid2_info"]["username"] if conv["uid1"] == user.id else conv["uid1_info"]["username"],
         }
-        for conv in serializer.data
-    ]
-
-    return Response(data_return)
+        result.append(data_return)
+    return Response(result)
 
 from django.db.models import Q
 
@@ -511,3 +518,70 @@ def get_ouser_win_and_lose(request, username):
         print("jhjhfh   ",e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_mute_friend(request, username):
+    try:
+        user = request.user
+        user2 = User.objects.get(username=username)
+        block_mute = Block_mute.objects.filter(user1=user2, user2=user).first()
+        block_mute1 = Block_mute.objects.filter(user1=user, user2=user2).first()
+        if not block_mute:
+            block_mute = Block_mute(user1=user2, user2=user)
+            block_mute.save()
+        if not block_mute1:
+            block_mute1 = Block_mute(user1=user, user2=user2)
+            block_mute1.save()
+        response = {
+            'data' :BlockMuteSerializer(block_mute).data,
+            'data1' :BlockMuteSerializer(block_mute1).data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def mute_friend(request, username):
+    try:
+        user = request.user
+        user2 = User.objects.get(username=username)
+        block_mute = Block_mute.objects.filter(user1=user, user2=user2).first()
+        if not block_mute:
+            block_mute = Block_mute(user1=user, user2=user2)
+        if block_mute.mute == True:
+            block_mute.mute = False
+        else:
+            block_mute.mute = True
+        block_mute.save()
+        serializer = BlockMuteSerializer(block_mute)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def block_friend(request, username):
+    try:
+        user = request.user
+        user2 = User.objects.get(username=username)
+        block_mute = Block_mute.objects.filter(user1=user, user2=user2).first()
+        if not block_mute:
+            block_mute = Block_mute(user1=user, user2=user2)
+        if block_mute.block == True:
+            block_mute.block = False
+        else:
+            block_mute.block = True
+        block_mute.save()
+        serializer = BlockMuteSerializer(block_mute)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except TokenError as e:
+        return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
