@@ -72,8 +72,7 @@
     height: 100%;
     width: 28%;
     outline: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     background: transparent;
     background-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%201000%201000%22%20enable-background%3D%22new%200%200%201000%201000%22%20xml%3Aspace%3D%22preserve%22%20fill%3D%22%23828282%22%3E%3Cmetadata%3E%20Svg%20Vector%20Icons%20%3A%20http%3A//www.onlinewebfonts.com/icon%20%3C/metadata%3E%3Cg%3E%3Cpath%20d%3D%22M965.1%2C360.2l-400%2C401c-17.9%2C17.9-41.7%2C25.4-65.2%2C24c-23.4%2C1.4-47.2-6.1-65.1-24l-400-401c-33.2-33.3-33.2-87.4%2C0-120.7c33.2-33.3%2C87.1-33.3%2C120.4%2C0L500%2C585.2l344.8-345.7c33.2-33.3%2C87.1-33.3%2C120.4%2C0S998.3%2C326.9%2C965.1%2C360.2z%22/%3E%3C/g%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -107,15 +106,7 @@
     flex-direction: column;
     position: relative;
 }
-
-/* .item-container::after {
-    content: '';
-    position: fixed;
-    bottom: clamp(1.25rem, 2.762vw + 0.732rem, 2.5rem);
-    width: calc(100% - (clamp(1.25rem, 2.762vw + 0.732rem, 2.5rem) * 2));
-    height: clamp(18.75rem, 13.812vh + 16.16rem, 25rem);;
-    box-shadow: 0px -30px 30px -20px rgba(0, 0, 0, 0.4) inset;
-    pointer-events: none;
+/* .item-container > :first-child {
 } */
 
 .Leaderboard-list {
@@ -168,6 +159,16 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    position: relative;
+}
+
+.Leaderboard-list-item-user svg {
+    position: absolute;
+    height: 30%;
+    width: auto;
+    --clamped-value: clamp(1.875rem, 1.381vw + 1.616rem, 2.5rem);
+    left: calc((100% - var(--clamped-value)) / 2 + var(--clamped-value) - 10px);
+    top: -10%;
 }
 
 .Leaderboard-list-item-user img {

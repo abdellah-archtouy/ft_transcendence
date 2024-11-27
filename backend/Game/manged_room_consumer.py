@@ -5,8 +5,6 @@ from Game.room import Room
 from User.models import User
 from datetime import datetime
 from Notifications.views import create_notification
-from asgiref.sync import sync_to_async
-from channels.exceptions import StopConsumer
 from .consumers import RoomManager
 
 pre_room_manager = RoomManager()
@@ -21,6 +19,8 @@ class managed_room_consumer(AsyncWebsocketConsumer):
             self.user_id = int(self.scope["url_route"]["kwargs"]["uid"])
             self.room_group_name = self.room_name
             self.connection_type = "Managed_room"
+            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+            await self.accept()
             if self.room_group_name in pre_room_manager.rooms:
                 self.room = pre_room_manager.rooms[self.room_group_name]
                 if self.room.findUser(self.user_id):
@@ -33,8 +33,10 @@ class managed_room_consumer(AsyncWebsocketConsumer):
                     self.channel_name = self.channel_name
                     pre_room_manager.add_channel_name(self.channel_name, self.user_id)
                     await pre_room_manager.start_periodic_updates(self)
-                await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-                await self.accept()
+                else:
+                    await self.send(text_data=json.dumps({"error": "you are not a part of this room"}))
+            else:
+                await self.send(text_data=json.dumps({"error": "There is no room with this name"}))
         except Exception as e:
             raise e
 

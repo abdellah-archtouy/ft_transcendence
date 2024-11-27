@@ -1,5 +1,6 @@
 from django.db import models
 from User.models import User, reset_ranks
+from Game.views import assign_achievement
 
 # Create your models here.
 class Tournaments(models.Model):
@@ -19,3 +20,4 @@ class Tournaments(models.Model):
         self.loser.save()
         self.winner.save()
         reset_ranks()
+        assign_achievement(self.winner)

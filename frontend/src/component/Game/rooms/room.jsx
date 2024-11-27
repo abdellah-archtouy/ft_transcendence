@@ -9,6 +9,7 @@ import LoadingPage from "../../loadingPage/loadingPage";
 import axios from "axios";
 import "./room.css";
 import { useNavigate } from "react-router-dom";
+import { useError } from "../../../App"
 
 let Board;
 let boardWidth = 1000;
@@ -37,9 +38,12 @@ let ball = {
 };
 
 let WSocket;
+let current_player = 0;
+let other_player = 1;
 
 const host = process.env.REACT_APP_API_HOSTNAME;
 const apiUrl = process.env.REACT_APP_API_URL;
+let errors = null
 
 const Room = ({ data, mode }) => {
   const [user, setUser] = useState(null);
@@ -50,9 +54,9 @@ const Room = ({ data, mode }) => {
   const [countDown, setCountDown] = useState(0);
   const [pause, setPause] = useState(false);
   const [winner, setWinner] = useState(null);
-
+  
   const animationRef = useRef(null);
-
+  
   const navigate = useNavigate();
   const stableNavigate = useMemo(
     () =>
@@ -60,8 +64,9 @@ const Room = ({ data, mode }) => {
         navigate(...args),
     [navigate]
   );
+  
+  const { setError } = useError();
 
-  /* setting the bot mode, i used state for that */
   const [gamemode, setGamemode] = useState(null);
 
   const drawRoundedRect = (ctx, x, y, width, height, radius, opacity) => {
@@ -297,6 +302,19 @@ const Room = ({ data, mode }) => {
           ) {
             obj = [{ ...tmp?.user1 }, { ...tmp?.user2 }];
           }
+          if (!e)
+            {
+              if (obj[1]?.username === userData?.username)
+                {
+                  current_player = 1;
+                  other_player = 0;
+                }
+                else
+                {
+                  current_player = 0;
+                  other_player = 1;
+                }
+            }
           return obj;
         });
         if (tmp?.winner !== null)
@@ -311,6 +329,13 @@ const Room = ({ data, mode }) => {
             stableNavigate(-1);
           }, 1000);
         }
+        if (tmp?.error) {
+          setError(tmp?.error);
+          errors = tmp?.error;
+          setTimeout(() => {
+            stableNavigate(-1);
+          }, 2000);
+        }
         tmp?.stat === "countdown"
           ? setCountDown(tmp?.value)
           : setCountDown(() => 0);
@@ -320,7 +345,7 @@ const Room = ({ data, mode }) => {
         WSocket.close();
       };
     }
-  }, [userData, stableNavigate, data, gamemode]);
+  }, [userData, stableNavigate, data, gamemode, setError]);
 
   useEffect(() => {
     /**************************************/
@@ -431,31 +456,31 @@ const Room = ({ data, mode }) => {
     }, 999);
   }, [countDown]);
 
-  if (!user) return <LoadingPage />;
+  if (!user || errors) return <LoadingPage />;
   return (
     <div className={close ? "RoomContainer fade-out" : "RoomContainer"}>
       <div className="RoomFirst">
         <div className="room-userinfo">
           <div className="image">
             <img
-              src={image_renaming(user?.[0]?.avatar)}
+              src={image_renaming(user?.[current_player]?.avatar)}
               className="avatar"
               alt=""
             />
           </div>
           <div className="Roominfos">
-            <span id="infosHeader">{user?.[0]?.username?.substring(0, 9)}</span>
-            <span id="infostext">{user?.[0]?.goals}</span>
+            <span id="infosHeader">{user?.[current_player]?.username?.substring(0, 9)}</span>
+            <span id="infostext">{user?.[current_player]?.goals}</span>
           </div>
         </div>
         <div className="enemyinfo">
           <div className="Roominfos">
-            <span id="infosHeader">{user?.[1]?.username?.substring(0, 9)}</span>
-            <span id="infostext">{user?.[1]?.goals}</span>
+            <span id="infosHeader">{user?.[other_player]?.username?.substring(0, 9)}</span>
+            <span id="infostext">{user?.[other_player]?.goals}</span>
           </div>
           <div className="image">
             <img
-              src={image_renaming(user?.[1]?.avatar)}
+              src={image_renaming(user?.[other_player]?.avatar)}
               className="avatar"
               alt=""
             />
@@ -468,7 +493,7 @@ const Room = ({ data, mode }) => {
             <p>{countDown}</p>
           </div>
         )}
-        {winner !== null && (
+        {winner && (
           <div className="winnerdiplay">
             <div className="win" style={{ position: "" }}>
               <p>You {winner === userData.id ? "Win" : "Lose"}</p>
@@ -484,6 +509,7 @@ const Room = ({ data, mode }) => {
 
         <canvas
           id="Rcanvas"
+          style={userData?.username === user[1]?.username ? {transform:"scale(-1, 1)"} : {}}
           ref={(c) => {
             if (c) setCanvas(true);
           }}

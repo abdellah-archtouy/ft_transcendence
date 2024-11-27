@@ -252,14 +252,6 @@ class RoomManager:
             end=room.end,
         )
         await game.asave()
-        # self.assign_achievement(room)
-
-    def assign_achievement(self, room):
-        i = Game.objects.filter(winner=room.winner).aggregate(
-            total_loser_score=Sum("loser_score")
-        )["total_loser_score"]
-        print("i = ", i)
-
 
 room_manager = RoomManager()
 

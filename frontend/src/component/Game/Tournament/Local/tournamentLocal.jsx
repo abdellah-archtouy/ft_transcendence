@@ -5,7 +5,7 @@ import { useError } from "../../../../App";
 
 const TournamentLocal = () => {
   const [addTournament, setAddTournament] = useState(false);
-  const [tournamentComplete, setTournamentComplete] = useState(true);
+  const [tournamentComplete, setTournamentComplete] = useState(false);
   const [tournament, setTournament] = useState(false);
   const [isFirstRound, setIsFirstRound] = useState(true);
   const [theWinner, setTheWinner] = useState([]);

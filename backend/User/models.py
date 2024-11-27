@@ -54,14 +54,14 @@ class UserOTP(models.Model):
 class Achievement(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE  # , related_name='user_achievement'
-    )  # Renamed uid to user for clarity
+    )
     maestro = models.BooleanField(default=False)
     downkeeper = models.BooleanField(default=False)
     jocker = models.BooleanField(default=False)
     thunder_strike = models.BooleanField(default=False)
     the_emperor = models.BooleanField(
         default=False
-    )  # Changed theEmperor to the_emperor
+    )
 
 
 class Friend(models.Model):
