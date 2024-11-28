@@ -171,6 +171,18 @@ svg {
   background-color: #222222;
 }
 
+.matches-list-item-tournament {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 2em;
+  border-radius: 10px;
+  background-color: #222222;
+}
+
 .matches-list-item-score {
   display: flex;
   flex-direction: row;
@@ -187,6 +199,15 @@ svg {
   border: clamp(0.0625rem, 0.0453rem + 0.0858vw, 0.1875rem) solid #636262;
 }
 
+.matches-list-item-user-tournament-icon {
+  position: absolute;
+  top: 3%;
+  left: 55%;
+  width: 38px;
+
+  
+}
+
 .matches-list-item-user p {
   
   width: 6rem;
@@ -198,6 +219,31 @@ svg {
 
 .matches-list-item-user {
   gap: 1em;
+}
+
+.matches-list-item-user-tournament img {
+  width: clamp(2.5rem, 2.0708rem + 2.1459vw, 5.625rem);
+  height: clamp(2.5rem, 2.0708rem + 2.1459vw, 5.625rem);
+  border-radius: 50%;
+  border: clamp(0.0625rem, 0.0453rem + 0.0858vw, 0.1875rem) solid #636262;
+}
+
+.matches-list-item-user-tournament p {
+  width: 6rem;
+  overflow: hidden;  /* Hide any overflowing text */
+  white-space: nowrap;  /* Prevent text from wrapping to a new line */
+  text-overflow: ellipsis;
+  font-size: clamp(0.75rem, 0.6985rem + 0.2575vw, 1.125rem);
+}
+
+.matches-list-item-user-tournament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: 3%;
+  padding-bottom: 0;
 }
 
 
@@ -340,6 +386,34 @@ svg {
     padding: 0;
   }
 
+  .matches-list-item-tournament {
+    padding: 0.8rem;
+    margin-bottom: 0.5em;
+
+  }
+  .matches-list-item-user-tournament {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+  }
+
+  .matches-list-item-user-tournament p {
+  }
+
+  .matches-list-item-user-tournament-icon {
+    position: absolute;
+    transform: rotate(-39.5deg);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+  }
+
   .matches-list-item-user:last-of-type {
     flex-direction: row-reverse;
   }
@@ -347,6 +421,7 @@ svg {
   .matches-list-item {
     margin-bottom: 0.5em;
   }
+
 
 }
 

@@ -57,6 +57,7 @@ const Home = () => {
         headers: { Authorization: `Bearer ${access}` },
       });
       setHistory(response1.data);
+      console.log(response1.data)
     } catch (error) {
       handleFetchError(error, fetchTop5);
     }
@@ -121,7 +122,7 @@ const Home = () => {
     setShowAll(!showAll);
   };
 
-  const matchesToDisplay = showAll ? history : history.slice(0, 3);
+  const matchesToDisplay = showAll ? history : history?.slice(0, 3);
 
   return (
     <div className="home-div">

@@ -16,8 +16,6 @@ class Tournaments(models.Model):
         # Update the winner's score by adding the winner_score
         self.winner.score += 12 * 20 # => because he won two matches and we give him all 6 because he is part of tournament
         self.winner.win += 1
-        self.loser.lose += 1
-        self.loser.save()
         self.winner.save()
         reset_ranks()
         assign_achievement(self.winner)

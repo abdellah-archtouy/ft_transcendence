@@ -276,7 +276,6 @@ const OthersProfile = () => {
             <h1 className='username'>
               {userData?.username ? userData.username : 'User'}
             </h1>
-            <div className='online off'></div>
           </div>
           <div className='add-friend-message'>
             {isFriend ? 

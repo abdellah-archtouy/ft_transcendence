@@ -172,7 +172,6 @@ const Profile = () => {
             <h1 className='username'>
               {userData?.username ? userData.username : 'User'}
             </h1>
-            <div className='online on'></div>
           </div>
           <p className='bio'>{userData?.bio}</p>
           <div className='win-rank-score'>

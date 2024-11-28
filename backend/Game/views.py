@@ -89,6 +89,7 @@ def leaderboard(request):
 @permission_classes([IsAuthenticated])
 def last_three_matches(request):
     try:
+        Tournaments = apps.get_model('Tournament', 'Tournaments')
         user = request.user
         history = (
             user.user2_game.all()
@@ -119,8 +120,13 @@ def last_three_matches(request):
         for item in send:
             item["loser_goals"] = item.pop("loser_score")
             item["winner_goals"] = item.pop("winner_score")
+            item["type"] = "normal"
+        tournaments = Tournaments.objects.filter(winner=user).order_by("-created_at").annotate(winner_avatar=F("winner__avatar")).values("winner_avatar", "name")
+        for tour in tournaments:
+            tour["type"] = "tournament"
+        combined = list(send) + list(tournaments)
         return Response(
-            send,
+            combined,
             status=status.HTTP_200_OK,
         )
     except TokenError as e:

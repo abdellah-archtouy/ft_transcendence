@@ -94,13 +94,11 @@
 
 
 .analytics-achievment .achievment{
-    background-color: #222222cc;
+    background-color: rgba(34, 34, 34, 0.8);
     border-radius: 30px;
-    /* width: 304px; */
     flex: 1 1;
     flex-direction: column;
     backdrop-filter: blur(10px);
-    /* padding: 24px; */
     padding-top: 34px;
     gap: 10px;
     display: flex;
@@ -148,21 +146,21 @@
 }
 
 .username{
-    height: 32px;
-    line-height: normal;
+    --font-size: clamp(1.5rem, 3.509vw + 0.754rem, 3rem);
+    height: calc(var(--font-size) - 10px);
+    font-size: var(--font-size);
+    text-transform: capitalize;
+    line-height: 1;
 }
 
 .name-status{
+    position: relative;
     height: 32px;
     /* width: 135px; */
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: space-between;
-}
-.online{
-    height: 10px;
-    width: 10px;
 }
 
 .bio{
@@ -389,7 +387,7 @@ maestro#A32B2850; */
 }
 
 .select{
-    background: #22222280;
+    background: #222222cc;
     /* width: 100px; */
     /* height: 25px; */
     color: #B0B0B0;
