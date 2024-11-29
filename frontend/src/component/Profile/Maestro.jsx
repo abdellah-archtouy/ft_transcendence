@@ -4,7 +4,6 @@ import Maestro_icon from './icon/Maestro_icon';
 function Maestro() {
   return (
     <div className='ach-maestro achivement'>
-        {/* <img src={avatarUrl('media/achievement/bg_Maestro.png')} alt="Maestro background" /> */}
         <div className='maestro_icon ach-icon'>
             <Maestro_icon ></Maestro_icon>
         </div>

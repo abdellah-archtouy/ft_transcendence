@@ -11,8 +11,7 @@ function The_emperor() {
         </div>
         <div className='ach-info'>
             <h1 className='ach-name'>The Emperor</h1>
-            <p>Achieved by clinching victory
-            in 10 tournament in a row </p>
+            <p>Achieved by ruling the top of the leaderboard, showcasing unmatched skill</p>
         </div>
     </div>
   )

@@ -10,8 +10,7 @@ function Downkeeper() {
         </div>
         <div className='ach-info'>
             <h1 className='ach-name'>Downkeeper</h1>
-            <p>Achieved by clinching victory
-            in 10 tournament in a row </p>
+            <p>Clinching victory in 10 matches with no enemy goals </p>
         </div>
     </div>
   )

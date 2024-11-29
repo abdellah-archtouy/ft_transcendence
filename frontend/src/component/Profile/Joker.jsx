@@ -11,8 +11,7 @@ function Joker() {
         </div>
         <div className='ach-info'>
             <h1 className='ach-name'>Joker</h1>
-            <p>Achieved by clinching victory
-            in 10 tournament in a row </p>
+            <p>Awarded for enduring defeat in 5 consecutive games without giving up</p>
         </div>
     </div>
   )

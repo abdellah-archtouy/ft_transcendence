@@ -10,8 +10,7 @@ function Thunder_Strike() {
         </div>
         <div className='ach-info'>
             <h1 className='ach-name'>Thunder Strike</h1>
-            <p>Achieved by clinching victory
-            in 10 tournament in a row </p>
+            <p>Awarded for winning the game swiftly securing victory in a short time</p>
         </div>
     </div>
   )

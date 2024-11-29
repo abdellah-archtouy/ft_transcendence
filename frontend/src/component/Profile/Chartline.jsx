@@ -20,12 +20,11 @@ const MyYearlyWinsChart = ({ chartData, par1, par2 }) => {
   }, [chartData]);
 
   return (
-    <ResponsiveContainer width="90%" height="90%" className="hhP">
+    <ResponsiveContainer width="100%" height="100%" className="hhP">
       <AreaChart
         className="area"
-        // width={500}
-        // height={400}
         data={chartData}
+        margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
       >
         <defs>
           <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -33,8 +32,12 @@ const MyYearlyWinsChart = ({ chartData, par1, par2 }) => {
             <stop offset="99%" stopColor="#767373" stopOpacity={0} />
           </linearGradient>
         </defs>
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
-        <XAxis className="test" dataKey={par2} interval={interval} />
+        <XAxis
+          className="test"
+          dataKey={par2}
+          interval={interval}
+          tick={{ fontSize: "6px", fill: "#555", fontWeight:"400" }}
+        />
         <YAxis className="yaxis" width={1} />
         <Tooltip className="hove" />
         <Area

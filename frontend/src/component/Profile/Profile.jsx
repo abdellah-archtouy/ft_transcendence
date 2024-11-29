@@ -12,6 +12,7 @@ import Downkeeper from './Downkeeper';
 import The_emperor from './The_emperor';
 import Thunder_Strike from './Thunder_Strike';
 import PureComponent from './Chartline';
+import LoadingPage from '../loadingPage/loadingPage';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -158,7 +159,7 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
   return (
       //  <OthersProfile/>
@@ -168,23 +169,27 @@ const Profile = () => {
       <div className='after-avatar'></div>
       <Avatar avatarImg={avatarImg} ></Avatar>
       <div className='userinfo'>
-          <div className='name-status'>
-            <h1 className='username'>
-              {userData?.username ? userData.username : 'User'}
-            </h1>
-          </div>
-          <p className='bio'>{userData?.bio}</p>
+          <h1 className='username'>
+            {userData?.username ? userData.username : 'User'}
+          </h1>
+          <p className='bio' style={!userData?.bio ? {display:"none"} : {}}>{userData?.bio}</p>
           <div className='win-rank-score'>
             <div>
-              {userData?.win}
+              <h4>
+                {userData?.win}
+              </h4>
               <p>Duels Won</p>
             </div>
             <div>
-              #{userData?.rank}
+              <h4>
+                #{userData?.rank}
+              </h4>
               <p>Ranking position</p>
             </div>
             <div>
-              {userData?.score}xp
+              <h4>
+                {userData?.score}xp
+              </h4>
               <p>Score</p>
             </div>
           </div>
