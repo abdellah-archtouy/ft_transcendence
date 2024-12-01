@@ -5,6 +5,7 @@ from datetime import datetime
 from Notifications.views import create_notification
 from asgiref.sync import sync_to_async
 from Game.manged_room_consumer import pre_room_manager
+from Chat.views import create_Tournament_message
 
 class Tournament():
     def __init__(self, name=None) -> None:
@@ -79,6 +80,8 @@ class Tournament():
                 user1 = await User.objects.aget(id=_round.uid1)
                 user2 = await User.objects.aget(id=_round.uid2)
                 link = f"/game/friend/managedroom/{room_name}"
+                await sync_to_async(create_Tournament_message)(user1.username, f"{self.name}: {'First ' if len(self.current_round) == 2 else 'Second '} Round you will play against {user2.username}")
+                await sync_to_async(create_Tournament_message)(user2.username, f"{self.name}: {'First ' if len(self.current_round) == 2 else 'Second '} Round you will play against {user1.username}")
                 await sync_to_async(create_notification)(user1, None, "TOURNAMENT_INVITE", link)
                 await sync_to_async(create_notification)(user2, None, "TOURNAMENT_INVITE", link)
 

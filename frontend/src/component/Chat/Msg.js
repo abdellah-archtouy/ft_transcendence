@@ -349,9 +349,9 @@ const handelblock = async () => {
                 <h3>{conversationdata1?.uid2_info?.username}</h3>
               </>
             </div>
-            <div onClick={handelsetclick} className="set">
+            <div onClick={handelsetclick} className={`set ${queryParam.get("username") === 'Tournament' ?  'hide' :'null'}`}>
               <button>
-                <Set />
+                <Set/>
               </button>
               <div ref={MuteBlk} className={`set_dropdown ${clicked === true ? "" : "hide"}`}>
                 <ul>
@@ -388,7 +388,7 @@ const handelblock = async () => {
             <div ref={messagesEndRef} />
             <div />
           </div>
-          <div className={`message_bar`}>
+          <div className={` message_bar ${queryParam.get("username") === 'Tournament' ?  'hide' :'null'}`}>
             <button onClick={(e) => {e.preventDefault(); 
                 postnewroom(conversationdata1.uid2_info.id);}}>
               <PlayInv />

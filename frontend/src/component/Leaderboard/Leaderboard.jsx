@@ -13,7 +13,6 @@ const Leaderboard = () => {
   const [search, setSearch] = useState("");
   
   function avatarUrl(name) {
-    // console.log(name);
     return `http://${apiUrl}:8000/media/` + name;
   }
 
@@ -31,39 +30,29 @@ const Leaderboard = () => {
     /**************************************/
 
     const handleFetchError = (error, retryFunction) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          const refresh = localStorage.getItem("refresh");
-
-          if (refresh) {
-            axios
-              .post(`${apiUrl}/api/token/refresh/`, { refresh })
-              .then((refreshResponse) => {
-                const { access: newAccess } = refreshResponse.data;
-                localStorage.setItem("access", newAccess);
-                retryFunction(); // Retry fetching user data
-              })
-              .catch((refreshError) => {
-                localStorage.removeItem("access");
-                localStorage.removeItem("refresh");
-                console.log("you have captured the error");
-                stableNavigate("/");
-                console.log({
-                  general: "Session expired. Please log in again.",
-                });
-              });
-          } else {
-            console.log({
-              general: "No refresh token available. Please log in.",
+      if (error.response && error.response.status === 401) {
+        const refresh = localStorage.getItem("refresh");
+  
+        if (refresh) {
+          axios
+            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .then((refreshResponse) => {
+              const { access: newAccess } = refreshResponse.data;
+              localStorage.setItem("access", newAccess);
+              retryFunction();
+            })
+            .catch((refreshError) => {
+              localStorage.removeItem("access");
+              localStorage.removeItem("refresh");
+              console.log({ general: "Session expired. Please log in again." });
+              window.location.reload();
+              navigate("/");
             });
-          }
         } else {
-          console.log({ general: "Error fetching data. Please try again." });
+          console.log({ general: "No refresh token available. Please log in." });
         }
       } else {
-        console.log({
-          general: "An unexpected error occurred. Please try again.",
-        });
+        console.log({ general: "An unexpected error occurred. Please try again." });
       }
     };
 

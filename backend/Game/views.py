@@ -13,8 +13,9 @@ from django.db import transaction
 @permission_classes([IsAuthenticated])
 def top5(request):
     try:
+
         my_sorted_list = (
-            User.objects.annotate(
+            User.objects.exclude(is_superuser=True).annotate(
                 matches_won=F("win"),
                 matches_lost=F("lose"),
                 total_matches=F("win") + F("lose"),
@@ -52,7 +53,7 @@ def leaderboard(request):
     try:
         user = request.user
         my_sorted_list = (
-            User.objects.annotate(
+            User.objects.exclude(is_superuser=True).annotate(
                 matches_won=F("win"),
                 matches_lost=F("lose"),
                 total_matches=F("win") + F("lose"),

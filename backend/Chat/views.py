@@ -11,6 +11,7 @@ from .serializer import (
     FriendSerializer,
     BlockMuteSerializer,
 )
+import json
 from User.models import User, Achievement , Friend
 from Chat.models import Conversation, Message , Block_mute
 from django.contrib.auth import login
@@ -20,7 +21,6 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
-
 
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
@@ -32,6 +32,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from Game.manged_room_consumer import pre_room_manager
 from Notifications.views import create_notification
+from datetime import datetime, timedelta, timezone
+from django.http import JsonResponse
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -319,6 +321,12 @@ def get_ouser_data(request, username):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
+    
+from datetime import datetime, timedelta
+from django.http import JsonResponse
+
+
+
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 
@@ -365,8 +373,6 @@ def update_last_24_hours_with_lose_matches(last_24_hours, matches_list):
     return last_24_hours
 
 from Game.models import Game
-from django.utils import timezone
-from datetime import datetime, timedelta
 import pytz
 from collections import defaultdict
 
@@ -460,7 +466,6 @@ def get_user_win_and_lose(request):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("jhjhfh   ",e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["GET"])
@@ -585,3 +590,69 @@ def block_friend(request, username):
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import datetime
+from Notifications.views import create_notification
+
+
+def create_Tournament_message(username, message):
+    channel_layer = get_channel_layer()
+    user2 = User.objects.get(username=username)
+    tournement_user = User.objects.get(username='Tournament')
+    if user2 and tournement_user:
+        conversation = Conversation.objects.filter(uid1=tournement_user, uid2=user2).first()
+        if not conversation:
+            conversation = Conversation(uid1=tournement_user, uid2=user2 , last_message='' )
+            conversation.save()
+        msg = Message(conversation_id=conversation.id, user_id=tournement_user.id, message=message, msg_type='message', invite_room_name='')
+        msg.save()
+        conversation.last_message = message
+        conversation.last_message_time = datetime.datetime.now()
+        conversation.save()
+        conv_instances = Conversation.objects.filter(uid1=user2.id) | Conversation.objects.filter(
+        uid2=user2.id
+        )
+        conv_instances = conv_instances.order_by(
+        "-last_message_time"
+        )
+        serializer = ConvSerializer(conv_instances, many=True)
+        data_return = [
+            {
+                "id": conv["id"],
+                "uid1": conv["uid1"],
+                "uid2": conv["uid2"],
+                "last_message": conv["last_message"],
+                "last_message_time": conv["last_message_time"],
+                "uid2_info": conv["uid2_info"] if conv["uid1"] == user2.id else conv["uid1_info"],
+                "conv_username":  conv["uid2_info"]["username"] if conv["uid1"] == user2.id else conv["uid1_info"]["username"],
+            }
+            for conv in serializer.data
+        ]
+
+        text_data = {
+            "conversation":conversation.id,
+            "user":tournement_user.id,
+            "message":message,
+            "msg_type":"message"
+        }
+        link = f"/chat?username={'Tournament'}&convid={conversation.id}"
+        create_notification(user2, tournement_user, "CHAT_MESSAGE", link=link)
+        async_to_sync(channel_layer.group_send)(
+                f'chat_{username}',
+                {
+                    'type': 'chat_message',
+                    'message': text_data,
+                    'data': data_return
+                }
+            )
+
+def chat_message(self, event):
+    message = event['message']
+    data = event['data']
+    self.send(text_data=json.dumps({
+        'message': message,
+        'data': data,
+    }))

@@ -176,6 +176,7 @@
     width: 30px;
     height: 30px;
     fill: rgb(255, 255, 255, 0.5);
+    animation: fade-in 0.5s ease-in-out;
 }
 
 .ach-info{

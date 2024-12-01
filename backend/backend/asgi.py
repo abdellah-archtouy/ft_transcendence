@@ -12,6 +12,7 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
+from django.contrib.auth import get_user_model
 
 # from Chat import routing
 import Chat.routing
@@ -34,3 +35,12 @@ application = ProtocolTypeRouter(
         "websocket": AuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
     }
 )
+
+User = get_user_model()
+try:
+    if not User.objects.filter(username='Tournament').exists():
+        User.objects.create_superuser(
+            username='Tournament', 
+        )
+except Exception as e:
+    print(f"Error creating superuser: {e}")
