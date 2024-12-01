@@ -86,11 +86,12 @@ svg {
 
 .home-dive-welcome p {
   margin-bottom: auto;
-  font-size: clamp(0.5rem, 0.3798rem + 0.6009vw, 1.375rem);
+  font-size: clamp(0.75rem, 0.5354rem + 1.073vw, 2.3125rem);
   font-weight: 400;
   font-family: 'Josefin Sans';
   user-select: none;
   margin-left: 12px;
+
 }
 
 /* Button styling */
@@ -205,14 +206,16 @@ svg {
   left: 55%;
   width: 38px;
 
-  
+
 }
 
 .matches-list-item-user p {
-  
+
   width: 6rem;
-  overflow: hidden;  /* Hide any overflowing text */
-  white-space: nowrap;  /* Prevent text from wrapping to a new line */
+  overflow: hidden;
+  /* Hide any overflowing text */
+  white-space: nowrap;
+  /* Prevent text from wrapping to a new line */
   text-overflow: ellipsis;
   font-size: clamp(0.75rem, 0.6985rem + 0.2575vw, 1.125rem);
 }
@@ -229,11 +232,17 @@ svg {
 }
 
 .matches-list-item-user-tournament p {
-  width: 6rem;
-  overflow: hidden;  /* Hide any overflowing text */
-  white-space: nowrap;  /* Prevent text from wrapping to a new line */
+  width: clamp(2.5rem, 2.0708rem + 2.1459vw, 5.625rem);
+  overflow: hidden;
+  /* Hide any overflowing text */
+  white-space: nowrap;
+  /* Prevent text from wrapping to a new line */
   text-overflow: ellipsis;
   font-size: clamp(0.75rem, 0.6985rem + 0.2575vw, 1.125rem);
+  /* border: solid; */
+  text-align: center;
+
+
 }
 
 .matches-list-item-user-tournament {
@@ -316,16 +325,16 @@ svg {
 
 
 
-@media (min-width: 1440px) and (max-width: 1919px) {
+@media (min-width: 1440px) and (max-width: 1921px) {
   .home-dive-welcome {
     height: 400px;
-    width: 65vw;
+    width: 70vw;
   }
 
 
   .stats {
     height: 400px;
-    width: 65vw;
+    width: 70vw;
   }
 
 }
@@ -334,12 +343,12 @@ svg {
 @media (min-width: 1024px) and (max-width: 1439px) {
   .home-dive-welcome {
     height: 400px;
-    width: 80vw;
+    width: 90vw;
   }
 
   .stats {
     height: 400px;
-    width: 80vw;
+    width: 90vw;
   }
 }
 
@@ -373,7 +382,7 @@ svg {
   }
 
   .matches-container {
-    overflow-y: hidden;
+    overflow-y: scroll;
   }
 
   .matches-list-item-user {
@@ -391,6 +400,7 @@ svg {
     margin-bottom: 0.5em;
 
   }
+
   .matches-list-item-user-tournament {
     width: 100%;
     display: flex;
@@ -401,8 +411,7 @@ svg {
     padding: 0;
   }
 
-  .matches-list-item-user-tournament p {
-  }
+  .matches-list-item-user-tournament p {}
 
   .matches-list-item-user-tournament-icon {
     position: absolute;
@@ -453,9 +462,34 @@ svg {
     padding: 0.7rem;
   }
 
+  .matches-list-item-tournament {
+    padding: 0.7rem;
+    margin-bottom: 0.5em;
+
+  }
+
+  .matches-list-item-user-tournament {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+  }
+
+  .matches-list-item-user-tournament-icon {
+    position: absolute;
+    transform: rotate(-39.5deg);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+  }
 
   .matches-container {
-    overflow-y: hidden;
+    overflow-y: scroll;
   }
 
   .matches-list-item-user {
@@ -480,7 +514,7 @@ svg {
 
 @media screen and (max-width: 319px) {
   * {
-      display: none;
+    display: none;
   }
-  
+
 }
