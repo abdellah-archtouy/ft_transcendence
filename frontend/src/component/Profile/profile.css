@@ -568,3 +568,19 @@
 }
 
 /*  styled by tmiftah  */
+
+.user-status {
+    position: relative;
+}
+
+.status {
+    height: 10px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    right: -20px;
+    transition: all 0.5s ease-in-out;
+}

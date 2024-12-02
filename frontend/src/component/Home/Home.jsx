@@ -57,7 +57,6 @@ const Home = () => {
         headers: { Authorization: `Bearer ${access}` },
       });
       setHistory(response1.data);
-      console.log(response1.data)
     } catch (error) {
       handleFetchError(error, fetchTop5);
     }
@@ -100,7 +99,6 @@ const Home = () => {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
             setErrors({ general: "Session expired. Please log in again." });
-            window.location.reload();
             navigate("/");
           });
         } else {

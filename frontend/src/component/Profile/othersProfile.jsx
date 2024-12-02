@@ -14,11 +14,14 @@ import PureComponent from "./Chartline";
 import { useError } from "../../App";
 import LoadingPage from "../loadingPage/loadingPage";
 
+const hostName = process.env.REACT_APP_API_HOSTNAME;
+
 const OthersProfile = () => {
   const [userData, setUserData] = useState(null);
   const [banerImg, setBanerImg] = useState();
   const [avatarImg, setavatarImg] = useState();
   const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState(false);
   const [errors, setErrors] = useState({});
   const [achievement, setAchievement] = useState([]);
 
@@ -34,7 +37,7 @@ const OthersProfile = () => {
   const [loss7, setLoss7] = useState([]);
   const [friends, setFriends] = useState([]);
   const [time, setTime] = useState("hour");
-  const { setError } = useError();
+  const { setError, statusSocket } = useError();
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -112,6 +115,30 @@ const OthersProfile = () => {
     if (userData) fetcwin_loss();
   }, [userData]);
 
+  useEffect(() => {
+    const handleStatusUpdate = (event) => {
+      try {
+        const data = JSON.parse(event.data); // Parse the incoming message
+        if (data?.username === userData?.username) {
+          setStatus(() => data?.stat); // Update the status if the username matches
+        }
+      } catch (error) {
+        console.error("Failed to parse WebSocket message:", error);
+        setError("Failed to update status.");
+      }
+    };
+
+    if (statusSocket) {
+      statusSocket.addEventListener("message", handleStatusUpdate);
+    }
+
+    return () => {
+      if (statusSocket) {
+        statusSocket.removeEventListener("message", handleStatusUpdate);
+      }
+    };
+  }, [statusSocket, userData, setError]);
+
   const [rateType, setRateType] = useState("wins");
   const [rateTypet, setRateTypet] = useState("7");
 
@@ -126,10 +153,8 @@ const OthersProfile = () => {
     } else {
       setTime("hour");
       if (rateType === "wins") {
-        console.log("win24:", win24);
         setChartData(win24);
       } else {
-        console.log("loss24:", loss24);
         setChartData(loss24);
       }
     }
@@ -267,9 +292,12 @@ const OthersProfile = () => {
       <div className="after-avatar"></div>
       <Avatar avatarImg={avatarImg}></Avatar>
       <div className="userinfo">
-            <h1 className="username">
-              {userData?.username ? userData.username : "User"}
-            </h1>
+          <div className="user-status">
+              <h1 className="username">
+                {userData?.username ? userData.username : "User"}
+              </h1>
+              <div className="status" style={status === true ? {backgroundColor:"#62A460"} : {backgroundColor:"#A46060"}}></div>
+          </div>
           <div className="add-friend-message">
             {isFriend ? (
               <button className="" onClick={onmessagecklick}>

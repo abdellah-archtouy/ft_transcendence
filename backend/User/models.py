@@ -2,15 +2,15 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import datetime
+from django.db import transaction
 
 
 def reset_ranks():
-    users = User.objects.all()
-    sorted_users_by_score = users.order_by("-score")
-    for rank, user in enumerate(sorted_users_by_score, start=1):
-        user.rank = rank
-        user.save()
-
+    sorted_users_by_score = User.objects.exclude(is_superuser=True).order_by("-score")
+    with transaction.atomic():
+        for rank, user in enumerate(sorted_users_by_score, start=1):
+            user.rank = rank
+            user.save()
 
 # Create your models here.
 class User(AbstractUser):

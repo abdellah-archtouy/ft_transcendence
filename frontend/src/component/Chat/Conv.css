@@ -60,12 +60,19 @@
 }
 
 .online{
-    /* right: 55%;
-    top: 20px; */
     height: 10px;
     width: 10px;
     border-radius: 50%;
     background-color: #62A460;
+    animation: fade-in 0.5s ease-in-out;
+}
+
+.offline{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: #a46061;
+    animation: fade-in 0.5s ease-in-out;
 }
 
 .timee{

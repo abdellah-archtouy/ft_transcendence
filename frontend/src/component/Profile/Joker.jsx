@@ -5,7 +5,6 @@ function Joker() {
 
   return (
     <div className='ach-joker achivement'>
-        {/* <img src={avatarUrl('media/achievement/bg_joker.png')} alt="joker background" /> */}
         <div className='joker_icon ach-icon'>
             <Joker_icon ></Joker_icon>
         </div>

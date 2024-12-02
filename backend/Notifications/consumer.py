@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from User.models import User
 
 class notification_consumer(AsyncWebsocketConsumer):
     async def connect(self):

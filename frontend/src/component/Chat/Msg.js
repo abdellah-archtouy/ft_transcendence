@@ -243,7 +243,6 @@ const Msg = ({
       }
     } catch (error) {
       handleFetchError(error, () => fetchmute());
-      console.log(error);
       setData([]);
     } finally {
       setLoading(false);
@@ -270,7 +269,6 @@ const handelmute = async () => {
     setMute(true);
   } catch (error) {
     handleFetchError(error, () => handelmute());
-    console.log(error);
     setData([]);
   } finally {
     setLoading(false);
@@ -296,7 +294,6 @@ const handelblock = async () => {
       setBlock(true);
   } catch (error) {
     handleFetchError(error, () => handelmute());
-    console.log(error);
     setData([]);
   } finally {
     setLoading(false);

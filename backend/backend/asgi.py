@@ -15,6 +15,8 @@ from channels.auth import AuthMiddlewareStack
 from django.contrib.auth import get_user_model
 
 # from Chat import routing
+
+import User.routing
 import Chat.routing
 import Game.routing
 import Notifications.routing
@@ -27,6 +29,7 @@ websocket_urlpatterns = (
     + Game.routing.websocket_urlpatterns
     + Notifications.routing.websocket_urlpatterns
     + Tournament.routing.websocket_urlpatterns
+    + User.routing.websocket_urlpatterns
 )
 
 application = ProtocolTypeRouter(

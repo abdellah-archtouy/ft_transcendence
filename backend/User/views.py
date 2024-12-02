@@ -25,6 +25,8 @@ from django.conf import settings
 from django.db.models import Q
 import re
 from Notifications.views import create_notification
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 User = get_user_model()
@@ -385,7 +387,7 @@ def suggest_friends(request):
         current_user = request.user
 
         # Get all users excluding the current user
-        all_users = User.objects.exclude(id=current_user.id)
+        all_users = User.objects.exclude(Q(id=current_user.id) | Q(is_superuser=True))
 
         # Get users who have a relation with the current user
         related_users = Friend.objects.filter(
@@ -475,7 +477,7 @@ def validate_token(request):
 def search_bar_list(request):
     try:
         user = request.user
-        user_list = User.objects.all().exclude(id=user.id).values("avatar", "username")
+        user_list = User.objects.all().exclude(Q(id=user.id) | Q(is_superuser=True)).values("avatar", "username")
         return Response(user_list, status=status.HTTP_200_OK)
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -490,7 +492,6 @@ def search_bar_list(request):
 @permission_classes([IsAuthenticated])
 def update_general_info(request):
     try:
-        print("-----------------")
         user = request.user
         data = request.data
 
@@ -710,4 +711,46 @@ def handle_friend_request(request, id, action):
         return Response(
             {"error": str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+    """
+        THE STATUS CODE BY TALAL
+    """
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_user_stat(request):
+    try:
+        user = request.user
+        new_stat = request.data.get('stat')
+
+        if not isinstance(new_stat, bool):
+            return Response(
+                {"error": "Stat must be a boolean value"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.stat = new_stat
+        user.save()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"stat_{user.id}",
+            {
+                "type": "send_stat",
+                "stat": user.stat,
+            },
+        )
+
+        return Response(
+            {
+                "message": "User stat updated successfully",
+                "stat": user.stat
+            },
+            status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

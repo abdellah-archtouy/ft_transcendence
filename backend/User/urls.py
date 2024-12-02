@@ -14,6 +14,7 @@ from .views import (
     update_general_info,
     change_password,
     handle_friend_request,
+    update_user_stat
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -43,6 +44,7 @@ urlpatterns = [
         handle_friend_request,
         name="handle_friend_request",
     ),
+    path('user/stat', update_user_stat, name='update_user_stat'),
 ]
 
 

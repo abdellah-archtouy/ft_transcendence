@@ -1,6 +1,3 @@
-from django.shortcuts import render
-from django.shortcuts import render
-from django.http import HttpResponse
 from rest_framework import generics
 from .serializer import (
     UserSerializer,
@@ -14,26 +11,25 @@ from .serializer import (
 import json
 from User.models import User, Achievement , Friend
 from Chat.models import Conversation, Message , Block_mute
-from django.contrib.auth import login
-import jwt, datetime
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
-from django.contrib.auth import get_user_model
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.exceptions import TokenError
 
-from rest_framework.parsers import JSONParser
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 from Game.manged_room_consumer import pre_room_manager
 from Notifications.views import create_notification
-from datetime import datetime, timedelta, timezone
-from django.http import JsonResponse
+from datetime import datetime, timedelta
+from django.utils import timezone
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+from django.db.models import Q
+
+from Game.models import Game
+from collections import defaultdict
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -69,9 +65,6 @@ def get_friends(request):
     except Exception as e:
         print("hnaaaayaaa 2 2", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
-
-
-from django.db.models import Q
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -186,8 +179,6 @@ def ConvView(request):
         result.append(data_return)
     return Response(result)
 
-from django.db.models import Q
-
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -219,10 +210,6 @@ def post_message(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-import os
-from django.conf import settings
 
 
 @api_view(["GET"])
@@ -260,6 +247,7 @@ def get_user_data(request):
                 "score": user.score,
                 "win": user.win,
                 "rank": user.rank,
+                "stat": user.stat,
                 "achievement": achievements_serialized,
                 "achievement_images": image_paths,
             },
@@ -306,6 +294,7 @@ def get_ouser_data(request, username):
                 "score": user.score,
                 "win": user.win,
                 "rank": user.rank,
+                "stat": user.stat,
                 "achievement": achievements_serialized,
                 "achievement_images": image_paths,
             },
@@ -319,17 +308,6 @@ def get_ouser_data(request, username):
     except Exception as e:
         print("hnaaaayaaa", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    
-    
-from datetime import datetime, timedelta
-from django.http import JsonResponse
-
-
-
-from datetime import datetime, timedelta
-from django.http import JsonResponse
-
 
 def get_last_24_hours():
     current_time = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0)
@@ -371,10 +349,6 @@ def update_last_24_hours_with_lose_matches(last_24_hours, matches_list):
             entry['lose'] = matches_dict[hour]
     last_24_hours.sort(key=lambda x: x['hour'])
     return last_24_hours
-
-from Game.models import Game
-import pytz
-from collections import defaultdict
 
 def get_weekly_summary(match_history):
     today = datetime.now()
@@ -423,7 +397,7 @@ def get_user_win_and_lose(request):
         user = request.user
         userwin = GameSerializer(Game.objects.filter(winner=user), many=True).data
         userlose = GameSerializer(Game.objects.filter(loser=user), many=True).data
-        current_time = datetime.utcnow()
+        current_time = timezone.now()
         time_24_hours_ago = current_time - timedelta(hours=24)
         filtered_win_matches = []
         filtered_lose_matches = []
@@ -477,7 +451,7 @@ def get_ouser_win_and_lose(request, username):
         user = User.objects.get(username=username)
         userwin = GameSerializer(Game.objects.filter(winner=user), many=True).data
         userlose = GameSerializer(Game.objects.filter(loser=user), many=True).data
-        current_time = datetime.utcnow()
+        current_time = timezone.now()
         time_24_hours_ago = current_time - timedelta(hours=24)
         filtered_win_matches = []
         filtered_lose_matches = []
@@ -590,12 +564,6 @@ def block_friend(request, username):
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-import datetime
-from Notifications.views import create_notification
 
 
 def create_Tournament_message(username, message):

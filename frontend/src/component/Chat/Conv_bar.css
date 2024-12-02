@@ -44,7 +44,7 @@
 .top h2{
     color: #B0B0B0;
     font-weight: 700;
-    size: 32px;
+    font-size: clamp(1.75rem, 0.585vw + 1.626rem, 2rem);
     line-height: 1;
 }
 
@@ -150,9 +150,6 @@ form {
     background: #FFFFFF60;
 }
 
-.conv_bar .center.selected {
-    /* border-left: 4px solid #007bff; */
-  }
 .empty{
     color: #FFFFFF50;
     display: flex;

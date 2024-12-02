@@ -7,6 +7,7 @@ import Vector from './icons/Vector_1';
 import './Conv_bar.css';
 import { WebSocketContext } from './Chat';
 import { useNavigate } from "react-router-dom";
+import { useError } from "../../App";
 
 
 const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, setConversationdata}) => {
@@ -113,7 +114,6 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     setOn(false);
   };
 
-
   const handleChange = (e) => {
     setSearch(e);
     if (e === '') {
@@ -141,6 +141,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
     setconvid(user.id);
     setConversationdata(user);
   };
+
 
 
   return (

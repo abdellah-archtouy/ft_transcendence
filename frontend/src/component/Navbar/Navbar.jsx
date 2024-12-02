@@ -25,7 +25,7 @@ const array = [
 const apiUrl = process.env.REACT_APP_API_URL;
 const hostName = process.env.REACT_APP_API_HOSTNAME;
 
-const Navbar = () => {
+const Navbar = ({ setLoggedOut }) => {
   const [activeElement, setActiveElement] = useState(null);
   const [search, setSearch] = useState(false);
   const [navDisplay, setNavDisplay] = useState(true);
@@ -352,9 +352,7 @@ const Navbar = () => {
           <button
             className="navbutton"
             onClick={() => {
-              localStorage.removeItem("access");
-              localStorage.removeItem("refresh");
-              window.location.reload();
+              setLoggedOut(true);
             }}
           >
             <svg
