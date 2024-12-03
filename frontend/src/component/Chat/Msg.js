@@ -11,8 +11,7 @@ import Picker from "@emoji-mart/react";
 import Back from "./icons/back";
 import { WebSocketContext } from "./Chat";
 import { useNavigate, useLocation } from "react-router-dom";
-import {useError} from "../../App"
-
+import { useError } from "../../App";
 
 const Msg = ({
   userData,
@@ -78,9 +77,7 @@ const Msg = ({
         );
         setConversationdata1(response2.data);
         const response = await axios.get(
-          `${apiUrl}/chat/msg/${queryParam.get(
-            "username"
-          )}/`,
+          `${apiUrl}/chat/msg/${queryParam.get("username")}/`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -148,15 +145,12 @@ const Msg = ({
   const postnewroom = async (friendId) => {
     const access = localStorage.getItem("access");
     try {
-      const response = await axios.get(
-        `${apiUrl}/chat/game/${friendId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access}`,
-          },
-        }
-      );
+      const response = await axios.get(`${apiUrl}/chat/game/${friendId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access}`,
+        },
+      });
       setRomeName(response.data);
     } catch (error) {
     } finally {
@@ -171,8 +165,7 @@ const Msg = ({
       setError("You are blocked by the user");
       setMessage("");
       return;
-    }
-    else if (Block === true) {
+    } else if (Block === true) {
       setError("You are blocked the user");
       setMessage("");
       return;
@@ -186,40 +179,38 @@ const Msg = ({
         conversation_info: conversationdata1.conversation_info,
       };
       ws.send(JSON.stringify(msg));
-      
+
       setMessage("");
     }
   };
 
   useEffect(() => {
     const handelinvite = () => {
-            fetchmute();
-            if (friendBlock.block === true) {
-              setError("You are blocked by the user");
-              setMessage("");
-              return;
-            }
-            else if (Block === true) {
-              setError("You are blocked the user");
-              setMessage("");
-              return;
-            }
-            if (ws) {
-                const msg = {
-                      conversation: conversationdata1.id,
-                      user: userData.id,
-                      message: romeName,
-                      msg_type: "invite",
-                      conversation_info: conversationdata1.conversation_info,
-                      invite_room_name : romeName,
-                    };
-                    ws.send(JSON.stringify(msg));
-                    setMessage("");
-                }
-              };
-        handelinvite();
+      fetchmute();
+      if (friendBlock.block === true) {
+        setError("You are blocked by the user");
+        setMessage("");
+        return;
+      } else if (Block === true) {
+        setError("You are blocked the user");
+        setMessage("");
+        return;
+      }
+      if (ws) {
+        const msg = {
+          conversation: conversationdata1.id,
+          user: userData.id,
+          message: romeName,
+          msg_type: "invite",
+          conversation_info: conversationdata1.conversation_info,
+          invite_room_name: romeName,
+        };
+        ws.send(JSON.stringify(msg));
+        setMessage("");
+      }
+    };
+    handelinvite();
   }, [romeName]);
-
 
   const fetchmute = async () => {
     try {
@@ -249,56 +240,52 @@ const Msg = ({
     }
   };
 
-const handelmute = async () => {
-  const access = localStorage.getItem("access");
-  try {
-    if (queryParam.get("username") === null) return;
-    const response = await axios.get(
-      `${apiUrl}/chat/mute/${queryParam.get("username")}/`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access}`,
-        },
-      }
-    );
-    if (mute === true) {
-      setMute(false);
+  const handelmute = async () => {
+    const access = localStorage.getItem("access");
+    try {
+      if (queryParam.get("username") === null) return;
+      const response = await axios.get(
+        `${apiUrl}/chat/mute/${queryParam.get("username")}/`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access}`,
+          },
+        }
+      );
+      if (mute === true) {
+        setMute(false);
+      } else setMute(true);
+    } catch (error) {
+      handleFetchError(error, () => handelmute());
+      setData([]);
+    } finally {
+      setLoading(false);
     }
-    else
-    setMute(true);
-  } catch (error) {
-    handleFetchError(error, () => handelmute());
-    setData([]);
-  } finally {
-    setLoading(false);
-  }
-}
-const handelblock = async () => {
-  const access = localStorage.getItem("access");
-  try {
-    if (queryParam.get("username") === null) return;
-    const response = await axios.get(
-      `${apiUrl}/chat/block/${queryParam.get("username")}/`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access}`,
-        },
-      }
-    );
-    if (Block === true) {
-      setBlock(false);
+  };
+  const handelblock = async () => {
+    const access = localStorage.getItem("access");
+    try {
+      if (queryParam.get("username") === null) return;
+      const response = await axios.get(
+        `${apiUrl}/chat/block/${queryParam.get("username")}/`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access}`,
+          },
+        }
+      );
+      if (Block === true) {
+        setBlock(false);
+      } else setBlock(true);
+    } catch (error) {
+      handleFetchError(error, () => handelmute());
+      setData([]);
+    } finally {
+      setLoading(false);
     }
-    else
-      setBlock(true);
-  } catch (error) {
-    handleFetchError(error, () => handelmute());
-    setData([]);
-  } finally {
-    setLoading(false);
-  }
-}
+  };
   const handelsetclick = () => {
     setClicked(!clicked);
   };
@@ -340,24 +327,40 @@ const handelblock = async () => {
               </button>
               <>
                 <img
+                  onClick={() => [
+                    navigate(`/user/${conversationdata1?.uid2_info?.username}`),
+                  ]}
+                  style={{ cursor: "pointer" }}
                   src={avatarUrl(conversationdata1?.uid2_info?.avatar)}
                   alt="avatr"
                 />
                 <h3>{conversationdata1?.uid2_info?.username}</h3>
               </>
             </div>
-            <div onClick={handelsetclick} className={`set ${queryParam.get("username") === 'Tournament' ?  'hide' :'null'}`}>
+            <div
+              onClick={handelsetclick}
+              className={`set ${
+                queryParam.get("username") === "Tournament" ? "hide" : "null"
+              }`}
+            >
               <button>
-                <Set/>
+                <Set />
               </button>
-              <div ref={MuteBlk} className={`set_dropdown ${clicked === true ? "" : "hide"}`}>
+              <div
+                ref={MuteBlk}
+                className={`set_dropdown ${clicked === true ? "" : "hide"}`}
+              >
                 <ul>
-                  {Block === true ? <li onClick={handelblock}>Unblock</li> :
-                  <li onClick={handelblock}>Block</li>
-                  }
-                  {mute === true ? <li  onClick={handelmute}>Unmute</li> :
-                  <li onClick={handelmute}>Mute</li>
-                   }
+                  {Block === true ? (
+                    <li onClick={handelblock}>Unblock</li>
+                  ) : (
+                    <li onClick={handelblock}>Block</li>
+                  )}
+                  {mute === true ? (
+                    <li onClick={handelmute}>Unmute</li>
+                  ) : (
+                    <li onClick={handelmute}>Mute</li>
+                  )}
 
                   <li onClick={handelcloseChat}>Close Chat</li>
                 </ul>
@@ -385,9 +388,17 @@ const handelblock = async () => {
             <div ref={messagesEndRef} />
             <div />
           </div>
-          <div className={` message_bar ${queryParam.get("username") === 'Tournament' ?  'hide' :'null'}`}>
-            <button onClick={(e) => {e.preventDefault(); 
-                postnewroom(conversationdata1.uid2_info.id);}}>
+          <div
+            className={` message_bar ${
+              queryParam.get("username") === "Tournament" ? "hide" : "null"
+            }`}
+          >
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                postnewroom(conversationdata1.uid2_info.id);
+              }}
+            >
               <PlayInv />
             </button>
             <button onClick={handelemojiclick}>
@@ -424,7 +435,8 @@ const handelblock = async () => {
       ) : (
         <div className="empty">
           <p>
-            Add a person <br /> and start a conversation
+            Pick a person and start
+            <br />a conversation
           </p>
         </div>
       )}

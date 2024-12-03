@@ -7,11 +7,15 @@
     gap: 15px;
     align-items: start;
     padding: 15px;
-    background-color: #222222;
     font-family: 'URW Geometric';
     line-height: 1;
     cursor: pointer;
     transition: all 0.4s ease-in-out;
+    outline: 0px solid #222222;
+}
+
+.conv:hover {
+    background-color: #22222242;
 }
 
 .conv h3{
@@ -19,6 +23,7 @@
     font-weight: 700;
     line-height: 1;
     font-size: clamp(1.125rem, 0.75vw + 0.825rem, 1.5rem);
+    height: calc(clamp(1.125rem, 0.75vw + 0.825rem, 1.5rem) - 4px);
 }
 .delete{
     position: absolute;
@@ -26,15 +31,16 @@
 }
 .conv img{
     border-radius: 80px;
-    border: 3px solid #636262;
+    outline: 3px solid #636262;
     background-size: cover;
-    height: 60px;
+    height: 100%;
+    aspect-ratio: 1 / 1;
     align-self: center;
-    width: 60px;
 }
   
 .conv.selected {
-    box-shadow: 0 0 8px  #ddd;
+    /* box-shadow: 0 0 8px  #ddd; */
+    background-color: #222222;
 }
 
 .user_lastmsg p{
@@ -78,6 +84,7 @@
 .timee{
     margin-left: auto;
     color: #7B7B7B;
-    font-size: clamp(0.625rem, 0.625vw + 0.375rem, 0.938rem);
+    font-size: 12px;
+    line-height: 1;
     font-weight: 400;
 }

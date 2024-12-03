@@ -9,6 +9,7 @@ const SearchBar = ({ onStateChange }) => {
     return `${apiUrl}/media/` + name;
   }
   const [users, setUsers] = useState([]);
+  const [rows, setRows] = useState([]);
 
   const [userList, setUserList] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,8 +45,10 @@ const SearchBar = ({ onStateChange }) => {
         user?.username.toLowerCase().startsWith(searchTerm.toLowerCase())
       );
     }
-    setUserList(filteredData);
-  }, [searchTerm, users]);
+    setRows(filteredData);
+    if (!filteredData)
+      setRows(users);
+  }, [searchTerm, users, rows]);
 
   useEffect(() => {
     const handleFetchError = (error, retryFunction) => {
@@ -98,6 +101,7 @@ const SearchBar = ({ onStateChange }) => {
           }
         );
         setUsers(response.data);
+        setRows(response.data);
       } catch (error) {
         handleFetchError(error, fetchUserData);
       }
@@ -134,10 +138,10 @@ const SearchBar = ({ onStateChange }) => {
         </div>
         <div className="search">
           <div className="users">
-            {(!userList || !userList[0]?.username) && (
+            {(!rows || !rows[0]?.username) && (
               <p className="noSearchResult">No Search Result</p>
             )}
-            {userList?.map((user, index) => (
+            {rows?.map((user, index) => (
               <div className="user" key={index}>
                 <Link
                   className="userInfos"

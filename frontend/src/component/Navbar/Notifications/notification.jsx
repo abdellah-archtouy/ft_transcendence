@@ -142,6 +142,7 @@ const Notification = ({
               }}
               onClick={() => {
                 if (notif?.link) navigate(notif?.link);
+                setShowNotifications(false)
               }}
             >
               <img

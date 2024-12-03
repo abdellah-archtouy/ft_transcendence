@@ -731,8 +731,7 @@ def update_user_stat(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        user.stat = new_stat
-        user.save()
+        User.objects.filter(id=user.id).update(stat=new_stat)
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             f"stat_{user.id}",

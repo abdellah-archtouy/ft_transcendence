@@ -259,7 +259,6 @@ room_manager = RoomManager()
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         try:
-            print(self.scope["user"])
             path = self.scope["path"]
             if "ws/game/Remote" in path:
                 self.gamemode = "Remote"

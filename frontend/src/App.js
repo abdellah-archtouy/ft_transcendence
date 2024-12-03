@@ -87,17 +87,6 @@ function App() {
     );
   };
 
-  // useEffect(() => {
-  //   const putStat = async () => {
-  //     try {
-  //       await setUserState(true);
-  //     } catch (error) {
-  //       console.error("Failed to update user status:", error);
-  //     }
-  //   };
-  //   if (auth) putStat();
-  // }, [auth]);
-
   useEffect(() => {
 
     const handleFetchError = (error, retryFunction) => {
@@ -167,9 +156,6 @@ function App() {
         localStorage.removeItem("refresh");
         window.location.reload();
       } catch (error) {
-        // localStorage.removeItem("access");
-        // localStorage.removeItem("refresh");
-        // window.location.reload();
         console.log(error);
       }
     }

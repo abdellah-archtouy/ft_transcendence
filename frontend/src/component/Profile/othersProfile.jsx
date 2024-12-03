@@ -112,7 +112,10 @@ const OthersProfile = () => {
         setLoading(false);
       }
     };
-    if (userData) fetcwin_loss();
+    if (userData){
+      fetcwin_loss();
+      setStatus(userData?.stat);
+    }
   }, [userData]);
 
   useEffect(() => {
@@ -293,9 +296,11 @@ const OthersProfile = () => {
       <Avatar avatarImg={avatarImg}></Avatar>
       <div className="userinfo">
           <div className="user-status">
-              <h1 className="username">
-                {userData?.username ? userData.username : "User"}
-              </h1>
+              <div className="username-container">
+                <h1 className="username">
+                  {userData?.username ? userData.username : "User"}
+                </h1>
+              </div>
               <div className="status" style={status === true ? {backgroundColor:"#62A460"} : {backgroundColor:"#A46060"}}></div>
           </div>
           <div className="add-friend-message">

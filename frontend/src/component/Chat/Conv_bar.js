@@ -163,7 +163,7 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
       {isEmptyObject === false ? (
       <div className={`scrol`}>
           {tmp.length === 0 ? (
-            <div className='empty'>
+            <div className='conv-bar-empty'>
               <p>No conversation <br/> with this name</p>
             </div>
           ) : (
@@ -180,8 +180,8 @@ const ConvBar = ({ userData , setconvid , selectedConvId , setSelectedConvId, se
       </div>) :(
       <div className='scrol'>
         {conv.length === 0 ? (
-          <div className='empty'>
-            <p>Add a person <br /> and start a conversation</p>
+          <div className='conv-bar-empty'>
+            <p>Pick a person using '+' and<br />start a conversation</p>
           </div>
         ) : (
           conv.map(user => (
