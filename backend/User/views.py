@@ -561,7 +561,6 @@ def update_general_info(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def change_password(request):
@@ -711,45 +710,4 @@ def handle_friend_request(request, id, action):
         return Response(
             {"error": str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-
-
-    """
-        THE STATUS CODE BY TALAL
-    """
-
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def update_user_stat(request):
-    try:
-        user = request.user
-        new_stat = request.data.get('stat')
-
-        if not isinstance(new_stat, bool):
-            return Response(
-                {"error": "Stat must be a boolean value"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        User.objects.filter(id=user.id).update(stat=new_stat)
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"stat_{user.id}",
-            {
-                "type": "send_stat",
-                "stat": user.stat,
-            },
-        )
-
-        return Response(
-            {
-                "message": "User stat updated successfully",
-                "stat": user.stat
-            },
-            status=status.HTTP_200_OK
-        )
-    except Exception as e:
-        return Response(
-            {"error": str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

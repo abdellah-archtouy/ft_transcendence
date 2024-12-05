@@ -14,13 +14,13 @@ import axios from "axios";
 import { useCallback } from "react";
 
 const array = [
-    { index: 0, path: "/", activeElement: "Home" },
-    { index: 1, path: "/game", activeElement: "Game" },
-    { index: 2, path: "/chat", activeElement: "Chat" },
-    { index: 3, path: "/leaderboard", activeElement: "Leaderboard" },
-    { index: 4, path: "/setting", activeElement: "Setting" },
-    { index: 5, path: "/profile", activeElement: "Profile" },
-  ];
+  { index: 0, path: "/", activeElement: "Home" },
+  { index: 1, path: "/game", activeElement: "Game" },
+  { index: 2, path: "/chat", activeElement: "Chat" },
+  { index: 3, path: "/leaderboard", activeElement: "Leaderboard" },
+  { index: 4, path: "/setting", activeElement: "Setting" },
+  { index: 5, path: "/profile", activeElement: "Profile" },
+];
 
 const apiUrl = process.env.REACT_APP_API_URL;
 const hostName = process.env.REACT_APP_API_HOSTNAME;
@@ -33,13 +33,16 @@ const Navbar = ({ setLoggedOut }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notificationData, setNotificationData] = useState(null);
   const [user, setUser] = useState(null);
-  
+
   const burgerMenuRef = useRef(null);
   const NotificationRef = useRef(null);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const stableNavigate = useCallback((...args) => navigate(...args), [navigate]);
+  const stableNavigate = useCallback(
+    (...args) => navigate(...args),
+    [navigate]
+  );
 
   const handleClick = (element, index) => {
     setActiveElement(element);
@@ -155,43 +158,37 @@ const Navbar = ({ setLoggedOut }) => {
     };
 
     const handleFetchError = (error, retryFunction) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          const refresh = localStorage.getItem("refresh");
-
-          if (refresh) {
-            axios
-              .post(`${apiUrl}/api/token/refresh/`, { refresh })
-              .then((refreshResponse) => {
-                const { access: newAccess } = refreshResponse.data;
-                localStorage.setItem("access", newAccess);
-                retryFunction(); // Retry fetching user data
-              })
-              .catch((refreshError) => {
-                localStorage.removeItem("access");
-                localStorage.removeItem("refresh");
-                console.log("you have captured the error");
-                stableNavigate("/");
-                console.log({
-                  general: "Session expired. Please log in again.",
-                });
-              });
-          } else {
-            console.log({
-              general: "No refresh token available. Please log in.",
+      if (error.response && error.response.status === 401) {
+        const refresh = localStorage.getItem("refresh");
+  
+        if (refresh) {
+          axios
+            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .then((refreshResponse) => {
+              const { access: newAccess } = refreshResponse.data;
+              localStorage.setItem("access", newAccess);
+              retryFunction();
+            })
+            .catch((refreshError) => {
+              localStorage.removeItem("access");
+              localStorage.removeItem("refresh");
+              console.log({ general: "Session expired. Please log in again." });
+              window.location.reload();
+              navigate("/");
             });
-          }
-        } else {
-          console.log({ general: "Error fetching data. Please try again." });
+          } else {
+            console.log({ general: "No refresh token available. Please log in." });
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            window.location.reload();
+            navigate("/");
         }
       } else {
-        console.log({
-          general: "An unexpected error occurred. Please try again.",
-        });
+        console.log({ general: "An unexpected error occurred. Please try again." });
       }
     };
-    if (!user || Object.keys(user).length === 0)
-      fetchUserData();
+
+    if (!user || Object.keys(user).length === 0) fetchUserData();
   }, [stableNavigate]);
 
   useEffect(() => {

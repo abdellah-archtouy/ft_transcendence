@@ -104,9 +104,7 @@ const Msg = ({
 
       if (refresh) {
         axios
-          .post(`${apiUrl}/api/token/refresh/`, {
-            refresh,
-          })
+          .post(`${apiUrl}/api/token/refresh/`, { refresh })
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
@@ -115,15 +113,19 @@ const Msg = ({
           .catch((refreshError) => {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
-            setErrors({ general: "Session expired. Please log in again." });
+            console.log({ general: "Session expired. Please log in again." });
             window.location.reload();
             navigate("/");
           });
-      } else {
-        setErrors({ general: "No refresh token available. Please log in." });
+        } else {
+          console.log({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
       }
     } else {
-      setErrors({ general: "An unexpected error occurred. Please try again." });
+      console.log({ general: "An unexpected error occurred. Please try again." });
     }
   };
 

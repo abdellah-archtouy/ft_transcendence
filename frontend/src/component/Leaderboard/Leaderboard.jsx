@@ -45,12 +45,15 @@ const Leaderboard = () => {
               localStorage.removeItem("access");
               localStorage.removeItem("refresh");
               console.log({ general: "Session expired. Please log in again." });
-              stableNavigate("/");
+              window.location.reload();
+              navigate("/");
             });
           } else {
             console.log({ general: "No refresh token available. Please log in." });
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
             window.location.reload();
-            stableNavigate("/");
+            navigate("/");
         }
       } else {
         console.log({ general: "An unexpected error occurred. Please try again." });

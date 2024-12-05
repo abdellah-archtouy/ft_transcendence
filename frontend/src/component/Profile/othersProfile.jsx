@@ -72,7 +72,7 @@ const OthersProfile = () => {
         setavatarImg(response.data.avatar);
         setAchievement(response.data.achievement_images);
       } catch (error) {
-        if (error.status === 404) {
+        if (error.status === 400) {
           setError(error.response.data.error);
           navigate(-1);
         }
@@ -112,7 +112,7 @@ const OthersProfile = () => {
         setLoading(false);
       }
     };
-    if (userData){
+    if (userData) {
       fetcwin_loss();
       setStatus(userData?.stat);
     }
@@ -247,20 +247,24 @@ const OthersProfile = () => {
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
-            retryFunction(); // Retry the original function
+            retryFunction();
           })
           .catch((refreshError) => {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
-            setErrors({ general: "Session expired. Please log in again." });
+            console.log({ general: "Session expired. Please log in again." });
             window.location.reload();
             navigate("/");
           });
-      } else {
-        setErrors({ general: "No refresh token available. Please log in." });
+        } else {
+          console.log({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
       }
     } else {
-      setErrors({ general: "An unexpected error occurred. Please try again." });
+      console.log({ general: "An unexpected error occurred. Please try again." });
     }
   };
 
@@ -295,36 +299,51 @@ const OthersProfile = () => {
       <div className="after-avatar"></div>
       <Avatar avatarImg={avatarImg}></Avatar>
       <div className="userinfo">
-          <div className="user-status">
-              <div className="username-container">
-                <h1 className="username">
-                  {userData?.username ? userData.username : "User"}
-                </h1>
-              </div>
-              <div className="status" style={status === true ? {backgroundColor:"#62A460"} : {backgroundColor:"#A46060"}}></div>
+        <div className="user-status">
+          <div className="username-container">
+            <h1 className="username">
+              {userData?.username ? userData.username : "User"}
+            </h1>
           </div>
-          <div className="add-friend-message">
-            {isFriend ? (
-              <button className="" onClick={onmessagecklick}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"/></svg>
-                Message
-              </button>
-            ) : (
-              <>
-                {isNotFriend === false ? (
-                  <div className="request"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg></div>
-                ) : (
-                  <button
-                    className=""
-                    onClick={() => handleAddFriend(userData.id)}
-                  >
-                    Add Friend
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        <p className="bio" style={!userData?.bio ? {display:"none"} : {}}>{userData?.bio}</p>
+          <div
+            className="status"
+            style={
+              status === true
+                ? { backgroundColor: "#62A460" }
+                : { backgroundColor: "#A46060" }
+            }
+          ></div>
+        </div>
+        <div className="add-friend-message">
+          {isFriend ? (
+            <button className="" onClick={onmessagecklick}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z" />
+              </svg>
+              Message
+            </button>
+          ) : (
+            <>
+              {isNotFriend === false ? (
+                <div className="request">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z" />
+                  </svg>
+                </div>
+              ) : (
+                <button
+                  className=""
+                  onClick={() => handleAddFriend(userData.id)}
+                >
+                  Add Friend
+                </button>
+              )}
+            </>
+          )}
+        </div>
+        <p className="bio" style={!userData?.bio ? { display: "none" } : {}}>
+          {userData?.bio}
+        </p>
         <div className="win-rank-score">
           <div>
             {userData?.win}

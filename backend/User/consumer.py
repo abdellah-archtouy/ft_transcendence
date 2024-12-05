@@ -18,16 +18,17 @@ class stat_consumer(AsyncWebsocketConsumer):
             if self.user:
                 self.group_name = f"stat"
                 add_to_dict(self.user_id, self.channel_name)
-                await self.set_user_update(True)
                 await self.channel_layer.group_add(self.group_name, self.channel_name)
-                await self.channel_layer.group_send(
-                    self.group_name,
-                    {
-                        "type": "send_stat",
-                        "username": self.user.username,
-                        "stat": self.user.stat,
-                    },
-                )
+                if self.user.stat != True:
+                    await self.set_user_update(True)
+                    await self.channel_layer.group_send(
+                        self.group_name,
+                        {
+                            "type": "send_stat",
+                            "username": self.user.username,
+                            "stat": self.user.stat,
+                        },
+                    )
                 await self.accept()
         except Exception as e:
             print(f"connect error: {e}")
@@ -40,15 +41,16 @@ class stat_consumer(AsyncWebsocketConsumer):
         global users
         if self.group_name and self.channel_name:
             if len(users[self.user_id]) == 1:
-                await self.set_user_update(False)
-                await self.channel_layer.group_send(
-                    self.group_name,
-                    {
-                        "type": "send_stat",
-                        "username": self.user.username,
-                        "stat": self.user.stat,
-                    },
-                )
+                if self.user.stat != False:
+                    await self.set_user_update(False)
+                    await self.channel_layer.group_send(
+                        self.group_name,
+                        {
+                            "type": "send_stat",
+                            "username": self.user.username,
+                            "stat": self.user.stat,
+                        },
+                    )
             if self.channel_name in users[self.user_id]:
                 users[self.user_id].remove(self.channel_name)
             await self.channel_layer.group_discard(self.group_name, self.channel_name)

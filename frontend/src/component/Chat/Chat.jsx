@@ -1,19 +1,19 @@
-import React, { useEffect ,useState } from 'react';
-import axios from 'axios';
-import './Chat.css';
-import ConvBar from './Conv_bar';
-import Msg from './Msg';
-import { createContext } from 'react';
-import { useNavigate , useParams , useLocation} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./Chat.css";
+import ConvBar from "./Conv_bar";
+import Msg from "./Msg";
+import { createContext } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 export const WebSocketContext = createContext(null);
 
 const Chat = () => {
   const { username } = useParams();
 
-  // const [className, setClassName] = useState(); 
+  // const [className, setClassName] = useState();
   const [userData, setUserData] = useState(null);
-  const [convid , setconvid] = useState(0);
+  const [convid, setconvid] = useState(0);
   const [errors, setErrors] = useState({});
   const [conversationdata, setConversationdata] = useState([]);
   const [selectedConvId, setSelectedConvId] = useState(null);
@@ -29,17 +29,16 @@ const Chat = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-          const response = await axios.get(`${apiUrl}/chat/user/`, {
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${access}`,
-              },
-              withCredentials: true,
-          });
-          setUserData(response.data);
+        const response = await axios.get(`${apiUrl}/chat/user/`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access}`,
+          },
+          withCredentials: true,
+        });
+        setUserData(response.data);
       } catch (error) {
         handleFetchError(error, () => fetchData());
-
       }
     };
 
@@ -53,48 +52,52 @@ const Chat = () => {
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
-              retryFunction(); // Retry the original function
+              retryFunction();
             })
             .catch((refreshError) => {
               localStorage.removeItem("access");
               localStorage.removeItem("refresh");
-              setErrors({ general: "Session expired. Please log in again." });
+              console.log({ general: "Session expired. Please log in again." });
               window.location.reload();
               navigate("/");
             });
-        } else {
-          setErrors({ general: "No refresh token available. Please log in." });
+          } else {
+            console.log({ general: "No refresh token available. Please log in." });
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            window.location.reload();
+            navigate("/");
         }
       } else {
-        setErrors({ general: "An unexpected error occurred. Please try again." });
+        console.log({ general: "An unexpected error occurred. Please try again." });
       }
     };
-  
+
     fetchData();
   }, []);
-
 
   useEffect(() => {
     // Create WebSocket connection
     const access = localStorage.getItem("access");
-    if (userData)
-    {
-      const ws = new WebSocket(`ws://${host}:8000/ws/api/data/${userData?.id}/`);
-  
+    if (userData) {
+      const ws = new WebSocket(
+        `ws://${host}:8000/ws/api/data/${userData?.id}/`
+      );
+
       ws.onopen = () => {
-        console.log('WebSocket connection established');
+        console.log("WebSocket connection established");
       };
-  
+
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error("WebSocket error:", error);
       };
-  
+
       ws.onclose = (event) => {
-        console.log('WebSocket connection closed:', event);
+        console.log("WebSocket connection closed:", event);
       };
-  
+
       setSocket(ws);
-  
+
       return () => {
         ws.close();
       };
@@ -106,12 +109,27 @@ const Chat = () => {
   }
   return (
     <WebSocketContext.Provider value={socket}>
-      <div className={`chat_container ${queryParam.get("convid") === null ? 'null' : 'mobile-msg' }`}>
-        <ConvBar userData={userData} setconvid={setconvid} selectedConvId={selectedConvId} setSelectedConvId={setSelectedConvId} setConversationdata={setConversationdata}/>
-        <Msg userData={userData} convid={convid} setSelectedConvId={setSelectedConvId} conversationdata={conversationdata}/>
+      <div
+        className={`chat_container ${
+          queryParam.get("convid") === null ? "null" : "mobile-msg"
+        }`}
+      >
+        <ConvBar
+          userData={userData}
+          setconvid={setconvid}
+          selectedConvId={selectedConvId}
+          setSelectedConvId={setSelectedConvId}
+          setConversationdata={setConversationdata}
+        />
+        <Msg
+          userData={userData}
+          convid={convid}
+          setSelectedConvId={setSelectedConvId}
+          conversationdata={conversationdata}
+        />
       </div>
     </WebSocketContext.Provider>
   );
-}
+};
 
 export default Chat;

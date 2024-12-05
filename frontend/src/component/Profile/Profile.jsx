@@ -84,29 +84,31 @@ const Profile = () => {
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-
+  
         if (refresh) {
           axios
             .post(`${apiUrl}/api/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
-              retryFunction(); // Retry the original function
+              retryFunction();
             })
             .catch((refreshError) => {
               localStorage.removeItem("access");
               localStorage.removeItem("refresh");
-              setErrors({ general: "Session expired. Please log in again." });
+              console.log({ general: "Session expired. Please log in again." });
               window.location.reload();
               navigate("/");
             });
-        } else {
-          setErrors({ general: "No refresh token available. Please log in." });
+          } else {
+            console.log({ general: "No refresh token available. Please log in." });
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            window.location.reload();
+            navigate("/");
         }
       } else {
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
+        console.log({ general: "An unexpected error occurred. Please try again." });
       }
     };
 

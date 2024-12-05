@@ -99,10 +99,13 @@ const Home = () => {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
             setErrors({ general: "Session expired. Please log in again." });
+            window.location.reload();
             navigate("/");
           });
         } else {
           setErrors({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
           window.location.reload();
           navigate("/");
       }

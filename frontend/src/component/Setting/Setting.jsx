@@ -24,7 +24,7 @@ const Setting = () => {
   const [coverImageFile, setCoverImageFile] = useState(null); // To store the cover image file
   const [avatarImageFile, setAvatarImageFile] = useState(null); // To store the avatar image file
   const navigate = useNavigate();
-  const { setError } = useError()
+  const { setError } = useError();
 
   function avatarUrl(avatar) {
     return `${apiUrl}${avatar}`;
@@ -35,29 +35,30 @@ const Setting = () => {
   }
 
   const handleFetchError = (error, retryFunction) => {
-    if (error.response) {
-      if (error.response.status === 401) {
-        const refresh = localStorage.getItem("refresh");
-        if (refresh) {
-          axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
-            .then((refreshResponse) => {
-              const { access: newAccess } = refreshResponse.data;
-              localStorage.setItem("access", newAccess);
-              retryFunction();
-            })
-            .catch(() => {
-              localStorage.removeItem("access");
-              localStorage.removeItem("refresh");
-              setErrors({ general: "Session expired. Please log in again." });
-              window.location.reload();
-              navigate("/");
-            });
+    if (error.response && error.response.status === 401) {
+      const refresh = localStorage.getItem("refresh");
+
+      if (refresh) {
+        axios
+          .post(`${apiUrl}/api/token/refresh/`, { refresh })
+          .then((refreshResponse) => {
+            const { access: newAccess } = refreshResponse.data;
+            localStorage.setItem("access", newAccess);
+            retryFunction();
+          })
+          .catch((refreshError) => {
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            setErrors({ general: "Session expired. Please log in again." });
+            window.location.reload();
+            navigate("/");
+          });
         } else {
           setErrors({ general: "No refresh token available. Please log in." });
-        }
-      } else {
-        setErrors({ general: "Error fetching data. Please try again." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
       }
     } else {
       setErrors({ general: "An unexpected error occurred. Please try again." });
@@ -92,7 +93,7 @@ const Setting = () => {
       handleFetchError(error, fetchUserData);
     }
   };
-  
+
   useEffect(() => {
     fetchUserData();
   }, [apiUrl]);
@@ -222,8 +223,8 @@ const Setting = () => {
   
     console.log(avatarImageFile);
   };
-  
-  
+
+
 
   const validateGeneralForm = () => {
     const newErrors = {};
@@ -247,7 +248,6 @@ const Setting = () => {
   
     return newErrors;
   };
-  
 
   const validateSecurityForm = () => {
     const newErrors = {};
@@ -290,8 +290,6 @@ const Setting = () => {
   
     return newErrors;
   };
-  
-
 
   const handleGeneralSubmit = async () => {
     const generalErrors = validateGeneralForm();
@@ -309,7 +307,7 @@ const Setting = () => {
       }
       try {
         const access = localStorage.getItem('access');
-        await axios.put(`${apiUrl}/api/users/update-general-info/`, formData, {
+        const response = await axios.put(`${apiUrl}/api/users/update-general-info/`, formData, {
           headers: {
             'Authorization': `Bearer ${access}`,
             'Content-Type': 'multipart/form-data',
@@ -317,7 +315,7 @@ const Setting = () => {
         });
         setLoading(false);
         // reload the page 
-        window.location.reload();
+        setBio(response?.data?.bio)
       } catch (error) {
         setLoading(false);
         handleFetchError(error, handleGeneralSubmit);
@@ -387,7 +385,7 @@ const Setting = () => {
   const handlechangeSecurity = () => {
     setGeneral(false);
     setErrors({});
-  }
+  };
 
   return (
     <div className="settings-container">

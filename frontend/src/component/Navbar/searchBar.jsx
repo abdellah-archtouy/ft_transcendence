@@ -28,11 +28,11 @@ const SearchBar = ({ onStateChange }) => {
     }, 400);
     document.removeEventListener("keydown", keypress);
   }
-  
+
   function redirecUser(username) {
     setFadeout(true);
     setTimeout(() => {
-      navigate(`/user/${username}`)
+      navigate(`/user/${username}`);
       onStateChange(false);
     }, 400);
     document.removeEventListener("keydown", keypress);
@@ -46,45 +46,38 @@ const SearchBar = ({ onStateChange }) => {
       );
     }
     setRows(filteredData);
-    if (!filteredData)
-      setRows(users);
+    if (!filteredData) setRows(users);
   }, [searchTerm, users, rows]);
 
   useEffect(() => {
     const handleFetchError = (error, retryFunction) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          const refresh = localStorage.getItem("refresh");
-
-          if (refresh) {
-            axios
-              .post(`${apiUrl}/api/token/refresh/`, { refresh })
-              .then((refreshResponse) => {
-                const { access: newAccess } = refreshResponse.data;
-                localStorage.setItem("access", newAccess);
-                retryFunction() // Retry fetching user data
-              })
-              .catch((refreshError) => {
-                localStorage.removeItem("access");
-                localStorage.removeItem("refresh");
-                console.log("you have captured the error");
-                navigate("/");
-                console.log({
-                  general: "Session expired. Please log in again.",
-                });
-              });
-          } else {
-            console.log({
-              general: "No refresh token available. Please log in.",
+      if (error.response && error.response.status === 401) {
+        const refresh = localStorage.getItem("refresh");
+  
+        if (refresh) {
+          axios
+            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .then((refreshResponse) => {
+              const { access: newAccess } = refreshResponse.data;
+              localStorage.setItem("access", newAccess);
+              retryFunction();
+            })
+            .catch((refreshError) => {
+              localStorage.removeItem("access");
+              localStorage.removeItem("refresh");
+              console.log({ general: "Session expired. Please log in again." });
+              window.location.reload();
+              navigate("/");
             });
-          }
-        } else {
-          console.log({ general: "Error fetching data. Please try again." });
+          } else {
+            console.log({ general: "No refresh token available. Please log in." });
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            window.location.reload();
+            navigate("/");
         }
       } else {
-        console.log({
-          general: "An unexpected error occurred. Please try again.",
-        });
+        console.log({ general: "An unexpected error occurred. Please try again." });
       }
     };
 
@@ -92,14 +85,11 @@ const SearchBar = ({ onStateChange }) => {
       try {
         const access = localStorage.getItem("access");
 
-        const response = await axios.get(
-          `${apiUrl}/api/searchbar/`,
-          {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          }
-        );
+        const response = await axios.get(`${apiUrl}/api/searchbar/`, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
         setUsers(response.data);
         setRows(response.data);
       } catch (error) {
@@ -148,7 +138,7 @@ const SearchBar = ({ onStateChange }) => {
                   to={`/user/${user.username}`}
                   onClick={(e) => {
                     e.preventDefault();
-                    redirecUser(user.username)
+                    redirecUser(user.username);
                   }}
                 >
                   <img src={avatarUrl(user.avatar)} alt="" className="avatar" />

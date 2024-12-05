@@ -73,22 +73,7 @@ function App() {
     }
   }, [error]);
 
-  const setUserState = async (bool) => {
-    const access = localStorage.getItem("access");
-    await axios.put(
-      `${apiUrl}/api/user/stat`,
-      { stat: bool },
-      {
-        headers: {
-          Authorization: `Bearer ${access}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-  };
-
   useEffect(() => {
-
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
@@ -105,10 +90,13 @@ function App() {
               localStorage.removeItem("access");
               localStorage.removeItem("refresh");
               console.log({ general: "Session expired. Please log in again." });
+              window.location.reload();
               navigate("/");
             });
           } else {
             console.log({ general: "No refresh token available. Please log in." });
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
             window.location.reload();
             navigate("/");
         }
@@ -134,6 +122,7 @@ function App() {
         handleFetchError(error, fetchUserData);
       }
     };
+
     if (!userData && auth)
       fetchUserData();
   }, [navigate, auth]);
@@ -151,7 +140,6 @@ function App() {
   useEffect(() => {
     const logOut = async () => {
       try {
-        await setUserState(false);
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
         window.location.reload();
