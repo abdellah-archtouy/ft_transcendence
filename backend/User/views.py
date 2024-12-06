@@ -61,6 +61,9 @@ def register_user(request):
 def handle_42_callback(request):
     print("this function has been trigered")
     code = request.GET.get("code")
+    print("---------------------------")
+    print("the code is : ", code)
+    print("---------------------------")
     if not code:
         return JsonResponse({"error": "No code provided."}, status=400)
 
@@ -73,7 +76,7 @@ def handle_42_callback(request):
         "grant_type": "authorization_code",
         "client_id": "u-s4t2ud-ec33d59c683704986dda31fd1812c016474dd371e1bea3233a32976cf6b14b5c",
         "client_secret": client_secret,
-        "redirect_uri": f"http://{redirect_uri}:3000/api/auth/callback/",
+        "redirect_uri": f"https://{redirect_uri}:443/api/auth/callback/",
         "code": code,
     }
 

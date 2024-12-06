@@ -26,7 +26,7 @@ class User(AbstractUser):
     cover = models.ImageField(
         upload_to="covers/", null=True, blank=True, default="covers/default_cover.png"
     )
-    bio = models.TextField(blank=True)  # Removed max_length, added blank=True
+    bio = models.TextField(blank=True, null=True, max_length=150);
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)
     score = models.IntegerField(default=0)

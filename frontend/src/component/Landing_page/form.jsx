@@ -221,11 +221,11 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
       // Move focus to the previous input on backspace if current is empty
       e.target.previousSibling.focus();
     }
-  
+
     // Add this logic for the Enter key press
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent form submission
-  
+
       if (index === otp.length - 1) {
         // Submit OTP if it's the last field
         handleOtpSubmit(e); // Call your OTP submit function
@@ -261,6 +261,7 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
   };
 
   const handle42Login = async () => {
+    console.log("this function got printed");
 
     console.log("42 login function called");
     // setLoading(true);
@@ -269,36 +270,12 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
     );
     const clientId = `${client_id}`;
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+    console.log(url);
+    console.log(redirectUri);
 
     // Redirect user to 42 login page
     window.location.href = url;
   };
-
-  // useEffect(() => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const code = urlParams.get("code");
-
-  //   if (code) {
-  //     // Call the backend to exchange the code for tokens
-  //     const fetchTokens = async () => {
-  //       try {
-  //         const response = await axios.get(
-  //           `${apiUrl}/api/auth/callback/?code=${code}`
-  //         );
-  //         const { access, refresh } = response.data;
-
-  //         // Save tokens in local storage
-  //         localStorage.setItem("access", access);
-  //         localStorage.setItem("refresh", refresh);
-  //         handleLogin(access, refresh); // Call handleLogin with the access token
-  //         navigate("/"); // Navigate to the home page or desired page
-  //       } catch (error) {
-  //         console.error("Error fetching tokens: ", error);
-  //       }
-  //     };
-  //     fetchTokens();
-  //   }
-  // }, [handleLogin]);
 
   return (
     <>
@@ -309,8 +286,8 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
           isOtpRequired
             ? handleOtpSubmit
             : isForgotPassword
-            ? handleForgotPassword
-            : handleLoginOrSignup
+              ? handleForgotPassword
+              : handleLoginOrSignup
         }
       >
         {/* add a close icon when in resenting password */}
@@ -373,10 +350,10 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
             {isForgotPassword
               ? "Forgot Password"
               : isOtpRequired
-              ? "OTP Verification"
-              : isSignUp
-              ? "Sign up"
-              : "Login"}
+                ? "OTP Verification"
+                : isSignUp
+                  ? "Sign up"
+                  : "Login"}
           </p>
           <h1
             className={!isOtpRequired ? "login_form-h1" : "login_form-h1-otp"}
@@ -384,28 +361,27 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
             {isForgotPassword
               ? "Reset Password"
               : isOtpRequired
-              ? "Enter your code"
-              : isSignUp
-              ? "Welcome"
-              : "Welcome back"}
+                ? "Enter your code"
+                : isSignUp
+                  ? "Welcome"
+                  : "Welcome back"}
           </h1>
           <p className={!isOtpRequired ? "login_form-p2" : "login_form-p2-otp"}>
             {isForgotPassword
               ? "Please enter your email to receive reset instructions"
               : isOtpRequired
-              ? "Check your email for the OTP"
-              : isSignUp
-              ? "Create an account to get started"
-              : "Please enter your details"}
+                ? "Check your email for the OTP"
+                : isSignUp
+                  ? "Create an account to get started"
+                  : "Please enter your details"}
           </p>
         </div>
         {!isOtpRequired ? (
           <>
             {isSignUp && (
               <input
-                className={`login_form-username ${
-                  errors.username ? "input-error" : ""
-                }`}
+                className={`login_form-username ${errors.username ? "input-error" : ""
+                  }`}
                 type="text"
                 name="username"
                 placeholder={errors.username || "Username"}
@@ -414,9 +390,8 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
               />
             )}
             <input
-              className={`login_form-email ${
-                errors.email ? "input-error" : ""
-              }`}
+              className={`login_form-email ${errors.email ? "input-error" : ""
+                }`}
               type="email"
               name="email"
               placeholder={errors.email || "Email"}
@@ -427,9 +402,8 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
             {!isForgotPassword && (
               <div className="password-container">
                 <input
-                  className={`login_form-password ${
-                    errors.password ? "input-error" : ""
-                  }`}
+                  className={`login_form-password ${errors.password ? "input-error" : ""
+                    }`}
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder={errors.password || "Password"}
@@ -468,9 +442,8 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
         {isOtpRequired && (
           <div className="login_form-resend-otp-container">
             <a
-              className={`login_form-resend-otp ${
-                !canResend ? "disabled" : ""
-              }`}
+              className={`login_form-resend-otp ${!canResend ? "disabled" : ""
+                }`}
               onClick={handleResendOtp}
               disabled={!canResend}
             >
@@ -502,8 +475,8 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
             {isSignUp
               ? "Sign Up"
               : !isForgotPassword
-              ? "Login"
-              : "Send Reset Email"}
+                ? "Login"
+                : "Send Reset Email"}
           </button>
         )}
 

@@ -178,7 +178,7 @@ svg {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: 5px;
   margin-bottom: 2em;
   border-radius: 10px;
   background-color: #222222;
@@ -189,8 +189,9 @@ svg {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 1em;
+  gap: 6%;
   font-size: clamp(0.875rem, 0.7548rem + 0.6009vw, 1.75rem);
+  /* border: solid; */
 }
 
 .matches-list-item-user img {
@@ -202,11 +203,10 @@ svg {
 
 .matches-list-item-user-tournament-icon {
   position: absolute;
-  top: 3%;
-  left: 55%;
+  top: 0%;
+  left: 56%;
   width: 38px;
-
-
+  transform: rotate(7deg);
 }
 
 .matches-list-item-user p {
@@ -241,8 +241,6 @@ svg {
   font-size: clamp(0.75rem, 0.6985rem + 0.2575vw, 1.125rem);
   /* border: solid; */
   text-align: center;
-
-
 }
 
 .matches-list-item-user-tournament {
@@ -254,8 +252,6 @@ svg {
   padding: 3%;
   padding-bottom: 0;
 }
-
-
 
 .match-item {
   background-color: #f5f5f5;
@@ -328,13 +324,13 @@ svg {
 @media (min-width: 1440px) and (max-width: 1921px) {
   .home-dive-welcome {
     height: 400px;
-    width: 70vw;
+    width: 60vw;
   }
 
 
   .stats {
     height: 400px;
-    width: 70vw;
+    width: 60vw;
   }
 
 }
