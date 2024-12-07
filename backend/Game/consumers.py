@@ -130,8 +130,8 @@ class RoomManager:
                             await channel_layer.send(channel, {"type": "chat_message", "stat": "close"})
                         if user_id in self.channel_names:
                             del self.channel_names[user_id]
-                        if room.howManyUser() == 0 and room.is_full:
-                            if room.type == "tournament":
+                        if room.howManyUser() == 0:
+                            if room.type == "tournament" and room.is_full:
                                 room.room_pause()
                                 room.winner = user_id
                             else:

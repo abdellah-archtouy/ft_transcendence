@@ -32,9 +32,9 @@ const TournamentLocal = () => {
       }
     }
     if (!isFull)
-        setError("You must Fill The Form!")
+      setError("You must Fill The Form!")
     else if (!isNotDuplicated)
-          setError("Two Players Has The Same Name!")
+        setError("Two Players Has The Same Name!")
   }
 
   const handleChange = (e) => {

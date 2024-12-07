@@ -117,55 +117,61 @@ async def start(room):
 
 
 async def room_naming(rooms : Room, start_with : str):
-    filtered_keys = [key for key in rooms.keys() if key.startswith(start_with) and key[5:].isdigit()]
-    keys = sorted(filtered_keys)
-    loop_list = [int(key[key.find("_") + 1 :]) for key in keys]
-    missed = None
-    for i in range(1, len(loop_list) + 1):
-        if i not in loop_list:
-            missed = i
-            break
-    if missed == None:
-        missed = len(loop_list) + 1
-    return missed
+    try:
+        filtered_keys = [key for key in rooms.keys() if key.startswith(start_with) and key[5:].isdigit()]
+        keys = sorted(filtered_keys)
+        loop_list = [int(key[key.find("_") + 1 :]) for key in keys]
+        missed = None
+        for i in range(1, len(loop_list) + 1):
+            if i not in loop_list:
+                missed = i
+                break
+        if missed == None:
+            missed = len(loop_list) + 1
+        return missed
+    except Exception as e:
+        print(f"room_naming {e}")
 
 
 async def join_remote_room(instance, rooms):
-    if instance.gamemode == "Remote":
-        for room_name, room in rooms.items():
-            if room.type == "Remote" and room.howManyUser() == 1:
-                if room.findUser(instance.user_id):
-                    now = datetime.now()
-                    time_diff = (
-                        now - room.disconnected_at
-                    )
-                    if time_diff <= timedelta(seconds=10):
-                        room.channel_names[instance.user_id] = [instance.channel_name]
+    try:
+        if instance.gamemode == "Remote": # for handling user reconnection
+            for room_name, room in rooms.items():
+                if room.type == "Remote" and room.howManyUser() == 1 and room.is_full:
+                    if room.findUser(instance.user_id):
+                        now = datetime.now()
+                        time_diff = (
+                            now - room.disconnected_at
+                        )
+                        if time_diff <= timedelta(seconds=10):
+                            room.channel_names[instance.user_id] = [instance.channel_name]
+                            instance.connection_type = "Reconnection"
+                            return room_name
+
+            for room_name, room in rooms.items(): # for handling user opening multiple tabs
+                if room.type == "Remote" and room.is_full:
+                    if room.findUser(instance.user_id):
+                        room.channel_names[instance.user_id].append(instance.channel_name)
                         instance.connection_type = "Reconnection"
                         return room_name
-        
-        for room_name, room in rooms.items():
-            if room.type == "Remote":
-                if room.findUser(instance.user_id):
-                    room.channel_names[instance.user_id].append(instance.channel_name)
-                    instance.connection_type = "Reconnection"
-                    return room_name
 
-        for room_name, room in rooms.items(): # fill the room that needs one player
-            if room.type == "Remote":
-                if room.uid1 and room.uid2 is None:
-                    room.assign_user(instance.user_id)
-                    room.channel_names[instance.user_id] = [instance.channel_name]
-                    room.is_full = True
-                    return room_name
+            for room_name, room in rooms.items(): # fill the room that needs one player
+                if room.type == "Remote":
+                    if room.uid1 and room.uid2 is None:
+                        room.assign_user(instance.user_id)
+                        room.channel_names[instance.user_id] = [instance.channel_name]
+                        room.is_full = True
+                        return room_name
 
-    new_room_name = f"room_{await room_naming(rooms, 'room_')}"
+        new_room_name = f"room_{await room_naming(rooms, 'room_')}"
 
-    new_room = Room(instance.user_id, 0 if instance.gamemode == "bot" else None)
-    new_room.type = instance.gamemode  # here i assign the room mode
-    new_room.channel_names[instance.user_id] = [instance.channel_name]
-    rooms[new_room_name] = new_room
-    return new_room_name
+        new_room = Room(instance.user_id, 0 if instance.gamemode == "bot" else None)
+        new_room.type = instance.gamemode  # here i assign the room mode
+        new_room.channel_names[instance.user_id] = [instance.channel_name]
+        rooms[new_room_name] = new_room
+        return new_room_name
+    except Exception as e:
+        print(f"join_remote_room {e}")
 
 
 async def join_local_room(instance, rooms):
