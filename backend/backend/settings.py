@@ -29,6 +29,11 @@ env_file_path = os.path.join(ROOT_DIR, ".env")
 # Read the .env file
 environ.Env.read_env(env_file=env_file_path)
 
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 EMAIL_SSL_CERTFILE = certifi.where()
 
@@ -78,6 +83,7 @@ INSTALLED_APPS = [
     "Notifications",
     "rest_framework",
     "rest_framework_simplejwt",
+    'sslserver',
 ]
 
 REST_FRAMEWORK = {

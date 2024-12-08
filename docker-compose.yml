@@ -35,6 +35,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile  # React Dockerfile
+    container_name: frontend
     ports:
       - "80:80"
       - "443:443"
@@ -42,6 +43,9 @@ services:
       - .env
     depends_on:
       - backend
+    networks:
+      - my-network
+    restart: always
 
 networks:
   my-network:
