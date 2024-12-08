@@ -45,7 +45,7 @@ const Chat = () => {
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
             .post(`${apiUrl}/api/token/refresh/`, { refresh })
@@ -57,19 +57,23 @@ const Chat = () => {
             .catch((refreshError) => {
               localStorage.removeItem("access");
               localStorage.removeItem("refresh");
-              console.log({ general: "Session expired. Please log in again." });
+              // console.log({ general: "Session expired. Please log in again." });
               window.location.reload();
               navigate("/");
             });
-          } else {
-            console.log({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          // console.log({
+          //   general: "No refresh token available. Please log in.",
+          // });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
-        console.log({ general: "An unexpected error occurred. Please try again." });
+        // console.log({
+        //   general: "An unexpected error occurred. Please try again.",
+        // });
       }
     };
 
@@ -85,15 +89,15 @@ const Chat = () => {
       );
 
       ws.onopen = () => {
-        console.log("WebSocket connection established");
+        // console.log("WebSocket connection established");
       };
 
       ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
+        // console.error("WebSocket error:", error);
       };
 
       ws.onclose = (event) => {
-        console.log("WebSocket connection closed:", event);
+        // console.log("WebSocket connection closed:", event);
       };
 
       setSocket(ws);

@@ -22,7 +22,6 @@ class AddConvConsumer(WebsocketConsumer):
 
 
     def receive(self, text_data):
-        print(text_data)
         text_data_json = json.loads(text_data)
         user_id_str = text_data_json.get('user', '')
         user1_id_str = text_data_json.get('user1', '')
@@ -41,7 +40,6 @@ class AddConvConsumer(WebsocketConsumer):
             print("Conversation already exists")
             serializer = ConvSerializer(conv)
             conv_data = serializer.data
-            # print(f"Conversation data: {conv_data}")
             data_return =  {
             "id": serializer.data["id"],
             "uid1": serializer.data["uid1"],
@@ -68,8 +66,6 @@ class AddConvConsumer(WebsocketConsumer):
             "conv_username": serializer.data["uid2_info"]["username"] if serializer.data["uid1"] == user1.id else serializer.data["uid1_info"]["username"],
             }
             response = {'conversation': data_return}
-            # print(f"Created new conversation: {conversation}")
-
             self.send( text_data=json.dumps(response))
 
 class DataConsumer(WebsocketConsumer):

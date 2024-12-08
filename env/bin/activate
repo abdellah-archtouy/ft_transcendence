@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/tmiftah/Desktop/ft_transcendence/env"
+VIRTUAL_ENV="/goinfre/aarchtou/ft_transcendence/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

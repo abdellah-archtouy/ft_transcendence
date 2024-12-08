@@ -42,7 +42,7 @@ const ConvBar = ({
           setConv(response.data);
         } else {
           setConv([]);
-          console.log("No data found");
+          // console.log("No data found");
         }
       } catch (error) {
         setError(error);
@@ -68,21 +68,22 @@ const ConvBar = ({
             .catch((refreshError) => {
               localStorage.removeItem("access");
               localStorage.removeItem("refresh");
-              console.log({ general: "Session expired. Please log in again." });
+              setErrors({ general: "Session expired. Please log in again." });
               window.location.reload();
               navigate("/");
             });
           } else {
-            console.log({ general: "No refresh token available. Please log in." });
+            setErrors({ general: "No refresh token available. Please log in." });
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
             window.location.reload();
             navigate("/");
         }
       } else {
-        console.log({ general: "An unexpected error occurred. Please try again." });
+        setErrors({ general: "An unexpected error occurred. Please try again." });
       }
     };
+
 
     fetchData();
   }, []);
@@ -145,7 +146,7 @@ const ConvBar = ({
   const handlesearchclick = (user) => {
     setSearch("");
     setisEmptyObject(true);
-    console.log("conv user:", user.conv_username);
+    // console.log("conv user:", user.conv_username);
     navigate(`/chat?username=${user.conv_username}&convid=${user.id}`);
     setconvid(user.id);
     setConversationdata(user);

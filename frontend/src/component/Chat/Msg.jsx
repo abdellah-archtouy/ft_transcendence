@@ -113,19 +113,21 @@ const Msg = ({
           .catch((refreshError) => {
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
-            console.log({ general: "Session expired. Please log in again." });
+            // console.log({ general: "Session expired. Please log in again." });
             window.location.reload();
             navigate("/");
           });
-        } else {
-          console.log({ general: "No refresh token available. Please log in." });
-          localStorage.removeItem("access");
-          localStorage.removeItem("refresh");
-          window.location.reload();
-          navigate("/");
+      } else {
+        // console.log({ general: "No refresh token available. Please log in." });
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        window.location.reload();
+        navigate("/");
       }
     } else {
-      console.log({ general: "An unexpected error occurred. Please try again." });
+      // console.log({
+      //   general: "An unexpected error occurred. Please try again.",
+      // });
     }
   };
 
