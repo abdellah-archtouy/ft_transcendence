@@ -206,15 +206,15 @@
 
 }
 
-@media (min-width: 1440px) and (max-width: 1919px) {
+@media (min-width: 1440px) and (max-width: 1921px) {
     .suggestions {
-        width: 65vw;
+        width: 60vw;
     }
 }
 
 @media (min-width: 1024px) and (max-width: 1439px) {
     .suggestions {
-        width: 80vw;
+        width: 90vw;
     }
 
 }

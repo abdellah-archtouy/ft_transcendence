@@ -6,13 +6,17 @@ It exposes the ASGI callable as a module-level variable named ``application``.
 For more information on this file, see
 https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 """
-
 import os
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+django.setup()
+
 
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 
 # from Chat import routing
 
@@ -21,8 +25,6 @@ import Chat.routing
 import Game.routing
 import Notifications.routing
 import Tournament.routing
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 
 websocket_urlpatterns = (
     Chat.routing.websocket_urlpatterns
@@ -39,11 +41,11 @@ application = ProtocolTypeRouter(
     }
 )
 
-User = get_user_model()
-try:
-    if not User.objects.filter(username='Tournament').exists():
-        User.objects.create_superuser(
-            username='Tournament', 
-        )
-except Exception as e:
-    print(f"Error creating superuser: {e}")
+# User = get_user_model()
+# try:
+#     if not User.objects.filter(username='Tournament').exists():
+#         User.objects.create_superuser(
+#             username='Tournament', 
+#         )
+# except Exception as e:
+#     print(f"Error creating superuser: {e}")

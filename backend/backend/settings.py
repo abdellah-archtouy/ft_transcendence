@@ -21,13 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 
 # Get the path to the root directory where .env is located
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Construct the path to the .env file
 env_file_path = os.path.join(ROOT_DIR, ".env")
 
 # Read the .env file
 environ.Env.read_env(env_file=env_file_path)
+
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 EMAIL_SSL_CERTFILE = certifi.where()
@@ -41,6 +46,10 @@ EMAIL_SSL_CERTFILE = certifi.where()
 SECRET_KEY = env("SECRET_KEY")
 CLIENT_SECRET = env("CLIENT_SECRET")
 HOSTNAME = env("HOSTNAME")
+
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'password')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
 
 ASGI_APPLICATION = "backend.asgi.application"
 
@@ -74,6 +83,7 @@ INSTALLED_APPS = [
     "Notifications",
     "rest_framework",
     "rest_framework_simplejwt",
+    'sslserver',
 ]
 
 REST_FRAMEWORK = {

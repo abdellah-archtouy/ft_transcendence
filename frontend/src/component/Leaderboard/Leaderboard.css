@@ -162,15 +162,6 @@
     position: relative;
 }
 
-.Leaderboard-list-item-user svg {
-    position: absolute;
-    height: 30%;
-    width: auto;
-    --clamped-value: clamp(1.875rem, 1.381vw + 1.616rem, 2.5rem);
-    left: calc((100% - var(--clamped-value)) / 2 + var(--clamped-value) - 10px);
-    top: -10%;
-}
-
 .Leaderboard-list-item-user img {
     width: clamp(1.875rem, 1.381vw + 1.616rem, 2.5rem);
     height: auto;

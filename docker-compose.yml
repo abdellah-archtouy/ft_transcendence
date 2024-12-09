@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   postgres:
     image: postgres:latest
@@ -11,9 +13,44 @@ services:
     networks:
       - my-network
     restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile  # React Dockerfile
+    container_name: frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    networks:
+      - my-network
+    restart: always
+
 networks:
   my-network:
     driver: bridge
+
 volumes:
   database:
     driver: local

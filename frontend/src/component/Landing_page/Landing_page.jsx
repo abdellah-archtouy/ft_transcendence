@@ -3,10 +3,12 @@ import "./styles/root.css";
 import AuthForm from './form';
 import table from "./images/floating_table.svg";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const Landing_page = ({ setAuth }) => {
     const [showPopup, setShowPopup] = useState(false);
     const [loading, setLoading] = useState(false);
-
+    console.log(apiUrl)
     return (
         <div className="page-container">
             {loading && (

@@ -274,10 +274,12 @@
     font-size: clamp(0.9375rem, 0.886rem + 0.2575vw, 1.3125rem);
     resize: none;
     overflow: hidden;
+    transition: all .3s ease-in-out;
 }
 
 .form-input-bio:focus {
     outline: none;
+    border: solid 1px white;
 }
 
 
@@ -308,128 +310,145 @@
 .fade-in {
     animation: fadeIn 0.5s ease-in forwards;
     opacity: 0;
-  }
-  
+}
+
 .fade-out {
     animation: fadeOut 0.5s ease-out forwards;
     opacity: 1;
 }
-  
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
         transform: translateY(20px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
     }
 }
-  
+
 @keyframes fadeOut {
     0% {
         opacity: 1;
         transform: translateY(0);
     }
+
     100% {
         opacity: 0;
         transform: translateY(-20px);
     }
 }
-  
+
 
 @keyframes shake {
     0% {
-      transform: translateX(0);
+        transform: translateX(0);
     }
+
     25% {
-      transform: translateX(-5px);
+        transform: translateX(-5px);
     }
+
     50% {
-      transform: translateX(5px);
+        transform: translateX(5px);
     }
+
     75% {
-      transform: translateX(-5px);
+        transform: translateX(-5px);
     }
+
     100% {
-      transform: translateX(0);
+        transform: translateX(0);
     }
-  }
-  
-  .input-error {
+}
+
+.input-error {
     border-color: red;
-  }
-  
-  .shake {
+}
+
+.shake {
     animation: shake 0.5s;
-  }
+}
 
-  .form-security-42 {
+.form-security-42 {
     display: none;
-  }
+}
 
-  
-  .wrong-avatar {
+
+.wrong-avatar {
     border: red;
-  }
+}
 
-  
-  /* Large Devices (Desktops) */
-  @media (min-width: 1024px) and (max-width: 1439px) {
+
+/* Large Devices (Desktops) */
+@media (min-width: 1024px) and (max-width: 1439px) {
     .user-avatar-container {
         top: 27%;
     }
+
     .form-group {
         width: 50%;
     }
+
     .form-security .form-group {
         width: 50%;
     }
+
     .form-security .form-input {
         width: 100%;
         padding-left: 5%;
     }
-  }
-  
-  /* Medium Devices (Tablets) */
-  @media (min-width: 768px) and (max-width: 1023px) {
+}
+
+/* Medium Devices (Tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
     .settings {
         width: 80%;
     }
+
     .user-avatar-container {
         top: 28%;
     }
+
     .user-avatar-btn {
         width: 38%;
         height: 38%;
         top: 32%;
         left: 32%;
     }
+
     .form-group {
         width: 50%;
     }
+
     .form-security .form-group {
         width: 50%;
     }
+
     .form-security .form-input {
         width: 100%;
         padding-left: 5%;
     }
-  }
-  
-  @media (min-width: 320px) and (max-width: 767px) {
+}
+
+@media (min-width: 320px) and (max-width: 767px) {
     .settings {
         width: 100%;
         height: 1100px;
         border-radius: 0;
         /* border: solid 1px white; */
     }
+
     .settings-cover {
         height: 20%;
     }
+
     .user-cover {
         border-radius: 0;
     }
+
     .user-avatar-container {
         top: 15%;
         right: 0;
@@ -439,9 +458,11 @@
         height: clamp(6.25rem, 4.4603rem + 8.9485vw, 8.75rem);
         border-radius: 20%;
     }
+
     .user-avatar {
         border-radius: 20%;
     }
+
     .settings-forms {
         height: 35%;
         margin-top: 15%;
@@ -450,19 +471,24 @@
         align-items: center;
         justify-content: center;
     }
+
     .form-group {
         width: 100%;
     }
+
     .form-security .form-group {
         width: 100%;
     }
+
     .form-security .form-input {
         width: 100%;
         padding-left: 5%;
     }
+
     .form-submit-btn {
         bottom: 30%;
     }
+
     .settings-forms-btn-container {
         width: 100%;
         height: 30%;
@@ -470,19 +496,21 @@
         flex-direction: row;
         justify-content: space-around;
     }
+
     .settings-form-seperator {
         width: 80%;
         height: 1px;
     }
+
     .settings-forms-container {
         width: 80%;
         margin-left: 0;
     }
-  }
+}
 
-  @media screen and (max-width: 319px) {
+@media screen and (max-width: 319px) {
     * {
         display: none;
     }
-    
+
 }
