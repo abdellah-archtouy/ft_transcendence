@@ -1,8 +1,14 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 import json
 from .models import User
 
 users = {}
+
+@database_sync_to_async
+def set_user_update(boolean, user):
+    user.stat = boolean
+    user.save()
 
 def add_to_dict(user_id: int, channel_name):
     global users
@@ -20,7 +26,7 @@ class stat_consumer(AsyncWebsocketConsumer):
                 add_to_dict(self.user_id, self.channel_name)
                 await self.channel_layer.group_add(self.group_name, self.channel_name)
                 if self.user.stat != True:
-                    await self.set_user_update(True)
+                    await set_user_update(True, self.user)
                     await self.channel_layer.group_send(
                         self.group_name,
                         {
@@ -33,16 +39,13 @@ class stat_consumer(AsyncWebsocketConsumer):
         except Exception as e:
             print(f"connect error: {e}")
 
-    async def set_user_update(self, boolean):
-        self.user.stat = boolean
-        await self.user.asave()
 
     async def disconnect(self, close_code):
         global users
         if self.group_name and self.channel_name:
             if len(users[self.user_id]) == 1:
                 if self.user.stat != False:
-                    await self.set_user_update(False)
+                    await set_user_update(False, self.user)
                     await self.channel_layer.group_send(
                         self.group_name,
                         {
