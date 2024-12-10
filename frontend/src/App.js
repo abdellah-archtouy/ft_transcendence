@@ -131,7 +131,7 @@ function App() {
     if (userData && auth) {
       const user_id = userData.id;
       const statusSocket = new WebSocket(
-        `wss://${hostName}:8000/ws/stat/${user_id}/`
+        `ws://${hostName}:8000/ws/stat/${user_id}/`
       );
       setStatusSocket(statusSocket);
     }

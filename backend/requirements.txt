@@ -36,3 +36,4 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 zope.interface==7.0.3
 django-sslserver==0.22
+channels_redis==4.2.0

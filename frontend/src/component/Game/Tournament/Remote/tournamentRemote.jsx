@@ -129,7 +129,7 @@ const TournamentRemote = () => {
     if (user) {
       const user_id = user.id;
       socketRef.current = new WebSocket(
-        `wss://${hostName}:8000/ws/tournament/${user_id}/`
+        `ws://${hostName}:8000/ws/tournament/${user_id}/`
       );
 
       socketRef.current.onopen = () => {

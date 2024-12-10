@@ -187,7 +187,7 @@ const LocalRoom = ({ theWinner, data, mode }) => {
       if (modedata?.length === 2) {
         let username1 = modedata[0];
         let username2 = modedata[1];
-        return `wss://${host}:8000/ws/game/Local/${username1}/${username2}`;
+        return `ws://${host}:8000/ws/game/Local/${username1}/${username2}`;
       } else return null;
     }
 

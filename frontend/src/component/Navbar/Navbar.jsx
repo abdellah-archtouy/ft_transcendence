@@ -195,7 +195,7 @@ const Navbar = ({ setLoggedOut }) => {
     if (user) {
       const user_id = user.id;
       const socket = new WebSocket(
-        `wss://${hostName}:8000/ws/notification/${user_id}/`
+        `ws://${hostName}:8000/ws/notification/${user_id}/`
       );
 
       socket.onmessage = function (event) {

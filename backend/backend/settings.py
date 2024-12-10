@@ -29,10 +29,10 @@ env_file_path = os.path.join(ROOT_DIR, ".env")
 # Read the .env file
 environ.Env.read_env(env_file=env_file_path)
 
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 
 EMAIL_SSL_CERTFILE = certifi.where()
@@ -61,7 +61,10 @@ ALLOWED_HOSTS = ["*"]
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],  # Redis server address
+        },
     },
 }
 # Application definition
@@ -151,8 +154,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 ASGI_APPLICATION = "backend.asgi.application"
-
-CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

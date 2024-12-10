@@ -18,4 +18,4 @@ ENV DJANGO_SETTINGS_MODULE=backend.settings
 # Expose the default Django port
 EXPOSE 8000
 
-CMD python manage.py migrate && python manage.py runsslserver 0.0.0.0:8000
+CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
