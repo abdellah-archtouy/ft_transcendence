@@ -81,9 +81,7 @@ function AddBar({
           })
         );
       } catch (error) {
-        setError(error);
-        console.log(error);
-        handleFetchError(error, () => fetchData());
+        handleFetchError(error, () => fetchData);
       } finally {
         setLoading(false);
       }
@@ -92,7 +90,7 @@ function AddBar({
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
             .post(`${apiUrl}/api/token/refresh/`, { refresh })
@@ -104,19 +102,23 @@ function AddBar({
             .catch((refreshError) => {
               localStorage.removeItem("access");
               localStorage.removeItem("refresh");
-              console.log({ general: "Session expired. Please log in again." });
+              // console.log({ general: "Session expired. Please log in again." });
               window.location.reload();
               navigate("/");
             });
-          } else {
-            console.log({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          // console.log({
+          //   general: "No refresh token available. Please log in.",
+          // });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
-        console.log({ general: "An unexpected error occurred. Please try again." });
+        // console.log({
+        //   general: "An unexpected error occurred. Please try again.",
+        // });
       }
     };
 
@@ -134,7 +136,7 @@ function AddBar({
   useEffect(() => {
     const socket = new WebSocket(`ws://${host}:8000/ws/api/addconv/`);
     socket.onopen = () => {
-      console.log("WebSocket connection established");
+      // console.log("WebSocket connection established");
     };
     socket.onmessage = socket.onmessage = (e) => {
       try {
@@ -143,30 +145,27 @@ function AddBar({
         const found = conv.find((conv) => conv.id === conv1.id);
         if (found) {
           navigate(`/chat?username=${conv1.conv_username}&convid=${conv1.id}`);
-          // setSelectedConvId(conv1.id);
-          // setConversationdata(conv1);
-          // setconvid(conv1.id);
         } else {
           if (Array.isArray(conv1)) {
-            console.log("Updating conversations (array):", conv1);
+            // console.log("Updating conversations (array):", conv1);
             setConv((conv) => [...conv1, ...conv]);
             setSelectedConvId(conv1.id);
             setConversationdata(conv1);
             setconvid(conv1.id);
           } else if (conv1 && typeof conv1 === "object") {
-            console.log("Updating conversations (object):", conv1);
+            // console.log("Updating conversations (object):", conv1);
             setConv((conv) => [conv1, ...conv]);
           } else {
-            console.error("Unexpected data format:", conv1);
+            // console.error("Unexpected data format:", conv1);
           }
         }
       } catch (error) {
-        console.error("Failed to parse WebSocket message:", error);
+        // console.error("Failed to parse WebSocket message:", error);
       }
     };
 
     socket.onclose = () => {
-      console.log("WebSocket connection closed");
+      // console.log("WebSocket connection closed");
     };
     setWs(socket);
   }, []);
@@ -178,7 +177,7 @@ function AddBar({
       ws.send(JSON.stringify(msg));
       setData("");
     } else {
-      console.log("WebSocket is not ready");
+      // console.log("WebSocket is not ready");
     }
   };
   if (error) {
@@ -204,24 +203,31 @@ function AddBar({
             ></input>
           </div>
           <div className="result">
-            {resulte1.length === 0 ? (
-              <div className="empty">
+            {data.length === 0 ? <div className="center-text">
                 <p>
-                  Add a person <br />
-                  and start a conversation
+                Type To Search
+                </p>
+              </div> :
+            <>
+            {resulte1.length === 0 ? (
+              <div className="center-text">
+                <p>
+                Not Found
                 </p>
               </div>
             ) : (
               resulte1.map((user) => (
                 <button
-                  onClick={handleClick(user.user.id)}
-                  className="center"
-                  key={user.user.id}
+                onClick={handleClick(user.user.id)}
+                className="center"
+                key={user.user.id}
                 >
                   {user.user.username}
                 </button>
               ))
             )}
+            </>
+            }
           </div>
         </div>
       </div>

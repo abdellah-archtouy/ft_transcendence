@@ -63,7 +63,6 @@ def get_friends(request):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa 2 2", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
 
 @api_view(["GET"])
@@ -81,7 +80,6 @@ def setmatch(request, fid):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa 2 2", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["GET"])
@@ -123,7 +121,6 @@ def getconvView(request, username):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa 2 3", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -148,7 +145,6 @@ def ConverstationView(request, convid):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa 2 1", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["GET"])
@@ -185,7 +181,6 @@ def ConvView(request):
 def get_messages(request, username):
     try:
         user = request.user
-        # print("username", username)
         other_user = User.objects.get(username=username)
         if not other_user:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -198,7 +193,6 @@ def get_messages(request, username):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa 2 4", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -306,7 +300,6 @@ def get_ouser_data(request, username):
     except TokenError:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("hnaaaayaaa", e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def get_last_24_hours():
@@ -494,7 +487,6 @@ def get_ouser_win_and_lose(request, username):
     except TokenError as e:
         return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        print("jhjhfh   ",e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

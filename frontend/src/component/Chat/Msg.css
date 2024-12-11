@@ -74,18 +74,18 @@
 .chat_top_bar button.Backbutton > svg{
     height: clamp(0.875rem, 1vw + 0.475rem, 1.375rem);
 }
-.chat_top_bar button{
-    transition: filter 0.3s ease;
-    position: absolute;
-    color: #222222;
-    background-color: #222222;
-    all: unset;
-    display: inline-flex;
-    box-sizing: border-box;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.4s ease-in-out;
 
+.chat_top_bar button {
+    all: unset;
+    align-items: center;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
+    color: #222;
+    display: inline-flex;
+    justify-content: center;
+    transition: filter .3s ease;
+    transition: all .4s ease-in-out;
 }
 
 .picker{
@@ -126,9 +126,8 @@
 }
 
 .chat_top_bar .set{
-    position: absolute;
-    right: 20px;
     cursor: pointer;
+    margin-left: auto;
 }
 
 .chat_top_bar{
@@ -142,6 +141,7 @@
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px black;
     height: clamp(3.75rem, 3.801vw + 2.942rem, 5.375rem);
+    gap: clamp(0.938rem, 1.462vw + 0.627rem, 1.563rem);
 }
 
 .message_bar .search-input1{
@@ -168,34 +168,31 @@
       /* box-shadow: 0 0 5px rgba(102, 175, 233, 0.6); */
 }
 
-.message_bar  button:hover{
+.message_bar button:hover{
     box-sizing: border-box;
-    filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.75));
+    filter: drop-shadow(0px 0px 2px rgba(255,255,255,0.75));
     align-items: center;
     justify-content: center;
     cursor: pointer;
 }
-.message_bar  button{
-    transition: filter 0.3s ease;
-    display: inline-flex;
-    position: absolute;
-    color: #222222;
-    background-color: #222222;
+
+.message_bar button {
     all: unset;
+    align-items: center;
     box-sizing: border-box;
+    display: inline-flex;
     height: 100%;
     justify-content: center;
-    align-items: center;
-    transition: all 0.4s ease-in-out;
-
+    transition: filter .3s ease;
+    transition: all .4s ease-in-out;
 }
+
 .message_bar .search-container1{
     position: relative;
     display: flex;
     flex-direction: row;
     animation: none;
     gap: 14px;
-    /* justify-content: start; */
     align-items: center;
     width: 100%;
     height: 100%;
