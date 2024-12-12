@@ -95,7 +95,7 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
           }, 2000);
         }
       } catch (error) {
-        console.log("error catched");
+        console.log("error catched", url);
         if (error.response && error.response.data) {
           const newErrors = {};
           if (error.response.data.username) {

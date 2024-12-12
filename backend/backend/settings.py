@@ -29,8 +29,11 @@ env_file_path = os.path.join(ROOT_DIR, ".env")
 # Read the .env file
 environ.Env.read_env(env_file=env_file_path)
 
+# Add these near the top of your settings.py, after the existing SSL-related imports
+
+# HTTPS settings
 SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
@@ -125,7 +128,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = ["http://0.0.0.0"]
+CORS_ALLOWED_ORIGINS = ["https://0.0.0.0", "http://0.0.0.0"]
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True

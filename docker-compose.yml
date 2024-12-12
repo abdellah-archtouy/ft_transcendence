@@ -10,6 +10,27 @@ services:
       - my-network
     restart: always
 
+
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Mount the NGINX config
+      - ./nginx/certs:/etc/ssl
+      - frontend_build:/usr/share/nginx/html
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - my-network
+    restart: always
+
+
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -34,6 +55,7 @@ services:
       - .env
     volumes:
       - ./backend:/app
+      - ./nginx/certs:/etc/ssl
     depends_on:
       - postgres
       - redis
@@ -46,21 +68,21 @@ services:
       context: ./frontend
       dockerfile: Dockerfile  # React Dockerfile
     container_name: frontend
-    ports:
-      - "80:80"
-      - "443:443"
+    volumes:
+      - frontend_build:/app/build
     env_file:
-      - .env
+      - ./frontend/.env
     depends_on:
       - backend
     networks:
       - my-network
-    restart: always
+    restart: unless-stopped
 
 networks:
   my-network:
     driver: bridge
 
 volumes:
+  frontend_build:
   database:
     driver: local

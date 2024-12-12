@@ -252,13 +252,19 @@ def login_user(request):
     if user.check_password(password):
         otp = get_random_string(length=6, allowed_chars="0123456789")
         UserOTP.objects.create(user=user, otp=otp)
-        send_mail(
-            "Your OTP Code",
-            f"Your OTP code is {otp}",
-            "your_email@example.com",
-            [user.email],
-            fail_silently=False,
-        )
+        try:
+            send_mail(
+                "Your OTP Code",
+                f"Your OTP code is {otp}",
+                "your_email@example.com",
+                [user.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            print(e)
+            return Response(
+                {"error": f"Invalid email or password. {e}"}, status=status.HTTP_400_BAD_REQUEST
+            )
         return Response(
             {"message": "OTP sent to your email address."}, status=status.HTTP_200_OK
         )
