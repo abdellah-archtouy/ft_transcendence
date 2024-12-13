@@ -28,6 +28,10 @@ from Notifications.views import create_notification
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
+import smtplib
+import ssl
+import certifi
+
 
 User = get_user_model()
 
@@ -78,7 +82,7 @@ def handle_42_callback(request):
         "grant_type": "authorization_code",
         "client_id": "u-s4t2ud-ec33d59c683704986dda31fd1812c016474dd371e1bea3233a32976cf6b14b5c",
         "client_secret": client_secret,
-        "redirect_uri": f"https://{redirect_uri}:443/api/auth/callback/",
+        "redirect_uri": f"https://{redirect_uri}/auth/callback/",
         "code": code,
     }
 
@@ -237,6 +241,7 @@ def generate_strong_password(length=12):
 
 @api_view(["POST"])
 def login_user(request):
+    print("login_user")
     email = request.data.get("email")
     password = request.data.get("password")
 
@@ -253,22 +258,37 @@ def login_user(request):
         otp = get_random_string(length=6, allowed_chars="0123456789")
         UserOTP.objects.create(user=user, otp=otp)
         try:
-            send_mail(
-                "Your OTP Code",
-                f"Your OTP code is {otp}",
-                "your_email@example.com",
-                [user.email],
-                fail_silently=False,
-            )
-        except Exception as e:
-            print(e)
+            # Create a secure SSL context
+            context = ssl.create_default_context(cafile=certifi.where())
+            
+            # Use smtplib directly for more control
+            with smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT, context=context) as server:
+                server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                
+                message = f"Subject: Ping Pong\n\nYour OTP code is {otp}"
+                
+                server.sendmail(
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                    message.encode('utf-8')
+                )
+                
             return Response(
-                {"error": f"Invalid email or password. {e}"}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "OTP sent to your email address."}, 
+                status=status.HTTP_200_OK
+            )
+            
+        except Exception as e:
+            print("SMTP Error:", str(e))
+            return Response(
+                {"error": f"Failed to send OTP: {str(e)}"}, 
+                status=status.HTTP_400_BAD_REQUEST
             )
         return Response(
             {"message": "OTP sent to your email address."}, status=status.HTTP_200_OK
         )
     else:
+        print("talal dummy");
         return Response(
             {"error": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST
         )
@@ -361,6 +381,7 @@ def verify_otp(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_user_data(request):
+    print("get_user_data")
     try:
         user = request.user
         avatar_url = (

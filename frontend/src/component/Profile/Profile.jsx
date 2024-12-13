@@ -34,7 +34,7 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`${apiUrl}/chat/user/data/`, {
+        const response = await axios.get(`${apiUrl}/api/chat/user/data/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${access}`,
@@ -58,7 +58,7 @@ const Profile = () => {
     const fetcwin_loss = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`${apiUrl}/chat/user/chart/`, {
+        const response = await axios.get(`${apiUrl}/api/chat/user/chart/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${access}`,
@@ -84,10 +84,10 @@ const Profile = () => {
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -100,12 +100,12 @@ const Profile = () => {
               window.location.reload();
               navigate("/");
             });
-          } else {
-            console.log({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          console.log({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
         console.log({ general: "An unexpected error occurred. Please try again." });

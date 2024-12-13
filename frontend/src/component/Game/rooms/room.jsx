@@ -54,9 +54,9 @@ const Room = ({ data, mode }) => {
   const [countDown, setCountDown] = useState(0);
   const [pause, setPause] = useState(false);
   const [winner, setWinner] = useState(null);
-  
+
   const animationRef = useRef(null);
-  
+
   const navigate = useNavigate();
   const stableNavigate = useMemo(
     () =>
@@ -64,7 +64,7 @@ const Room = ({ data, mode }) => {
         navigate(...args),
     [navigate]
   );
-  
+
   const { setError } = useError();
 
   const [gamemode, setGamemode] = useState(null);
@@ -259,11 +259,11 @@ const Room = ({ data, mode }) => {
   useEffect(() => {
     function getWSUrl() {
       if (gamemode === "Remote")
-        return `wss://${host}:8000/ws/game/Remote/${userData?.["id"]}`;
+        return `wss://${host}/ws/game/Remote/${userData?.["id"]}`;
       else if (gamemode === "bot")
-        return `wss://${host}:8000/ws/game/bot/${data?.["botmode"]}/${userData?.["id"]}`;
+        return `wss://${host}/ws/game/bot/${data?.["botmode"]}/${userData?.["id"]}`;
       else if (gamemode === "friends")
-        return `wss://${host}:8000/ws/game/friends/${data?.["room"]}/${userData?.["id"]}`;
+        return `wss://${host}/ws/game/friends/${data?.["room"]}/${userData?.["id"]}`;
       return null;
     }
 
@@ -303,27 +303,23 @@ const Room = ({ data, mode }) => {
           ) {
             obj = [{ ...tmp?.user1 }, { ...tmp?.user2 }];
           }
-          if (!e)
-            {
-              if (obj[1]?.username === userData?.username)
-                {
-                  current_player = 1;
-                  other_player = 0;
-                }
-                else
-                {
-                  current_player = 0;
-                  other_player = 1;
-                }
+          if (!e) {
+            if (obj[1]?.username === userData?.username) {
+              current_player = 1;
+              other_player = 0;
             }
+            else {
+              current_player = 0;
+              other_player = 1;
+            }
+          }
           return obj;
         });
-        if (tmp?.winner !== null)
-          {
-            setWinner(() => {
-              return tmp?.winner;
-            });
-          }
+        if (tmp?.winner !== null) {
+          setWinner(() => {
+            return tmp?.winner;
+          });
+        }
         if (tmp?.stat === "close") {
           setClose(true);
           setTimeout(() => {
@@ -373,10 +369,10 @@ const Room = ({ data, mode }) => {
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -389,12 +385,12 @@ const Room = ({ data, mode }) => {
               window.location.reload();
               navigate("/");
             });
-          } else {
-            console.log({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          console.log({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
         console.log({ general: "An unexpected error occurred. Please try again." });
@@ -511,7 +507,7 @@ const Room = ({ data, mode }) => {
 
         <canvas
           id="Rcanvas"
-          style={userData?.username === user[1]?.username ? {transform:"scale(-1, 1)"} : {}}
+          style={userData?.username === user[1]?.username ? { transform: "scale(-1, 1)" } : {}}
           ref={(c) => {
             if (c) setCanvas(true);
           }}
@@ -651,29 +647,29 @@ export default Room;
 
 //   const [gamemode, setGamemode] = useState(null);
 
-  // const drawRoundedRect = (ctx, player, opacity) => {
-  //   const { x = 0, y = 0, width = 0, height = 0 } = player || {};
-  //   const scaleX = boardRef?.current?.width / boardWidth;
-  //   const scaleY = boardRef?.current?.height / boardHeight;
-  //   const scaledwidth = width * scaleX;
-  //   const scaledheight = height * scaleY;
-  //   const radius = 5 * scaleX;
-  //   const scaledX = Math.floor(x) * scaleX;
-  //   const scaledY = Math.floor(y) * scaleX;
-  //   ctx.beginPath();
-  //   ctx.moveTo(scaledX + radius, scaledY);
-  //   ctx.lineTo(scaledX + scaledwidth - radius, scaledY);
-  //   ctx.arcTo(scaledX + scaledwidth, scaledY, scaledX + scaledwidth, scaledY + radius, radius);
-  //   ctx.lineTo(scaledX + scaledwidth, scaledY + scaledheight - radius);
-  //   ctx.arcTo(scaledX + scaledwidth, scaledY + scaledheight, scaledX + scaledwidth - radius, scaledY + scaledheight, radius);
-  //   ctx.lineTo(scaledX + radius, scaledY + scaledheight);
-  //   ctx.arcTo(scaledX, scaledY + scaledheight, scaledX, scaledY + scaledheight - radius, radius);
-  //   ctx.lineTo(scaledX, scaledY + radius);
-  //   ctx.arcTo(scaledX, scaledY, scaledX + radius, scaledY, radius);
-  //   ctx.closePath();
-  //   ctx.globalAlpha = opacity;
-  //   ctx.fill();
-  // };
+// const drawRoundedRect = (ctx, player, opacity) => {
+//   const { x = 0, y = 0, width = 0, height = 0 } = player || {};
+//   const scaleX = boardRef?.current?.width / boardWidth;
+//   const scaleY = boardRef?.current?.height / boardHeight;
+//   const scaledwidth = width * scaleX;
+//   const scaledheight = height * scaleY;
+//   const radius = 5 * scaleX;
+//   const scaledX = Math.floor(x) * scaleX;
+//   const scaledY = Math.floor(y) * scaleX;
+//   ctx.beginPath();
+//   ctx.moveTo(scaledX + radius, scaledY);
+//   ctx.lineTo(scaledX + scaledwidth - radius, scaledY);
+//   ctx.arcTo(scaledX + scaledwidth, scaledY, scaledX + scaledwidth, scaledY + radius, radius);
+//   ctx.lineTo(scaledX + scaledwidth, scaledY + scaledheight - radius);
+//   ctx.arcTo(scaledX + scaledwidth, scaledY + scaledheight, scaledX + scaledwidth - radius, scaledY + scaledheight, radius);
+//   ctx.lineTo(scaledX + radius, scaledY + scaledheight);
+//   ctx.arcTo(scaledX, scaledY + scaledheight, scaledX, scaledY + scaledheight - radius, radius);
+//   ctx.lineTo(scaledX, scaledY + radius);
+//   ctx.arcTo(scaledX, scaledY, scaledX + radius, scaledY, radius);
+//   ctx.closePath();
+//   ctx.globalAlpha = opacity;
+//   ctx.fill();
+// };
 
 
 
@@ -870,11 +866,11 @@ export default Room;
 //   useEffect(() => {
 //     function getWSUrl() {
 //       if (gamemode === "Remote")
-//         return `ws://${host}:8000/ws/game/Remote/${userData?.["id"]}`;
+//         return `wss://${host}:8000/ws/game/Remote/${userData?.["id"]}`;
 //       else if (gamemode === "bot")
-//         return `ws://${host}:8000/ws/game/bot/${data?.["botmode"]}/${userData?.["id"]}`;
+//         return `wss://${host}:8000/ws/game/bot/${data?.["botmode"]}/${userData?.["id"]}`;
 //       else if (gamemode === "friends")
-//         return `ws://${host}:8000/ws/game/friends/${data?.["room"]}/${userData?.["id"]}`;
+//         return `wss://${host}:8000/ws/game/friends/${data?.["room"]}/${userData?.["id"]}`;
 //       return null;
 //     }
 

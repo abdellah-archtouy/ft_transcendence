@@ -24,7 +24,7 @@ const Notification = ({
 
       if (refresh) {
         axios
-          .post(`${apiUrl}/api/token/refresh/`, { refresh })
+          .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
@@ -37,12 +37,12 @@ const Notification = ({
             window.location.reload();
             navigate("/");
           });
-        } else {
-          console.log({ general: "No refresh token available. Please log in." });
-          localStorage.removeItem("access");
-          localStorage.removeItem("refresh");
-          window.location.reload();
-          navigate("/");
+      } else {
+        console.log({ general: "No refresh token available. Please log in." });
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        window.location.reload();
+        navigate("/");
       }
     } else {
       console.log({ general: "An unexpected error occurred. Please try again." });
@@ -138,8 +138,8 @@ const Notification = ({
         style={{ border: "0.1px solid rgb(255, 255, 255, 0.35)", width: "96%" }}
       />
       <div className="notification-list">
-        {notificationData.length ? (
-          notificationData.map((notif, index) => (
+        {Array.isArray(notificationData) && notificationData?.length ? (
+          notificationData?.map((notif, index) => (
             <div
               className="notification-item"
               key={index}
@@ -158,7 +158,7 @@ const Notification = ({
                 alt=""
                 className={
                   avatarUrl(notif?.sender_avatar, notif) ===
-                  notif?.sender_avatar
+                    notif?.sender_avatar
                     ? "sender_avatar"
                     : "sender_avatar profile"
                 }

@@ -25,7 +25,7 @@ export const ErrorContext = createContext();
 export const useError = () => useContext(ErrorContext);
 
 function App() {
-  const [auth, setAuth] = useState(!!localStorage.getItem("jwt"));
+  const [auth, setAuth] = useState(!!localStorage.getItem("access"));
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const [statusSocket, setStatusSocket] = useState(null);
@@ -61,14 +61,6 @@ function App() {
     if (error) {
       setTimeout(() => {
         setError(null);
-      }, 2500);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => {
-        setError(null);
       }, 4000);
     }
   }, [error]);
@@ -77,10 +69,10 @@ function App() {
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -93,12 +85,12 @@ function App() {
               window.location.reload();
               navigate("/");
             });
-          } else {
-            console.log({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          console.log({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
         console.log({ general: "An unexpected error occurred. Please try again." });
@@ -131,12 +123,18 @@ function App() {
     if (userData && auth) {
       const user_id = userData.id;
       const statusSocket = new WebSocket(
-        `ws://${hostName}:8000/ws/stat/${user_id}/`
+        `wss://${hostName}/ws/stat/${user_id}/`
       );
+      statusSocket.onopen = () => {
+        console.log("Connected to status socket");
+      };
+      statusSocket.onclose = () => {
+        console.log("disconnected to status socket");
+      };
       setStatusSocket(statusSocket);
     }
   }, [userData, auth]);
-  
+
   useEffect(() => {
     const logOut = async () => {
       try {
@@ -157,7 +155,7 @@ function App() {
       {/* style={{...bgImage}} */}
       {auth ? (
         <>
-          <Navbar setLoggedOut={ setLoggedOut } />
+          <Navbar setLoggedOut={setLoggedOut} />
           <ErrorContext.Provider value={{ error, setError, statusSocket }}>
             <div
               className="main"
@@ -213,7 +211,7 @@ function App() {
         <>
           <Routes>
             <Route
-              path="/api/auth/callback"
+              path="/auth/callback/"
               element={<AuthCallBack setAuth={handleLogin} />}
             />
             <Route path="*" element={<LandingPage setAuth={handleLogin} />} />

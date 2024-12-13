@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import searchicon from "../../icons/search.svg";
@@ -11,7 +11,7 @@ const Leaderboard = () => {
   const [rows, setRows] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  
+
   function avatarUrl(name) {
     return `${apiUrl}/media/` + name;
   }
@@ -32,10 +32,10 @@ const Leaderboard = () => {
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -48,12 +48,12 @@ const Leaderboard = () => {
               window.location.reload();
               navigate("/");
             });
-          } else {
-            console.log({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          console.log({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
         console.log({ general: "An unexpected error occurred. Please try again." });
@@ -65,7 +65,7 @@ const Leaderboard = () => {
         const access = localStorage.getItem("access");
 
         const response = await axios.get(
-          `${apiUrl}/game/leaderboard`,
+          `${apiUrl}/api/game/leaderboard`,
           {
             headers: {
               Authorization: `Bearer ${access}`,

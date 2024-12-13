@@ -38,7 +38,6 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 
-EMAIL_SSL_CERTFILE = certifi.where()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -107,8 +106,8 @@ CSRF_COOKIE_SECURE = True
 
 # Simple JWT settings
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=70),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "ALGORITHM": "HS256",
@@ -198,8 +197,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
-
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -246,9 +243,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 AUTH_USER_MODEL = "User.User"
 
-# Make sure these are not present in settings.py
-EMAIL_SSL_CERTFILE = None
-EMAIL_SSL_KEYFILE = None
 
 
 # settings.py
@@ -256,24 +250,37 @@ EMAIL_BACKEND = (
     "django.core.mail.backends.smtp.EmailBackend"  # Change from console to smtp
 )
 
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587  # Keep this for SSL
+EMAIL_PORT = 465  # Keep this for SSL
 EMAIL_HOST_USER = "pingpong.game.1337@gmail.com"
 EMAIL_HOST_PASSWORD = "zgmeutwjjrcstome"  # Make sure this is the correct app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_USE_TLS = True  # False when using SSL
-EMAIL_USE_SSL = False  # True for SSL (since you're using port 465)
+EMAIL_USE_TLS = False  # False when using SSL
+EMAIL_USE_SSL = True  # True for SSL (since you're using port 465)
+EMAIL_SSL_CERTFILE = certifi.where()
+EMAIL_SSL_KEYFILE = None
 
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # Token expiration time
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Refresh token expiration time
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_USE": True,
-}
+# SIMPLE_JWT = {
+#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # Token expiration time
+#     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Refresh token expiration time
+#     "ROTATE_REFRESH_TOKENS": True,
+#     "BLACKLIST_AFTER_USE": True,
+# }
 
 
 # media url
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]

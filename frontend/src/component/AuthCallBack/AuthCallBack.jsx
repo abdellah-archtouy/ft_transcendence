@@ -10,7 +10,7 @@ import '../loadingPage/loadingPage.css'
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const AuthCallBack = ({setAuth}) => {
+const AuthCallBack = ({ setAuth }) => {
     const navigate = useNavigate();
     console.log("AuthCallBack mounted");
 
@@ -19,25 +19,25 @@ const AuthCallBack = ({setAuth}) => {
         const code = urlParams.get("code");
 
         if (code) {
-        // Call the backend to exchange the code for tokens
-        const fetchTokens = async () => {
-            try {
-            const response = await axios.get(
-                `${apiUrl}/api/auth/callback/?code=${code}`
-            );
-            const { access, refresh } = response.data;
+            // Call the backend to exchange the code for tokens
+            const fetchTokens = async () => {
+                try {
+                    const response = await axios.get(
+                        `${apiUrl}/api/users/auth/callback/?code=${code}`
+                    );
+                    const { access, refresh } = response.data;
 
-            // Save tokens in local storage
-            localStorage.setItem("access", access);
-            localStorage.setItem("refresh", refresh);
-            setAuth(access, refresh); // Call handleLogin with the access token
-            navigate("/"); // Navigate to the home page or desired page
-            } catch (error) {
-                console.error("Error fetching tokens: ", error);
-                navigate("/");
-            }
-        };
-        fetchTokens();
+                    // Save tokens in local storage
+                    localStorage.setItem("access", access);
+                    localStorage.setItem("refresh", refresh);
+                    setAuth(access, refresh); // Call handleLogin with the access token
+                    navigate("/"); // Navigate to the home page or desired page
+                } catch (error) {
+                    console.error("Error fetching tokens: ", error);
+                    navigate("/");
+                }
+            };
+            fetchTokens();
         }
     }, []);
 
@@ -46,16 +46,16 @@ const AuthCallBack = ({setAuth}) => {
             <div className="LoadingPagecontent">
                 <div className='ashkal'>
                     <div className="first">
-                    <img src={moraba3} alt="" className='moraba3' />
+                        <img src={moraba3} alt="" className='moraba3' />
                     </div>
                     <div className="second">
-                    <img src={x} alt="" className='x' />
+                        <img src={x} alt="" className='x' />
                     </div>
                     <div className="third">
-                    <img src={motalat} alt="" className='motalat' />
+                        <img src={motalat} alt="" className='motalat' />
                     </div>
                     <div className="fourth">
-                    <img src={da2ira} alt="" className='da2ira' />
+                        <img src={da2ira} alt="" className='da2ira' />
                     </div>
                 </div>
                 <span>Loading...</span>

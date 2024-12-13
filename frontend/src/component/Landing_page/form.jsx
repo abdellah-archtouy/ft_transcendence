@@ -84,6 +84,7 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
 
       try {
         const response = await axios.post(url, data);
+        console.log("response", response);
         if (!isSignUp) {
           // Assuming the backend responds with an OTP required status
           setIsOtpRequired(true); // Show OTP form
@@ -266,7 +267,7 @@ const AuthForm = ({ setShowPopup, handleLogin, setLoading }) => {
     console.log("42 login function called");
     // setLoading(true);
     const redirectUri = encodeURIComponent(
-      `${api_callback}/api/auth/callback/`
+      `${api_callback}/auth/callback/`
     );
     const clientId = `${client_id}`;
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;

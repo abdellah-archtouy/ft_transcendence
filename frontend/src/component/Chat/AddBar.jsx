@@ -59,7 +59,7 @@ function AddBar({
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`${apiUrl}/chat/users/`, {
+        const response = await axios.get(`${apiUrl}/api/chat/users/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${access}`,
@@ -93,7 +93,7 @@ function AddBar({
 
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -134,7 +134,7 @@ function AddBar({
   };
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://${host}:8000/ws/api/addconv/`);
+    const socket = new WebSocket(`wss://${host}/ws/api/addconv/`);
     socket.onopen = () => {
       // console.log("WebSocket connection established");
     };
@@ -204,29 +204,29 @@ function AddBar({
           </div>
           <div className="result">
             {data.length === 0 ? <div className="center-text">
-                <p>
+              <p>
                 Type To Search
-                </p>
-              </div> :
-            <>
-            {resulte1.length === 0 ? (
-              <div className="center-text">
-                <p>
-                Not Found
-                </p>
-              </div>
-            ) : (
-              resulte1.map((user) => (
-                <button
-                onClick={handleClick(user.user.id)}
-                className="center"
-                key={user.user.id}
-                >
-                  {user.user.username}
-                </button>
-              ))
-            )}
-            </>
+              </p>
+            </div> :
+              <>
+                {resulte1.length === 0 ? (
+                  <div className="center-text">
+                    <p>
+                      Not Found
+                    </p>
+                  </div>
+                ) : (
+                  resulte1.map((user) => (
+                    <button
+                      onClick={handleClick(user.user.id)}
+                      className="center"
+                      key={user.user.id}
+                    >
+                      {user.user.username}
+                    </button>
+                  ))
+                )}
+              </>
             }
           </div>
         </div>

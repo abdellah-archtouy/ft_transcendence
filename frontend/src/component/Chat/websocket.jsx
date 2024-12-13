@@ -2,12 +2,12 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const WebSocketContext = createContext(null);
 
-export const WebSocketProvider = ({children1}) => {
+export const WebSocketProvider = ({ children1 }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     // Create WebSocket connection
-    const ws = new WebSocket(`ws://${host}:8000/api/data/`);
+    const ws = new WebSocket(`wss://${host}/api/data/`);
 
     ws.onopen = () => {
       console.log('WebSocket connection established');
@@ -30,7 +30,7 @@ export const WebSocketProvider = ({children1}) => {
 
   return (
     <WebSocketContext.Provider value={socket}>
-        {children1}
+      {children1}
     </WebSocketContext.Provider>
   );
 };

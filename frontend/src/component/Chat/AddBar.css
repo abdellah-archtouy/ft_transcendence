@@ -1,4 +1,4 @@
-.AddBar{
+.AddBar {
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(40px);
     position: absolute;
@@ -11,7 +11,7 @@
     z-index: 10;
 }
 
-.out{
+.out {
     width: 600px;
     height: 100%;
     display: flex;
@@ -19,87 +19,89 @@
     justify-content: start;
 }
 
-.hide{
+.hide {
     display: none;
     visibility: hidden;
 }
 
-.SearchBar-container1{
-    position: relative;
+.SearchBar-container1 {
     align-items: center;
-    width: 100%;
-    margin: 0 auto;
-    /* padding-top: 200px; */
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 200px;
+    width: 100%;
+    height: 60%;
 }
-.SearchBar-container1 .SearchBar input:focus{
-    outline: none;
-    color: #FFFFFF50;
-    
-}   
-.SearchBar-container1 .SearchBar input{
+
+
+.SearchBar-container1 .SearchBar input {
     background-color: transparent;
     color: #FFFFFF50;
     border: none;
     height: 100%;
     font-size: 1.25rem;
     width: 100%;
-    margin-left: 5px;
+    transition: all ease-in-out 0.3s;
+}
+
+.SearchBar-container1 .SearchBar input:focus {
+    color: white;
 }
 
 
-.SearchBar-container1 .SearchBar .SearchIcon > svg{
+.SearchBar-container1 .SearchBar .SearchIcon>svg {
     height: 90%;
     width: auto;
 }
+
 /* #565656 */
-.SearchBar-container1 .SearchBar{
-    position: relative;
-    background-color: rgb(34, 34, 34, 0.8);
-    border: #565656 solid 2px;
-    width: 100%;
-    height: 40px;
-    color: #FFFFFF50;
-    border-radius: 10px;
-    padding-right: 15px;
-    display: flex;
+.SearchBar-container1 .SearchBar {
     align-items: center;
-    box-shadow: 0 0 8px  #ddd;
+    background-color: #222c;
+    border: 2px solid #565656;
+    border-radius: 8px;
+    color: #ffffff50;
+    display: flex;
+    height: 55px;
+    position: relative;
+    width: 100%;
 }
 
-.result  button{
-    /* all: unset; */
+.result button {
     background-color: #565656;
-    border-radius: 8px;
+    border-radius: 2px;
+    color: #ffffff50;
+    height: 30px;
     outline: none;
     width: 100%;
-    color: #FFFFFF50;
-    height: 30px;
-
+    color: white;
+    transition: all ease-in-out 0.3s;
+    cursor: pointer;
+    text-transform: uppercase;
+    border: none;
 }
+
+.result button:hover {
+    background-color: transparent;
+}
+
+
+
 .result {
-    width: 100%;
-    border: #565656 solid 5px;
-    position: relative;
-    box-shadow: 0 0 8px  #ddd;
-    display: flex; 
-    top: 2.5rem;
-    padding: 10px;
+    background-color: #222c;
+    border: 2px solid #565656;
+    border-radius: 8px;
+    box-shadow: 0 0 8 #ddd;
     flex-direction: column;
-    border-radius: 10px;
-    margin: 1rem;
     gap: 5px;
-    align-items: center;
-    box-shadow: 0 0 8  #ddd;
-    background-color: rgb(34, 34, 34, 0.8);
     height: 300px;
+    margin: 1rem;
     overflow-y: scroll;
+    padding: 10px;
+    width: 100%;
 }
 
-.center-text{
+.center-text {
     display: flex;
     width: 100%;
     height: 100%;
@@ -108,7 +110,7 @@
 }
 
 @media screen and (max-width: 1024px) {
-    .out{
+    .out {
         width: clamp(17.5rem, 47.478vw + 7.114rem, 37.5rem);
         /* height: 100%; */
         padding-top: 0;
@@ -116,5 +118,5 @@
         align-items: center;
         justify-content: start;
     }
-    
+
 }

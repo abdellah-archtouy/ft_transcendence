@@ -49,11 +49,11 @@ const Home = () => {
   const fetchTop5 = async () => {
     try {
       const access = localStorage.getItem("access");
-      const response = await axios.get(`${apiUrl}/game/top5`, {
+      const response = await axios.get(`${apiUrl}/api/game/top5`, {
         headers: { Authorization: `Bearer ${access}` },
       });
       setTop5(response.data);
-      const response1 = await axios.get(`${apiUrl}/game/history`, {
+      const response1 = await axios.get(`${apiUrl}/api/game/history`, {
         headers: { Authorization: `Bearer ${access}` },
       });
       setHistory(response1.data);
@@ -89,7 +89,7 @@ const Home = () => {
 
       if (refresh) {
         axios
-          .post(`${apiUrl}/api/token/refresh/`, { refresh })
+          .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
@@ -102,12 +102,12 @@ const Home = () => {
             window.location.reload();
             navigate("/");
           });
-        } else {
-          setErrors({ general: "No refresh token available. Please log in." });
-          localStorage.removeItem("access");
-          localStorage.removeItem("refresh");
-          window.location.reload();
-          navigate("/");
+      } else {
+        setErrors({ general: "No refresh token available. Please log in." });
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        window.location.reload();
+        navigate("/");
       }
     } else {
       setErrors({ general: "An unexpected error occurred. Please try again." });

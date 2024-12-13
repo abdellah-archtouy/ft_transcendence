@@ -24,11 +24,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("User.urls")),
-    path("chat/", include("Chat.urls")),
-    path("game/", include("Game.urls")),
-    path("notification/", include("Notifications.urls")),
-    path("tournament/", include("Tournament.urls")),
+    path("api/users/", include("User.urls")),
+    path("api/chat/", include("Chat.urls")),
+    path("api/game/", include("Game.urls")),
+    path("api/notification/", include("Notifications.urls")),
+    path("api/tournament/", include("Tournament.urls")),
 ]
 
 if settings.DEBUG:

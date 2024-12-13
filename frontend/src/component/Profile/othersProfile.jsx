@@ -45,7 +45,7 @@ const OthersProfile = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response2 = await axios.get(`${apiUrl}/chat/user/data/`, {
+        const response2 = await axios.get(`${apiUrl}/api/chat/user/data/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${access}`,
@@ -53,7 +53,7 @@ const OthersProfile = () => {
           withCredentials: true,
         });
         const response = await axios.get(
-          `${apiUrl}/chat/ouser/data/${username}`,
+          `${apiUrl}/api/chat/ouser/data/${username}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -90,7 +90,7 @@ const OthersProfile = () => {
       try {
         const access = localStorage.getItem("access");
         const response = await axios.get(
-          `${apiUrl}/chat/ouser/chart/${username}`,
+          `${apiUrl}/api/chat/ouser/chart/${username}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -174,7 +174,7 @@ const OthersProfile = () => {
     try {
       const access = localStorage.getItem("access");
       const response = await axios.get(
-        `${apiUrl}/chat/ouser/getconv/${username}`,
+        `${apiUrl}/api/chat/ouser/getconv/${username}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -209,7 +209,7 @@ const OthersProfile = () => {
       try {
         const access = localStorage.getItem("access");
         const response = await axios.get(
-          `${apiUrl}/chat/ouser/friendreq/${username}`,
+          `${apiUrl}/api/chat/ouser/friendreq/${username}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -243,7 +243,7 @@ const OthersProfile = () => {
 
       if (refresh) {
         axios
-          .post(`${apiUrl}/api/token/refresh/`, { refresh })
+          .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
@@ -256,12 +256,12 @@ const OthersProfile = () => {
             window.location.reload();
             navigate("/");
           });
-        } else {
-          console.log({ general: "No refresh token available. Please log in." });
-          localStorage.removeItem("access");
-          localStorage.removeItem("refresh");
-          window.location.reload();
-          navigate("/");
+      } else {
+        console.log({ general: "No refresh token available. Please log in." });
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        window.location.reload();
+        navigate("/");
       }
     } else {
       console.log({ general: "An unexpected error occurred. Please try again." });

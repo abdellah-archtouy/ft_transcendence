@@ -67,7 +67,7 @@ const Msg = ({
       try {
         if (queryParam.get("username") === null) return;
         const response2 = await axios.get(
-          `${apiUrl}/chat/conversation/${queryParam.get("convid")}/`,
+          `${apiUrl}/api/chat/conversation/${queryParam.get("convid")}/`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const Msg = ({
         );
         setConversationdata1(response2.data);
         const response = await axios.get(
-          `${apiUrl}/chat/msg/${queryParam.get("username")}/`,
+          `${apiUrl}/api/chat/msg/${queryParam.get("username")}/`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -104,7 +104,7 @@ const Msg = ({
 
       if (refresh) {
         axios
-          .post(`${apiUrl}/api/token/refresh/`, { refresh })
+          .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
           .then((refreshResponse) => {
             const { access: newAccess } = refreshResponse.data;
             localStorage.setItem("access", newAccess);
@@ -149,7 +149,7 @@ const Msg = ({
   const postnewroom = async (friendId) => {
     const access = localStorage.getItem("access");
     try {
-      const response = await axios.get(`${apiUrl}/chat/game/${friendId}`, {
+      const response = await axios.get(`${apiUrl}/api/chat/game/${friendId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${access}`,
@@ -221,7 +221,7 @@ const Msg = ({
       const access = localStorage.getItem("access");
       if (queryParam.get("username") === null) return;
       const response2 = await axios.get(
-        `${apiUrl}/chat/mute/get/${queryParam.get("username")}/`,
+        `${apiUrl}/api/chat/mute/get/${queryParam.get("username")}/`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -249,7 +249,7 @@ const Msg = ({
     try {
       if (queryParam.get("username") === null) return;
       const response = await axios.get(
-        `${apiUrl}/chat/mute/${queryParam.get("username")}/`,
+        `${apiUrl}/api/chat/mute/${queryParam.get("username")}/`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -272,7 +272,7 @@ const Msg = ({
     try {
       if (queryParam.get("username") === null) return;
       const response = await axios.get(
-        `${apiUrl}/chat/block/${queryParam.get("username")}/`,
+        `${apiUrl}/api/chat/block/${queryParam.get("username")}/`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -343,9 +343,8 @@ const Msg = ({
             </div>
             <div
               onClick={handelsetclick}
-              className={`set ${
-                queryParam.get("username") === "Tournament" ? "hide" : "null"
-              }`}
+              className={`set ${queryParam.get("username") === "Tournament" ? "hide" : "null"
+                }`}
             >
               <button>
                 <Set />
@@ -393,9 +392,8 @@ const Msg = ({
             <div />
           </div>
           <div
-            className={` message_bar ${
-              queryParam.get("username") === "Tournament" ? "hide" : "null"
-            }`}
+            className={` message_bar ${queryParam.get("username") === "Tournament" ? "hide" : "null"
+              }`}
           >
             <button
               onClick={(e) => {

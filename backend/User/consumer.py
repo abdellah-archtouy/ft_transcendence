@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from django.db import transaction
 import json
 from .models import User
 
@@ -7,8 +8,10 @@ users = {}
 
 @database_sync_to_async
 def set_user_update(boolean, user):
-    user.stat = boolean
-    user.save()
+    with transaction.atomic():
+        user_obj = User.objects.select_for_update().get(id=user.id)
+        user_obj.stat = boolean
+        user_obj.save(update_fields=['stat'])
 
 def add_to_dict(user_id: int, channel_name):
     global users

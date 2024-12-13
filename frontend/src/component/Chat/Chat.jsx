@@ -29,7 +29,7 @@ const Chat = () => {
     const fetchData = async () => {
       try {
         const access = localStorage.getItem("access");
-        const response = await axios.get(`${apiUrl}/chat/user/`, {
+        const response = await axios.get(`${apiUrl}/api/chat/user/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${access}`,
@@ -48,7 +48,7 @@ const Chat = () => {
 
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -85,7 +85,7 @@ const Chat = () => {
     const access = localStorage.getItem("access");
     if (userData) {
       const ws = new WebSocket(
-        `ws://${host}:8000/ws/api/data/${userData?.id}/`
+        `wss://${host}:8000/ws/api/data/${userData?.id}/`
       );
 
       ws.onopen = () => {
@@ -114,9 +114,8 @@ const Chat = () => {
   return (
     <WebSocketContext.Provider value={socket}>
       <div
-        className={`chat_container ${
-          queryParam.get("convid") === null ? "null" : "mobile-msg"
-        }`}
+        className={`chat_container ${queryParam.get("convid") === null ? "null" : "mobile-msg"
+          }`}
       >
         <ConvBar
           userData={userData}

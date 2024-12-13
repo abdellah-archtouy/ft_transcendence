@@ -32,7 +32,7 @@ const ConvBar = ({
     const fetchData = async () => {
       const access = localStorage.getItem("access");
       try {
-        const response = await axios.get(`${apiUrl}/chat/conv/`, {
+        const response = await axios.get(`${apiUrl}/api/chat/conv/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${access}`,
@@ -56,10 +56,10 @@ const ConvBar = ({
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -72,12 +72,12 @@ const ConvBar = ({
               window.location.reload();
               navigate("/");
             });
-          } else {
-            setErrors({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          setErrors({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
         setErrors({ general: "An unexpected error occurred. Please try again." });

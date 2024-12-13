@@ -51,6 +51,7 @@ services:
     container_name: backend
     ports:
       - "8000:8000"
+      - "465:465"
     env_file:
       - .env
     volumes:

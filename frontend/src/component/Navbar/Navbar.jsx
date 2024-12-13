@@ -54,9 +54,8 @@ const Navbar = ({ setLoggedOut }) => {
     const coloredDiv = document.querySelector(".items");
     let colorDivOffsetTop = coloredDiv.offsetTop;
     if (navDisplay) colorDivOffsetTop = itemOffsetTop;
-    coloredDiv.style.transform = `translateX(${
-      itemOffsetLeft - coloredDiv.offsetLeft
-    }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
+    coloredDiv.style.transform = `translateX(${itemOffsetLeft - coloredDiv.offsetLeft
+      }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
     coloredDiv.style.transition = `transform 0.3s ease-in-out`;
   };
 
@@ -94,9 +93,8 @@ const Navbar = ({ setLoggedOut }) => {
       const coloredDiv = document.querySelector(".items");
       let colorDivOffsetTop = coloredDiv.offsetTop;
       if (navDisplay) colorDivOffsetTop = itemOffsetTop;
-      coloredDiv.style.transform = `translateX(${
-        itemOffsetLeft - coloredDiv.offsetLeft
-      }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
+      coloredDiv.style.transform = `translateX(${itemOffsetLeft - coloredDiv.offsetLeft
+        }px) translateY(${itemOffsetTop - colorDivOffsetTop}px)`;
     }
   }, [location.pathname, navDisplay]);
 
@@ -145,7 +143,7 @@ const Navbar = ({ setLoggedOut }) => {
       try {
         const access = localStorage.getItem("access");
 
-        const response = await axios.get(`${apiUrl}/notification`, {
+        const response = await axios.get(`${apiUrl}/api/notification`, {
           headers: {
             Authorization: `Bearer ${access}`,
           },
@@ -160,10 +158,10 @@ const Navbar = ({ setLoggedOut }) => {
     const handleFetchError = (error, retryFunction) => {
       if (error.response && error.response.status === 401) {
         const refresh = localStorage.getItem("refresh");
-  
+
         if (refresh) {
           axios
-            .post(`${apiUrl}/api/token/refresh/`, { refresh })
+            .post(`${apiUrl}/api/users/token/refresh/`, { refresh })
             .then((refreshResponse) => {
               const { access: newAccess } = refreshResponse.data;
               localStorage.setItem("access", newAccess);
@@ -176,12 +174,12 @@ const Navbar = ({ setLoggedOut }) => {
               window.location.reload();
               navigate("/");
             });
-          } else {
-            console.log({ general: "No refresh token available. Please log in." });
-            localStorage.removeItem("access");
-            localStorage.removeItem("refresh");
-            window.location.reload();
-            navigate("/");
+        } else {
+          console.log({ general: "No refresh token available. Please log in." });
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.reload();
+          navigate("/");
         }
       } else {
         console.log({ general: "An unexpected error occurred. Please try again." });
@@ -195,7 +193,7 @@ const Navbar = ({ setLoggedOut }) => {
     if (user) {
       const user_id = user.id;
       const socket = new WebSocket(
-        `ws://${hostName}:8000/ws/notification/${user_id}/`
+        `wss://${hostName}/ws/notification/${user_id}/`
       );
 
       socket.onmessage = function (event) {
