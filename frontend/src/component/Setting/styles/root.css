@@ -1,0 +1,530 @@
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: clamp(31.688rem, 23.5rem + 20.469vw, 56.25rem);
+    border-radius: 45px;
+    background-color: rgba(34, 34, 34, 0.8);
+    flex-direction: column;
+    backdrop-filter: blur(15px);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 5px 5px;
+    transition: all 0.8s ease;
+}
+
+.settings-cover {
+    width: 100%;
+    height: 40%;
+    border-radius: 45px 45px 0 0;
+    background-color: black;
+    display: flex;
+    position: relative;
+
+}
+
+.user-cover {
+    width: 100%;
+    height: auto;
+    border-radius: 45px 45px 0 0;
+    background-color: black;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+.user-avatar-container {
+    position: absolute;
+    width: clamp(4.375rem, 2.4008rem + 9.8712vw, 18.75rem);
+    height: clamp(4.375rem, 2.4008rem + 9.8712vw, 18.75rem);
+    border-radius: 50%;
+    border: solid clamp(0.125rem, 0.0992rem + 0.1288vw, 0.3125rem) #636262;
+    top: 24%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.user-avatar-btn {
+    position: absolute;
+    width: clamp(2.5rem, 1.985rem + 2.5751vw, 6.25rem);
+    height: clamp(2.5rem, 1.985rem + 2.5751vw, 6.25rem);
+    border-radius: 50%;
+    background-color: #C4C4C4;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+.user-avatar-btn-icon {
+    fill: rgba(196, 196, 196, 1);
+    width: 50%;
+    height: 50%;
+    stroke-width: 2;
+    transition: fill 0.5s;
+}
+
+/* when hover over .user-avatar-btn this .user-avatar-btn-icon should change color */
+.user-avatar-btn:hover .user-avatar-btn-icon {
+    fill: rgb(255, 255, 255);
+}
+
+.cover-change_btn {
+    position: absolute;
+    right: 1%;
+    bottom: 4%;
+    width: clamp(2.375rem, 2.1862rem + 0.9442vw, 3.75rem);
+    height: clamp(2.375rem, 2.1862rem + 0.9442vw, 3.75rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: clamp(0.375rem, 0.3235rem + 0.2575vw, 0.75rem);
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    animation: fadeIn 0.5s ease-in forwards;
+    border: clamp(0.0625rem, 0.0539rem + 0.0429vw, 0.125rem) solid rgba(255, 255, 255, 0.5);
+
+}
+
+.cover-change_btn:hover .cover-change_icon {
+    fill: rgb(255, 255, 255);
+}
+
+.cover-change_icon {
+    fill: rgba(196, 196, 196, 1);
+    width: 50%;
+    height: 50%;
+    stroke-width: 2;
+    transition: fill 0.5s;
+}
+
+.settings-forms {
+    height: 60%;
+    width: 100%;
+    border-radius: 0 0 45px 45px;
+    display: flex;
+    flex-direction: row;
+    transition: all 0.3s ease;
+}
+
+.settings-forms-btn-container {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+    align-items: center;
+}
+
+.settings-forms-btn {
+    width: clamp(5.625rem, 5.2817rem + 1.7167vw, 8.125rem);
+    height: clamp(1.875rem, 1.7892rem + 0.4292vw, 2.5rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #8D8D8D;
+    border: none;
+    cursor: pointer;
+    font-size: clamp(1rem, 0.9571rem + 0.2146vw, 1.3125rem);
+    transition: background-color 0.5s;
+}
+
+.settings-forms-btn:hover {
+    background-color: #2F2F2F;
+}
+
+.active-btn {
+    background-color: #2F2F2F;
+}
+
+
+.settings-form-seperator {
+    margin-top: 2%;
+    height: 80%;
+    width: 1px;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+}
+
+.settings-forms-container {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5%;
+    margin-left: 5%;
+}
+
+.form-general {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: flex-start;
+    align-items: flex-start;
+    gap: 5%;
+    position: relative;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+.form-security {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: flex-start;
+    align-items: flex-start;
+    gap: 5%;
+    position: relative;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+.form-security .form-group {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6%;
+    transition: all 0.3s ease;
+}
+
+.form-group {
+    width: 40%;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* border: solid 1px white; */
+}
+
+.form-group label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: clamp(1.25rem, 1.0097rem + 1.2017vw, 3rem);
+    margin-bottom: 2%;
+    /* border: solid 1px white; */
+}
+
+.form-security label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: clamp(1.25rem, 1.0097rem + 1.2017vw, 3rem);
+    width: 100%;
+    margin-bottom: 0;
+    text-align: left;
+    /* border: solid 1px white; */
+}
+
+.form-security .form-input {
+    width: 40%;
+    height: 40%;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 2%;
+    font-size: clamp(0.9375rem, 0.886rem + 0.2575vw, 1.3125rem);
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 2%;
+}
+
+.form-input {
+    width: 100%;
+    height: 40%;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 2%;
+    font-size: clamp(0.9375rem, 0.886rem + 0.2575vw, 1.3125rem);
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 5%;
+}
+
+.form-input-bio {
+    width: 100%;
+    height: 45%;
+    color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 3%;
+    padding-left: 5%;
+    font-size: clamp(0.9375rem, 0.886rem + 0.2575vw, 1.3125rem);
+    resize: none;
+    overflow: hidden;
+    transition: all .3s ease-in-out;
+}
+
+.form-input-bio:focus {
+    outline: none;
+    border: solid 1px white;
+}
+
+
+.form-submit-btn {
+    position: absolute;
+    bottom: 3%;
+    right: 3%;
+    width: clamp(6.25rem, 5.9925rem + 1.2876vw, 8.125rem);
+    height: clamp(2.5rem, 2.4142rem + 0.4292vw, 3.125rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    background-color: #565656;
+    color: #C4C4C4;
+    border: none;
+    cursor: pointer;
+    font-size: clamp(1.25rem, 1.2157rem + 0.1717vw, 1.5rem);
+    transition: background-color 0.5s;
+}
+
+.form-submit-btn:hover {
+    background-color: transparent;
+}
+
+
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in forwards;
+    opacity: 0;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.input-error {
+    border-color: red;
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+.form-security-42 {
+    display: none;
+}
+
+
+.wrong-avatar {
+    border: red;
+}
+
+
+/* Large Devices (Desktops) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .user-avatar-container {
+        top: 27%;
+    }
+
+    .form-group {
+        width: 50%;
+    }
+
+    .form-security .form-group {
+        width: 50%;
+    }
+
+    .form-security .form-input {
+        width: 100%;
+        padding-left: 5%;
+    }
+}
+
+/* Medium Devices (Tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .settings {
+        width: 80%;
+    }
+
+    .user-avatar-container {
+        top: 28%;
+    }
+
+    .user-avatar-btn {
+        width: 38%;
+        height: 38%;
+        top: 32%;
+        left: 32%;
+    }
+
+    .form-group {
+        width: 50%;
+    }
+
+    .form-security .form-group {
+        width: 50%;
+    }
+
+    .form-security .form-input {
+        width: 100%;
+        padding-left: 5%;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 767px) {
+    .settings {
+        width: 100%;
+        height: 1100px;
+        border-radius: 0;
+    }
+
+    .settings-cover {
+        height: 20%;
+    }
+
+    .user-cover {
+        border-radius: 0;
+    }
+
+    .user-avatar-container {
+        top: 15%;
+        right: 0;
+        left: 0;
+        margin: auto;
+        width: clamp(6.25rem, 4.4603rem + 8.9485vw, 8.75rem);
+        height: clamp(6.25rem, 4.4603rem + 8.9485vw, 8.75rem);
+        border-radius: 20%;
+    }
+
+    .user-avatar {
+        border-radius: 20%;
+    }
+
+    .settings-forms {
+        height: 35%;
+        margin-top: 15%;
+        flex-direction: column;
+        gap: 3%;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .form-input {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1%;
+        width: 100%;
+        height: 50%;
+    }
+
+    .form-input-bio {
+        padding: 1%;
+        width: 100%;
+        height: 70%;
+    }
+
+    .form-security .form-group {
+        width: 100%;
+    }
+
+    .form-security .form-input {
+        width: 100%;
+        padding-left: 5%;
+    }
+
+    .form-submit-btn {
+        bottom: 30%;
+    }
+
+    .settings-forms-btn-container {
+        width: 100%;
+        height: 30%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .settings-form-seperator {
+        width: 80%;
+        height: 1px;
+    }
+
+    .settings-forms-container {
+        width: 80%;
+        margin-left: 0;
+    }
+}
+
+@media screen and (max-width: 319px) {
+    * {
+        display: none;
+    }
+
+}

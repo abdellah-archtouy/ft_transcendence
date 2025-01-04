@@ -1,0 +1,43 @@
+.sender{
+    color: #FFFFFF80;
+    position: relative;
+    display: flex;
+    justify-content: end;
+}
+.reciver{
+    color: #FFFFFF80;
+    position: relative;
+}
+
+.msg_box > span {
+    width: 100%;
+    user-select: text;
+    color: #B2B2B2;
+    display: block;
+    word-wrap: break-word;
+}
+
+.msg_box  .button-invite{
+    all: unset;
+    width: 180px;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    cursor:pointer;
+}
+.msg_box{
+    display: flex;
+    padding: 10px 15px;
+    height: fit-content;
+    box-sizing: border-box;
+    justify-content: center;
+    width: fit-content;
+    align-items: center;
+    text-align: start;
+    background-color: #222222;
+    max-width: 50%;
+    border-style: hidden;
+    border-radius: 10px;
+}

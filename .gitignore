@@ -1,0 +1,22 @@
+# First, ignore the general directories
+frontend/node_modules
+**/__pycache__/
+database/
+django-env
+
+# Media directories
+backend/media/avatars/*
+backend/media/covers/*
+
+# Then make exceptions for specific files
+!backend/media/avatars/default_avatar.png
+!backend/media/avatars/botProfile.svg
+!backend/media/covers/default_cover.png
+
+# Nginx certificates and keys
+nginx/certs/**
+nginx/certs/certs/*
+nginx/certs/fullchain.pem
+nginx/certs/privkey.pem
+
+.env

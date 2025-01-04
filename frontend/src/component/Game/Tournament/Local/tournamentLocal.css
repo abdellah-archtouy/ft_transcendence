@@ -1,0 +1,368 @@
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Montserrat'), url('./../asset/Montserrat/Montserrat-VariableFont_wght.ttf') format("truetype")
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-style: lighter;
+    font-weight: 100;
+    src: local('Montserrat'), url('./../asset/Montserrat/static/Montserrat-Light.ttf') format("truetype")
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Montserrat italic'), url('./../asset/Montserrat/Montserrat-Italic-VariableFont_wght.ttf') format("truetype")
+}
+
+.noTournament-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    gap: 50px;
+    animation: fade-in 1s ease;
+}
+
+.noTournament-header {
+    font-weight: bold;
+    font-size: clamp(2rem, 2.465vw + 1.422rem, 3rem);
+    line-height: 0.5;
+    padding-top: 50px;
+}
+
+.noTournament-text {
+    font-family: 'Montserrat';
+    font-size: clamp(0.625rem, 0.924vw + 0.408rem, 1rem);
+    font-weight: 400;
+    color: rgb(255, 255, 255, 0.6);
+}
+
+.notournament-addButton {
+    font-size: 12px;
+    height: fit-content;
+    width: fit-content;
+    outline: none;
+    border: none;
+    color: #DFDFDF;
+    background: #565656;
+    fill: #DFDFDF;
+    padding: 8px 12px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 50px;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+}
+
+.notournament-addButton:hover {
+    background: #DFDFDF;
+    color: #565656;
+    fill: #565656;
+}
+
+.addButton_icon {
+    height: 12px;
+    width: auto;
+}
+
+/* ******************************* */
+/* styling AddTournament-container */
+/* ******************************* */
+
+.AddTournament-container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    /* border: solid; */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fade-in 1s ease-in-out;
+}
+
+.AddTournamament-header {
+    margin-top: 50px;
+    color: #ffffff;
+    text-shadow: 
+    0px 0px 15px #9f857fcc,
+    0px 0px 30px #9f857fcc;
+}
+
+.AddTournament-formatContainer {
+    max-height: 650px;
+    width: 400px;
+    flex: 1;
+    margin-top: 50px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    background-image: linear-gradient(to top, #000000 20%, transparent 80%), url("../asset/lord4.svg");
+    background-size: cover, 100%; /* Ensure both the image and gradient cover the container */
+    background-position: center, center top; /* Adjust positioning */
+    background-repeat: no-repeat;
+    padding: 50px 30px;
+    box-shadow: 0 0 16px 0 rgb(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.AddTournamament-formheader {
+    display: none;
+}
+
+.AddTournament-form {
+    all: unset;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    width: 100%;
+    justify-content: center;
+    gap: 50px;
+}
+
+.input-container {
+    display: flex;
+    flex-wrap: wrap;
+    display: flex;
+    width: 100%;
+    gap: 15px;
+}
+
+.input-container > div {
+    text-align: start;
+    text-indent: 5px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 5px;
+}
+
+.input-container > div > label {
+    color: #E9E5DC;
+    font-size: 16px;
+}
+
+.input-container > div > input {
+    width: 100%;
+    height: fit-content;
+    padding: 11px;
+    border: #5A564D 0.81px solid;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    line-height: 1;
+    color: #5A564D;
+    transition: all 0.4s ease;
+}
+
+.input-container > div > input:focus {
+    border-color: #E9E5DC;
+    color: #E9E5DC;
+    box-shadow: 0 0 8px #b3b3b380;
+}
+
+.submitTournament {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    text-align: start;
+    text-indent: 5px;
+    flex-direction: row;
+    line-height: 1;
+    gap: 20px;
+}
+
+#AddTournament-submit {
+    color: #E9E5DC;
+    width: 100px;
+    height: 30px;
+    font-size: 13px;
+    font-weight: 550;
+    justify-self: flex-end;
+    padding: unset;
+    cursor: pointer;
+    background-color: #000000;
+    border: #5A564D 0.81px solid;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.bgcolor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 30px;
+    width: 100px;
+    background-color: #9f9d99;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+#AddTournament-submit:hover {
+    transform: translateX(-4px) translateY(-4px);
+}
+
+#AddTournament-submit:active {
+    transform: translateX(0px) translateY(0px);
+}
+
+#AddTournament-cancel {
+    --background1: linear-gradient(to left, rgb(116, 116, 116), transparent), linear-gradient(to left, transparent 70%, rgb(116, 116, 116));
+    color: #E9E5DC;
+    width: unset;
+    height: unset;
+    font-size: 15px;
+    font-weight: 550;
+    padding: 5px 12px;
+    line-height: 1;
+    border-radius: 15px;
+    border: #5A564D 0.81px solid;
+    mask-image: var(--background1);
+    mask-size: 200px;
+    mask-position: 0px;
+    cursor: pointer;
+    backdrop-filter: blur(20px);
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    transition: mask-position 0.5s ease, all 0.3s ease-in-out;
+}
+
+#AddTournament-cancel:hover {
+    mask-position: 100px;
+}
+
+#AddTournament-cancel:active {
+    background-color: #9f9d99;
+    color: #000000;
+    mask-image: unset;
+}
+
+
+
+@media (max-height: 49vw) and (max-width: 600px) {
+
+    .AddTournament-formatContainer {
+        margin-top: 30px;
+    }
+
+    .AddTournamament-header {
+        all: unset;
+        display: none;
+    }
+
+    .AddTournamament-formheader {
+        display: block;
+        font-weight: 550;
+        color: #E9E5DC;
+        width: 100%;
+        text-shadow: 0 0 6px #9E857F;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .main:has(.AddTournament-container) {
+        margin-bottom: 0;
+    }
+    .AddTournament-container {
+        width: 100%;
+        height: 100%;
+    }
+    .AddTournamament-header {
+        all: unset;
+        display: none;
+    }
+    .AddTournament-formatContainer {
+        max-height: unset;
+        min-height: 100%;
+        height: fit-content;
+        width: 100%;
+        border-radius: unset;
+        box-shadow: unset;
+        margin: unset;
+        justify-content: unset;
+    }
+
+    .AddTournament-form {
+        margin-top: 100%;
+        align-items: center;
+    }
+
+    .input-container {
+        width: 250px;
+    }
+    .input-container > div { /* hadi hiya lform bdatha */
+        width: 100%;
+    }
+
+    .AddTournamament-formheader {
+        display: block;
+        font-weight: 550;
+        color: #E9E5DC;
+        width: 100%;
+        text-shadow: 0 0 6px #9E857F;
+    }
+}
+
+.tournament-complete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+    max-height: 800px;
+    justify-content: space-evenly;
+}
+
+.tournament-complete > button {
+    padding: 10px;
+    background: unset;
+    border: #9f9d99 solid 1px;
+    border-radius: 5px;
+    color: #9f9d99;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+}
+.tournament-complete > button:hover {
+    color: #000000;
+    background: #9f9d99;
+    /* border: unset; */
+}
+
+.winner-display {
+    width: clamp(8.438rem, 9.503vw + 6.418rem, 12.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.img-container > svg {
+    height: 50px;
+}
+
+.local-winner-avatar {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    border-radius: 50%;
+    outline: 5px #5A564D solid;
+}
+
+.winner-name {
+    font-size: 48px;
+    text-transform: capitalize;
+}

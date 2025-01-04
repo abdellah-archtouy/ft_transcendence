@@ -1,0 +1,153 @@
+.SearchBar {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 998;
+    backdrop-filter: blur(40px);
+    transition: all 0.4s;
+    animation: fade-in ease-in-out 0.5s;
+}
+
+.SearchBar.fadeout {
+    animation: fade-out ease-in-out 0.5s;
+}
+
+.searchContent.fadeout {
+    animation: fade-out ease-in-out 0.5s;
+}
+
+.searchContent {
+    width: clamp(18.75rem, 37.5vw + 3.75rem, 37.5rem);
+    /* max-width: 600px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: fit-content;
+    z-index: 999;
+    transition: all 1s;
+    animation: fade-in ease-in-out 1s;
+}
+
+.search {
+    background-color: #565656;
+    width: 100%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 8px;
+    position: relative;
+}
+
+.input {
+    width: 100%;
+    height: 60px;
+    border-radius: 4px;
+    stroke: none;
+    box-sizing: border-box;
+    padding: 0px 50px 0 20px;
+    font-size: 16px;
+    background-color: rgb(34, 34, 34, 0.8);
+    border: none;
+    color: rgb(255, 255, 255, 0.4);
+}
+
+input:focus { 
+    font-weight: 400;
+    outline: none;
+}
+
+.submit {
+    position: absolute;
+    right: 10px;
+}
+
+.users {
+    box-sizing: border-box;
+    padding: 16px 10px;
+    gap: 15px;
+    background-color: rgb(34, 34, 34, 0.8);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 4px;
+    height: 200px;
+    overflow: scroll;
+}
+
+.users h3 {
+    color: #ffffff44;
+}
+
+.users::-webkit-scrollbar {
+    display: none;
+}
+
+.user {
+    width: 100%;
+    height: 30px;
+}
+
+.noSearchResult {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.userInfos {
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    color: #B2B2B2;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    padding: 4px 10px;
+    gap: 15px;
+    border-radius: 5px;
+    animation: fade-in 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    img {
+        height: 100%;
+        width: auto;
+        border-radius: 50%;
+        border: #636262 solid 1px;
+    }
+}
+
+.userInfos:hover {
+    background-color: rgb(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.user span{
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    height: 17px;
+    display: inline-block;
+}
+
+.nav_search_submit {
+    background: none;
+    border: none;
+    position: absolute;
+    right: 30px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    cursor: pointer;
+}

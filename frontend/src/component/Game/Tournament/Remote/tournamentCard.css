@@ -1,0 +1,74 @@
+.TournamentCard-container {
+    height: 100%;
+    max-height: 400px;
+    aspect-ratio: 7 / 12;
+    background-image: url("../asset/lord4.svg");
+    background-size: cover;
+    background-position: center;
+    border-radius: clamp(0.625rem, 2.924vw + 0.004rem, 1.875rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(0.75rem, 1.17vw + 0.501rem, 1.25rem);
+    padding: calc(clamp(0.625rem, 2.924vw + 0.004rem, 1.875rem) + 10px) clamp(0.625rem, 2.924vw + 0.004rem, 1.875rem);
+    box-shadow: 0 0 clamp(0.5rem, 0.585vw + 0.376rem, 0.75rem) 0 rgb(255, 255, 255, 0.3);
+    position: relative;
+    animation: fade-in 0.4s linear;
+}
+
+.TournamentCard-numusers {
+    font-weight: 200;
+    font-size: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
+    position: absolute;
+    top: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
+    right: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
+}
+
+.TournamentCard-name {
+    text-transform: capitalize;
+    font-weight: 600;
+    color: #E9E5DC;
+    font-size: clamp(0.875rem, 0.585vw + 0.751rem, 1.125rem);
+}
+
+.TournamentCard-join {
+    line-height: 1;
+    outline: unset;
+    border: #5A564D 1px solid;
+    color: #E9E5DC;
+    background: black;
+    padding: 8px 32px;
+    font-size: clamp(0.625rem, 1.023vw + 0.408rem, 1.063rem);
+    font-weight: 500;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 100;
+    cursor: pointer;
+}
+
+.TournamentCard-join:hover {
+    transform: translateX(-4px) translateY(-4px);
+}
+
+.join-button {
+    position: relative;
+    cursor: pointer;
+}
+
+.bg-color{
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    border-radius: 10px;
+    background-color: #898989;
+    z-index: 0;
+}
+
+.TournamentCard-join:active {
+    transform: translateX(0px) translateY(0px);
+}

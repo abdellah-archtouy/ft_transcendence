@@ -1,0 +1,177 @@
+.game_container{
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    width: clamp(15.625rem, 33.482vw + 8.929rem, 62.5rem);
+    height: clamp(18.75rem, 12.5vw + 16.25rem, 36.25rem);
+    aspect-ratio: 16 / 9;
+    gap: clamp(0.625rem, 0.446vw + 0.536rem, 1.25rem);
+    transition:  0.8s ease-in-out;
+}
+
+.game_container a, .game_container img
+{
+    border-radius: clamp(0.625rem, 0.893vw + 0.446rem, 1.875rem);
+}
+
+.game_container h1{
+    width: fit-content;
+    height: fit-content;
+    font-size: clamp(1.5rem, 0.714vw + 1.357rem, 2.5rem);
+    color: rgba(196, 196, 196, 0.5);
+    padding: clamp(0.938rem, 0.67vw + 0.804rem, 1.875rem);
+    line-height: 1;
+    top: 0%;
+    left: 0%;
+    position: absolute;
+    z-index: 1;
+}
+
+.game_Tournament{
+    width: 100%;
+    height: 100%;
+    background-color: #565656cc;
+    backdrop-filter: blur(20px);
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25);
+    display: flex;
+    position: relative;
+    justify-content: end;
+    cursor: pointer;
+    transition: all 0.4s;
+}
+
+.game_Tournament.fade-out{
+    animation: fade-out 2s ease-in-out;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.game_friend.fade-out{
+    animation: fade-out 1.4s ease-in-out;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.game_bot.fade-out{
+    animation: fade-out 0.8s ease-in-out;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.game_Tournament:hover , .game_friend:hover, .game_bot:hover
+{
+    z-index: 1;
+    animation: hoverScale 0.4s ease-in-out;
+    transform: scale(1.025, 1.025);
+    filter: drop-shadow(0px 0 0 white);
+}
+
+.game_Tournament img{
+    width: auto;
+    height: 100%;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+}
+
+.game_first {
+    height: 48%;
+}
+
+.game_second {
+    height: 48%;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: clamp(0.625rem, 0.446vw + 0.536rem, 1.25rem);
+}
+
+.game_friend {
+    backdrop-filter: blur(20px);
+    width: 59.5%;
+    background-color: #565656cc;
+    backdrop-filter: blur(20px);
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    justify-content: end;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.game_friend img{
+    width: auto;
+    height: 100%;
+    right: 0;
+    bottom: -2%;
+    position: absolute;
+}
+
+.game_bot {
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25);
+    width: 39.3%;
+    backdrop-filter: blur(20px);
+    background-color: #565656cc;
+    display: flex;
+    position: relative;
+    transition: all 0.4s;
+    justify-content: end;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.game_bot img{
+    width: 100%;
+    height: auto;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+}
+
+.game{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    animation: hoverScale 0.2s ease-in-out;
+    aspect-ratio: 16 / 9;
+    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
+    background-color: rgba(62, 62, 62, .302);
+    border-radius: 15px;
+    bottom: 10px;
+    box-shadow: 0 0 20px 0 #000c;
+    flex-direction: column;
+    height: 15vh;
+    outline: 1px solid #8b8b8bac;
+    position: fixed;
+    right: 10px;
+    justify-content: space-around;
+    padding: 20px;
+    min-height: 180px;
+    transform:scale(1.025);
+}
+
+.controls > h1 {
+    font-weight: 500;
+    color: #D3D3D3;
+    font-size: 25px;
+}
+
+.controls > img 
+{
+    width: 70%;
+    filter: contrast(0.6);
+}
+
+@media (max-width: 1024px) {
+    .controls {
+        display: none;
+    }
+}

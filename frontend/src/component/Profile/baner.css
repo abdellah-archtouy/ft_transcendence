@@ -1,0 +1,30 @@
+.cover-profile {
+    position: relative;
+    width: 900px;
+    height: 250px;
+    overflow: hidden;
+    border-radius: 30px;
+    z-index: 1;
+    --r: 30px;
+    --s: 120px;
+    --a: 13.5deg;
+    aspect-ratio: 1;
+    border-radius: var(--r);
+    --_m: 100%/calc(2*var(--r)) var(--r) no-repeat radial-gradient(50% 100% at top,#000 calc(100% - 1px),#0000);
+    --_d: (var(--s) + var(--r))*cos(var(--a));
+    mask: calc(50% + var(--_d)) var(--_m), calc(50% - var(--_d)) var(--_m), radial-gradient(var(--s) at 50% calc(100% + sin(var(--a))* var(--s)), #0000 100%, #000 calc(100% + 1px)) 0 calc(var(--r)*(sin(var(--a)) - 1)) no-repeat, linear-gradient(90deg, #000 calc(50% - var(--_d)), #0000 0 calc(50% + var(--_d)), #000 0);
+}
+
+.cover-profile img{
+    width:  100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media screen and (max-width: 1024px){
+    .cover-profile {
+        --r: 30px;
+        --s: 0;
+        --a: 0;
+    }
+}

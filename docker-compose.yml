@@ -1,0 +1,97 @@
+version: '3.9'
+
+services:
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Mount the NGINX config
+      - nginx_certs:/etc/ssl
+      - frontend_build:/usr/share/nginx/html
+      - ./backend/staticfiles:/usr/share/nginx/static
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - my-network
+    restart: always
+    entrypoint: ["/bin/sh", "-c"]
+    command: 
+      - |
+        # Generate SSL certificates if they don't exist
+
+        if [ ! -f /etc/ssl/privkey.pem ] || [ ! -f /etc/ssl/fullchain.pem ]; then
+          mkdir -p /etc/ssl
+          openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 \
+            -keyout /etc/ssl/privkey.pem \
+            -out /etc/ssl/fullchain.pem \
+            -subj "/CN=localhost"
+          chmod 644 /etc/ssl/fullchain.pem
+          chmod 644 /etc/ssl/privkey.pem
+
+        fi
+
+        # Start nginx
+        nginx -g "daemon off;"
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+      - "465:465"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+      - nginx_certs:/etc/ssl
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile  # React Dockerfile
+    container_name: frontend
+    volumes:
+      - frontend_build:/app/build
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    networks:
+      - my-network
+    restart: unless-stopped
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  nginx_certs:
+  frontend_build:
+  redis_data:
+  database:
+    driver: local

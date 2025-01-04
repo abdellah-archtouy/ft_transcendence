@@ -1,0 +1,172 @@
+.main:has(.LoadingPagecontent) {
+    margin-bottom: 0px !important;
+}
+
+.LoadingPagecontent{
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.506);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    backdrop-filter: blur(20px);
+}
+
+.LoadingPagecontent span {
+    font-size: 30px;
+    font-weight: 400;
+    color: white;
+    animation: spanAnimation ease-in 2.2s infinite;
+    margin-bottom: 128px;
+}
+
+@keyframes spanAnimation {
+    0% {
+        /* opacity: 1; */
+        color: #ffffff;
+    }
+    30% {
+        color: #565656;
+    }
+    50% {
+        color: #565656;
+    }
+    70% {
+        color: #ffffff;
+        /* opacity: 1; */
+    }
+    100% {
+        color: #ffffff;
+        /* opacity: 1; */
+    }
+}
+
+.ashkal {
+    height: 109px;
+    width: 266px;
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.first {
+    position: relative;
+    height: 100%;
+}
+.second {
+    position: relative;
+    height: 100%;
+}
+.third {
+    position: relative;
+    height: 100%;
+}
+.fourth {
+    position: relative;
+    height: 100%;
+}
+
+.moraba3 {
+    transform: rotate(-20.42deg);
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    animation: RecAnimation ease-in 2.2s infinite;
+}
+
+.x{
+    transform: rotate(-17.26deg);
+    position: absolute;
+    left: 28px;
+    top: 8px;
+    animation: XAnimation ease-in 2.2s infinite;
+}
+
+.motalat{
+    position: absolute;
+    transform: rotate(18.37deg);
+    left: 16px;
+    bottom: 7px;
+    animation: TriangleAnimation ease-in 2.2s infinite;
+}
+
+.da2ira {
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    animation: CircleAnimation ease-in 2.2s infinite;
+}
+
+@keyframes CircleAnimation {
+    0% {
+        transform: translateY(0px);
+    }
+    30% {
+        transform: translateY(12px);
+    }
+    50% {
+        transform: translateY(12px);
+    }
+    70% {
+        transform: translateY(0px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes TriangleAnimation {
+    0% {
+        transform: rotate(18.37deg);
+    }
+    30% {
+        transform: rotate(-91.75deg);
+    }
+    50% {
+        transform: rotate(-91.75deg);
+    }
+    70% {
+        transform: rotate(18.37deg);
+    }
+    100% {
+        transform: rotate(18.37deg);
+    }
+}
+
+@keyframes XAnimation {
+    0% {
+        transform: rotate(-17.26deg);
+    }
+    30% {
+        transform: rotate(178.8deg);
+    }
+    50% {
+        transform: rotate(178.8deg);
+    }
+    70% {
+        transform: rotate(-17.26deg);
+    }
+    100% {
+        transform: rotate(-17.26deg);
+    }
+}
+
+@keyframes RecAnimation {
+    0% {
+        transform: rotate(-20.42deg);
+    }
+    30% {
+        transform: rotate(128.22deg);
+    }
+    50% {
+        transform: rotate(128.22deg);
+    }
+    70% {
+        transform: rotate(-20.42deg);
+    }
+    100% {
+        transform: rotate(-20.42deg);
+    }
+}
