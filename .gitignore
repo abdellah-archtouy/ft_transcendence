@@ -19,4 +19,4 @@ nginx/certs/certs/*
 nginx/certs/fullchain.pem
 nginx/certs/privkey.pem
 
-#.env
+.env
