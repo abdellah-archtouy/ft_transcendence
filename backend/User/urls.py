@@ -14,7 +14,6 @@ from .views import (
     update_general_info,
     change_password,
     handle_friend_request,
-    logout,
 )
 
 from rest_framework_simplejwt.views import (
@@ -27,7 +26,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("signup/", register_user, name="register_user"),
     path("login/", login_user, name="login_user"),
-    path("logout/", logout, name="logout"),
     path("verify-otp/", verify_otp, name="verify_otp"),
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

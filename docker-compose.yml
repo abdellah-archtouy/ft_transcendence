@@ -92,6 +92,5 @@ networks:
 volumes:
   nginx_certs:
   frontend_build:
-  redis_data:
   database:
     driver: local

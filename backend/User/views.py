@@ -20,9 +20,6 @@ from django.conf import settings
 from django.db.models import Q
 import re
 from Notifications.views import create_notification
-from .models import BlacklistedToken
-
-
 import smtplib
 import ssl
 import certifi
@@ -682,34 +679,3 @@ def handle_friend_request(request, id, action):
             {"error": str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def logout(request):
-    try:
-        # Get the tokens
-        refresh_token = request.data.get("refresh_token")
-        auth_header = request.headers.get("Authorization")
-
-        if not refresh_token:
-            return Response(
-                {"error": "Refresh token is required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Create BlacklistedToken entry for refresh token
-        BlacklistedToken.objects.create(token=refresh_token, user=request.user)
-
-        # Also blacklist the access token if present
-        if auth_header and auth_header.startswith("Bearer "):
-            access_token = auth_header.split(" ")[1]
-            BlacklistedToken.objects.create(token=access_token, user=request.user)
-
-        return Response(
-            {"message": "Successfully logged out."}, status=status.HTTP_200_OK
-        )
-
-    except Exception as e:
-        print("Logout Error:", str(e))
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
