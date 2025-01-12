@@ -10,10 +10,9 @@ from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.contrib.auth import get_user_model
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.files.base import ContentFile
 import requests, os, string, random
 from django.conf import settings
@@ -447,22 +446,6 @@ def add_friend(request):
         )
 
 
-@api_view(["POST"])
-def validate_token(request):
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        token = auth_header.split(" ")[1]
-        jwt_auth = JWTAuthentication()
-        try:
-            validated_token = jwt_auth.get_validated_token(token)
-            jwt_auth.get_user(validated_token)
-            return Response({"message": "Token is valid"}, status=200)
-        except TokenError:
-            return Response({"message": "Invalid token"}, status=401)
-    else:
-        return Response({"message": "No token provided"}, status=400)
-
-
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
 def search_bar_list(request):
@@ -576,8 +559,6 @@ def change_password(request):
     user.password = make_password(new_password)
     user.save()
 
-    update_session_auth_hash(request, user)
-
     return Response(
         {"message": "Password changed successfully."},
         status=status.HTTP_200_OK,
@@ -650,16 +631,6 @@ def handle_friend_request(request, id, action):
 
             return Response(
                 {"message": "Friend request denied."},
-                status=status.HTTP_200_OK,
-            )
-
-        elif action == "block":
-            friend_request.block = True
-            friend_request.request = False
-            friend_request.save()
-
-            return Response(
-                {"message": "Friend request blocked."},
                 status=status.HTTP_200_OK,
             )
 

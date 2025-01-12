@@ -217,24 +217,6 @@ JSON Web Tokens (JWT) are used in our application for secure authentication and 
 
 ## Implementation Details
 
-### Token Validation
-
-```python
-@api_view(["POST"])
-def validate_token(request):
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        token = auth_header.split(" ")[1]
-        try:
-            # Validate token
-            jwt_auth = JWTAuthentication()
-            validated_token = jwt_auth.get_validated_token(token)
-            jwt_auth.get_user(validated_token)
-            return Response({"message": "Token is valid"}, status=200)
-        except TokenError:
-            return Response({"message": "Invalid token"}, status=401)
-```
-
 ### Protected Views
 
 ```python
