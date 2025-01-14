@@ -22,7 +22,10 @@ async def update(room, Consumerobj):
         else:
             room.user1["goals"] += 1
             x = 1
-        await Consumerobj.channel_layer.group_send( Consumerobj.room_group_name, {'type': 'chat_message', 'user1': room.user1, 'user2': room.user2})
+        await Consumerobj.channel_layer.group_send(
+            Consumerobj.room_group_name,
+            {"type": "chat_message", "user1": room.user1, "user2": room.user2},
+        )
         room.ball.set_attribute("velocityX", old_ball_velocityX * (-1))
         room.ball.set_attribute(
             "velocityY", speed * math.sin(((3 * math.pi) / 4) * 0.4 * x)
@@ -32,7 +35,10 @@ async def update(room, Consumerobj):
             room.room_pause()
             room.winner = room.uid2 if room.user2["goals"] == 6 else room.uid1
             room.loser = room.uid1 if room.user2["goals"] == 6 else room.uid2
-            await Consumerobj.channel_layer.group_send( Consumerobj.room_group_name, {'type': 'chat_message', 'winner': room.winner})
+            await Consumerobj.channel_layer.group_send(
+                Consumerobj.room_group_name,
+                {"type": "chat_message", "winner": room.winner},
+            )
 
 
 def collision(a, b):
@@ -49,12 +55,14 @@ def collision(a, b):
 
 
 def calculate_new_velocity(room, ball, paddle, angle_multiplier):
-    bally = ball.get_attribute("y")
+    bally = ball.get_attribute("y") - 10
     playery = paddle.get_Player_attribute("y")
     playerh = paddle.get_Player_attribute("height")
     ball_speed = ball.get_attribute("speed")
+
     collisionPoint = (bally - (playery + playerh / 2)) / (playerh / 2)
     angle = collisionPoint * angle_multiplier
+
     ballx = ball.get_attribute("x")
     direction = 1 if ballx < boardWidth / 2 else -1
     velocityX = ball_speed * math.cos(angle) * direction
@@ -86,7 +94,11 @@ def changePaddlePosition(room):
             y = paddle.get_Player_attribute("y")
             velocityY = paddle.get_Player_attribute("velocityY")
             PlayerHeight = paddle.get_Player_attribute("height")
-            if not room.room_paused and paddle == room.rightPaddle and room.type == "bot":
+            if (
+                not room.room_paused
+                and paddle == room.rightPaddle
+                and room.type == "bot"
+            ):
                 velocityY = (bally - (y + PlayerHeight / 2)) * room.fallibility
                 paddle.set_Player_attribute("velocityY", velocityY)
             newPosition = y + velocityY
@@ -119,12 +131,12 @@ async def start(room, ConsumerObj):
         print(f"start: {e}")
 
 
-def room_naming(rooms : Room, start_with : str):
+def room_naming(rooms: Room, start_with: str):
     try:
         filtered_keys = [
-            int(key[len(start_with):])
+            int(key[len(start_with) :])
             for key in rooms.keys()
-            if key.startswith(start_with) and key[len(start_with):].isdigit()
+            if key.startswith(start_with) and key[len(start_with) :].isdigit()
         ]
 
         filtered_keys = sorted(filtered_keys)
@@ -139,27 +151,32 @@ def room_naming(rooms : Room, start_with : str):
 async def join_remote_room(instance, managerObj):
     try:
         rooms = managerObj.rooms
-        if instance.gamemode == "Remote": # for handling user reconnection
+        if instance.gamemode == "Remote":  # for handling user reconnection
             for room_name, room in rooms.items():
                 if room.type == "Remote" and room.howManyUser() == 1 and room.is_full:
                     if room.findUser(instance.user_id):
                         now = datetime.now()
-                        time_diff = (
-                            now - room.disconnected_at
-                        )
+                        time_diff = now - room.disconnected_at
                         if time_diff <= timedelta(seconds=10):
-                            room.channel_names[instance.user_id] = [instance.channel_name]
+                            room.channel_names[instance.user_id] = [
+                                instance.channel_name
+                            ]
                             instance.connection_type = "Reconnection"
                             return room_name
 
-            for room_name, room in rooms.items(): # for handling user opening multiple tabs
+            for (
+                room_name,
+                room,
+            ) in rooms.items():  # for handling user opening multiple tabs
                 if room.type == "Remote" and room.is_full:
                     if room.findUser(instance.user_id):
-                        room.channel_names[instance.user_id].append(instance.channel_name)
+                        room.channel_names[instance.user_id].append(
+                            instance.channel_name
+                        )
                         instance.connection_type = "Reconnection"
                         return room_name
 
-            for room_name, room in rooms.items(): # fill the room that needs one player
+            for room_name, room in rooms.items():  # fill the room that needs one player
                 if room.type == "Remote":
                     if room.uid1 and room.uid2 is None:
                         room.assign_user(instance.user_id)

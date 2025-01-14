@@ -89,17 +89,17 @@ class Ball:
         speed = 10
         angle = math.pi / 4
         self.attributes = {
-            "x": bWidth / 2,
-            "y": bHeight / 2,
+            "x": (bWidth / 2) - 10,
+            "y": (bHeight / 2) - 10,
             "height": 20,
             "width": 20,
             "velocityX": math.cos(angle) * speed,
             "velocityY": math.sin(angle) * speed,
             "speed": speed,
         }
-    
+
     def reset(self):
-        
+
         pass
 
     def get_attribute(self, attribute):
