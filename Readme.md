@@ -282,11 +282,11 @@ _Clean Profile_
 
 ## 🏆 Achievement System
 
-- 🎮 First Match
-- 🏅 Tournament Victor
-- 💫 Perfect Game
-- 🌟 Community Legend
-- 🔥 Win Streak Master
+- 🎮 The emperor: the player has to be at the top of the leaderboard
+- 🏅 The joker: the player has lost 5 matches
+- 💫 maestro: the player has to win two tournaments in a row
+- 🌟 down keeper: The player has to win three matches with no points lost
+- 🔥 thunder strike: The player has to win a match in a record time
 
 ## 💡 Development Philosophy
 
